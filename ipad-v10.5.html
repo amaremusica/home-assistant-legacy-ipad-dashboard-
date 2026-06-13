@@ -849,21 +849,7 @@ body.light nav{background:var(--glass);}
       <p style="font-size:11px;color:var(--dim);margin-top:10px;text-align:center;">Migawka odświeżana co ~2 s (camera_proxy).</p>
     </div>
 
-    <!-- ZERO MIEKISZON — pełna strona (iframe blokuje logowanie na iOS 10) -->
-    <div id="view-zero" class="view">
-      <div class="zero-panel glass">
-        <div class="zero-logo">ZERO MIEKISZON</div>
-        <div class="zero-sub">#ZeroMiekiszon · Maraton 27.09.2026<br>Treningi · dieta · zakupy · statsy</div>
-        <button type="button" class="zero-btn" onclick="openZero()">Otwórz ZeroMiekiszon →</button>
-        <a class="zero-link" href="https://zeromiekiszon.pl/legacy/?sw=off" onclick="openZeroLegacy(event)">Wersja dla iPad 4 (iOS 10)</a>
-        <div id="zero-note" class="zero-note" style="display:none;">
-          <b>iPad 4 / iOS 10:</b> główna strona używa składni JS (??, ?.), której stary Safari nie rozumie — cały skrypt się nie ładuje i logowanie nie działa. Wgraj na serwer wersję <code>/legacy/</code> (skrypt <code>fix-zeromiekiszon-ios10.js</code> w tym folderze).
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
+   
 
 <div id="dim" onclick="wakeScreen(true)"><div id="diml">dotknij ekran · ruch rozjaśnia</div></div>
 
@@ -928,9 +914,8 @@ function tick(){
   if(d) d.textContent=DNI[n.getDay()]+', '+n.getDate()+' '+MIES[n.getMonth()];
 }
 
-// TABS — ZeroMiekiszon otwieramy w pełnym oknie (nie iframe: cookies/localStorage)
-var ZERO_URL='https://zeromiekiszon.pl';
-var ZERO_LEGACY_URL='https://zeromiekiszon.pl/legacy/';
+
+
 
 function isLegacySafari(){
   var ua=navigator.userAgent;
