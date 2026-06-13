@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<!-- build: v10.5 -->
+<title>Dom</title>
+<style>
+:root {
+  --bg:#262119;
+  --bg2:#2e2920;
+  --glass:rgba(229,226,218,0.74);
+  --glass2:rgba(241,238,232,0.84);
+  --glass-b:rgba(255,255,255,0.5);
+  --glass-h:rgba(255,255,255,0.7);
+  --border:rgba(20,17,13,0.07);
+  --accent:#10b981;
+  --accent-rgb:16,185,129;
+  --accent2:#34d399;
+  --accent-dim:rgba(16,185,129,0.16);
+  --accent-soft:rgba(16,185,129,0.16);
+  --danger:#ef4444;
+  --text:#1c180f;
+  --dim:rgba(24,20,12,0.78);
+  --bright:#0a0703;
+  --on-bg:#efece4;
+  --r:22px;
+  --rsm:14px;
+  --r-lg:28px;
+  --shadow:0 10px 26px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.55);
+  --blur:blur(16px) saturate(1.2);
+}
+
+body.light{
+  --bg:#c7cfde;
+  --bg2:#dfe4ee;
+  --glass:#eef1f7;
+  --glass2:#f6f8fc;
+  --glass-b:rgba(15,23,42,0.13);
+  --glass-h:#ffffff;
+  --border:rgba(15,23,42,0.12);
+  --text:#1e293b;
+  --dim:rgba(15,23,42,0.55);
+  --bright:#0b1220;
+  --shadow:0 8px 22px rgba(15,23,42,0.14), 0 1px 2px rgba(15,23,42,0.06);
+  --blur:blur(8px) saturate(1.05);
+  --on-bg:#1e293b;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;overflow:hidden;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;font-weight:400;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;}
+html{background:#050505;}
+body{background:#050505;background:#08070a;background:-webkit-linear-gradient(145deg,#0a0907 0%,#040404 50%,#080610 100%);background:linear-gradient(145deg,#0a0907 0%,#040404 50%,#080610 100%);}
+html.light,body.light{background:#c7cfde;}
+body.light{background:-webkit-linear-gradient(150deg,#c2cbdc 0%,#d2d8e6 50%,#dad2dd 100%);background:linear-gradient(150deg,#c2cbdc 0%,#d2d8e6 50%,#dad2dd 100%);}
+
+#amb{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0;overflow:hidden;background:#050505;background:-webkit-linear-gradient(145deg,#0a0907 0%,#040404 50%,#080610 100%);background:linear-gradient(145deg,#0a0907 0%,#040404 50%,#080610 100%);}
+body.light #amb{background:transparent;}
+.amb-l{position:absolute;width:62%;height:55%;top:-18%;left:-22%;background:-webkit-radial-gradient(50% 50%,circle,rgba(251,146,60,0.08),transparent 70%);background:radial-gradient(circle,rgba(251,146,60,0.08),transparent 70%);}
+.amb-r{position:absolute;width:60%;height:52%;bottom:-16%;right:-18%;background:-webkit-radial-gradient(50% 50%,circle,rgba(var(--accent-rgb),0.10),transparent 70%);background:radial-gradient(circle,rgba(var(--accent-rgb),0.10),transparent 70%);}
+.amb-m{position:absolute;width:45%;height:42%;top:30%;left:28%;background:-webkit-radial-gradient(50% 50%,circle,rgba(56,189,248,0.05),transparent 72%);background:radial-gradient(circle,rgba(56,189,248,0.05),transparent 72%);}
+
+.glass,.card,.wcard,.rtcard,.qtile,.mcol,.aqcard,.gcard,.cbox{
+  background:var(--glass);
+  border:1px solid var(--glass-b);
+  -webkit-backdrop-filter:var(--blur);
+  backdrop-filter:var(--blur);
+}
+.glass,.card,.wcard,.rtcard,.qtile,.mcol,.aqcard,.gcard{border-radius:var(--r);box-shadow:var(--shadow);}
+
+/* CONFIG */
+#cfg{position:fixed;inset:0;z-index:999;background:var(--bg);display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;}
+#cfg.h{display:none;}
+.cbox{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);padding:28px;width:88%;max-width:400px;box-shadow:var(--shadow);}
+.cbox h2{font-size:26px;font-weight:600;color:var(--bright);margin-bottom:4px;letter-spacing:-0.02em;}
+.cbox h2 span{color:var(--accent);}
+.cbox p{color:var(--dim);font-size:13px;margin-bottom:18px;}
+.cf{margin-bottom:12px;}
+.cf label{display:block;font-size:10px;color:var(--dim);margin-bottom:5px;text-transform:uppercase;letter-spacing:.1em;}
+.cf input{width:100%;padding:11px 14px;background:rgba(0,0,0,0.25);border:1px solid var(--glass-b);border-radius:var(--rsm);color:var(--bright);font-size:15px;outline:none;-webkit-appearance:none;}
+.cf input:focus{border-color:var(--accent);}
+.cbtn{width:100%;padding:13px;background:var(--accent);border:none;border-radius:var(--rsm);color:#0a0c12;font-size:15px;font-weight:600;cursor:pointer;margin-top:4px;}
+.cnote{font-size:11px;color:var(--dim);margin-top:10px;text-align:center;line-height:1.5;}
+.csaved{font-size:11px;color:var(--accent);margin-top:4px;display:none;}
+.swatches{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:-5px;}
+.swatches>*{margin:5px;}
+.sw{width:34px;height:34px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;-webkit-appearance:none;-webkit-box-shadow:0 2px 8px rgba(0,0,0,0.25);box-shadow:0 2px 8px rgba(0,0,0,0.25);-webkit-transition:-webkit-transform .12s;transition:transform .12s;}
+.sw:active{-webkit-transform:scale(0.9);transform:scale(0.9);}
+.sw.sel{border-color:var(--bright);-webkit-box-shadow:0 0 0 3px var(--accent-dim),0 2px 8px rgba(0,0,0,0.25);box-shadow:0 0 0 3px var(--accent-dim),0 2px 8px rgba(0,0,0,0.25);}
+.crange{width:100%;height:26px;-webkit-appearance:none;appearance:none;background:-webkit-linear-gradient(left,#080808,#d2d2d2);background:linear-gradient(to right,#080808,#d2d2d2);border-radius:999px;outline:none;border:1px solid var(--glass-b);}
+.crange::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent);border:2px solid #fff;-webkit-box-shadow:0 1px 4px rgba(0,0,0,0.4);box-shadow:0 1px 4px rgba(0,0,0,0.4);cursor:pointer;}
+
+/* APP */
+#app{position:absolute;top:0;left:0;right:0;bottom:0;z-index:1;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;overflow:hidden;}
+#app.h{display:none;}
+
+/* HEADER */
+header{-webkit-flex-shrink:0;flex-shrink:0;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;padding:8px 16px 6px;height:54px;background:transparent;}
+.hd-left{-webkit-flex:1;flex:1;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:flex-start;justify-content:flex-start;min-width:0;}
+.hd-left>*+*{margin-left:8px;}
+.hd-center{-webkit-flex:0 0 auto;flex:0 0 auto;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;-webkit-align-items:center;align-items:center;line-height:1;}
+.hd-right{-webkit-flex:1;flex:1;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:flex-end;justify-content:flex-end;min-width:0;}
+.hd-right>*+*{margin-left:10px;}
+.menu-btn{width:36px;height:36px;border:1px solid var(--glass-b);border-radius:12px;background:var(--glass);color:var(--dim);font-size:16px;cursor:pointer;-webkit-flex-shrink:0;flex-shrink:0;-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);}
+.hd-title{font-size:15px;font-weight:600;color:var(--bright);letter-spacing:-0.01em;display:none;}
+#clock{font-size:26px;font-weight:300;color:var(--on-bg);letter-spacing:-0.02em;font-variant-numeric:tabular-nums;line-height:1;}
+#cdate{font-size:11px;font-weight:600;color:var(--on-bg);opacity:0.6;letter-spacing:.04em;margin-top:2px;text-transform:capitalize;}
+#dstr{display:none;}
+.hbtn{background:var(--glass);border:1px solid var(--glass-b);border-radius:12px;padding:6px 10px;color:var(--dim);font-size:14px;cursor:pointer;-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);}
+#ver{font-size:9px;color:#64748b;opacity:1;font-weight:700;}
+
+/* NAV — pill 2026 */
+nav{-webkit-flex-shrink:0;flex-shrink:0;display:-webkit-flex;display:flex;-webkit-justify-content:flex-start;justify-content:flex-start;background:var(--glass);border:1px solid var(--glass-b);border-radius:999px;margin:0 14px 8px;padding:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--shadow);}
+nav>*+*{margin-left:2px;}
+nav::-webkit-scrollbar{display:none;}
+.tb{-webkit-flex-shrink:0;flex-shrink:0;padding:8px 14px;background:transparent;border:none;border-radius:999px;color:var(--dim);font-size:11px;font-weight:600;letter-spacing:.02em;cursor:pointer;white-space:nowrap;-webkit-transition:background .2s,color .2s;transition:background .2s,color .2s;}
+.tbi{font-size:12px;margin-right:5px;-webkit-filter:grayscale(0.2);filter:grayscale(0.2);}
+.tb.a{color:var(--bright);background:var(--glass2);box-shadow:0 2px 14px rgba(0,0,0,0.18);}
+body.light .tb.a{box-shadow:0 2px 12px rgba(15,23,42,0.08);}
+
+/* CONTENT */
+#content{-webkit-flex:1;flex:1;overflow:hidden;min-height:0;position:relative;}
+#view-dom{display:none;position:absolute;top:0;left:0;right:0;bottom:0;padding:4px 12px 10px;}
+#view-dom.view.active{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;}
+.dash{-webkit-flex:1;flex:1;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;height:100%;min-height:0;overflow:hidden;}
+.dash>*+*{margin-top:14px;}
+.dash-w{-webkit-flex:0 0 auto;flex:0 0 auto;}
+.dash-t{-webkit-flex:0 0 auto;flex:0 0 auto;}
+.dash-q{-webkit-flex:0 0 auto;flex:0 0 auto;}
+.dash-m{-webkit-flex:1 1 auto;flex:1 1 auto;min-height:100px;}
+.dash-b{-webkit-flex:0 0 auto;flex:0 0 auto;}
+.dash-row{display:-webkit-flex;display:flex;width:100%;}
+.dash-row>*+*{margin-left:14px;}
+#view-salon,#view-sypialnia,#view-kuchnia,#view-lazienki,#view-ogrod,#view-energia,#view-drukarka,#view-kamery,#view-zero{display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;position:absolute;top:0;left:0;right:0;bottom:0;padding:10px 12px;}
+#view-salon.active,#view-sypialnia.active,#view-kuchnia.active,#view-lazienki.active,#view-ogrod.active,#view-energia.active,#view-drukarka.active,#view-kamery.active{display:block;}
+.camgrid{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:-5px;}
+.camgrid>*{margin:5px;}
+.camcard{-webkit-flex:1 1 calc(50% - 10px);flex:1 1 calc(50% - 10px);min-width:280px;position:relative;border-radius:var(--r);overflow:hidden;background:#000;border:1px solid var(--glass-b);box-shadow:var(--shadow);}
+.camcard img{display:block;width:100%;height:auto;background:#000;}
+.camcard .camlbl{position:absolute;left:10px;bottom:10px;padding:4px 10px;border-radius:999px;background:rgba(0,0,0,0.5);color:#fff;font-size:12px;font-weight:600;letter-spacing:.02em;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
+.camcard .camoff{position:absolute;top:0;left:0;right:0;bottom:0;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;color:rgba(255,255,255,0.5);font-size:13px;}
+#view-zero{padding:10px 12px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+#view-zero.active{display:block;}
+.zero-panel{text-align:center;padding:28px 20px;margin-top:12px;}
+.zero-logo{font-size:26px;font-weight:700;color:var(--bright);letter-spacing:.04em;margin-bottom:6px;}
+.zero-sub{font-size:12px;color:var(--dim);margin-bottom:18px;line-height:1.5;}
+.zero-btn{width:100%;max-width:300px;padding:14px;background:var(--accent2);border:none;border-radius:var(--rsm);color:#fff;font-size:16px;font-weight:600;cursor:pointer;margin-bottom:10px;}
+.zero-link{display:inline-block;font-size:12px;color:var(--accent);text-decoration:none;padding:8px 12px;border:1px solid rgba(var(--accent-rgb),0.3);border-radius:8px;}
+.zero-note{font-size:11px;color:var(--accent2);margin-top:16px;line-height:1.5;text-align:left;padding:12px;background:rgba(251,146,60,0.08);border-radius:var(--rsm);border:1px solid rgba(251,146,60,0.2);}
+.view{display:none;}
+.view.active{display:block;}
+
+.st{font-size:10px;font-weight:600;color:var(--dim);letter-spacing:.12em;text-transform:uppercase;margin:10px 0 6px;}
+.g2{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:-4px -4px 4px;}
+.g2>*{-webkit-flex:1 1 calc(50% - 8px);flex:1 1 calc(50% - 8px);margin:4px;}
+.g3{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:-4px -4px 4px;}
+.g3>*{-webkit-flex:1 1 calc(33.33% - 8px);flex:1 1 calc(33.33% - 8px);margin:4px;}
+.g4{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:-4px -4px 4px;}
+.g4>*{-webkit-flex:1 1 calc(25% - 8px);flex:1 1 calc(25% - 8px);margin:4px;}
+.card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);}
+
+/* WEATHER */
+.wcard{position:relative;padding:0;width:100%;overflow:hidden;border-radius:var(--r-lg);background:#bcd8f2;background:-webkit-radial-gradient(22% 28%,circle,rgba(255,255,255,0.95),transparent 22%),-webkit-radial-gradient(40% 22%,circle,rgba(255,255,255,0.85),transparent 16%),-webkit-radial-gradient(72% 68%,circle,rgba(255,255,255,0.88),transparent 26%),-webkit-radial-gradient(86% 40%,circle,rgba(255,255,255,0.8),transparent 20%),-webkit-linear-gradient(150deg,#9cc6ef 0%,#bcd8f2 42%,#e9f1fa 100%);background:radial-gradient(circle at 22% 28%,rgba(255,255,255,0.95),transparent 22%),radial-gradient(circle at 40% 22%,rgba(255,255,255,0.85),transparent 16%),radial-gradient(circle at 72% 68%,rgba(255,255,255,0.88),transparent 26%),radial-gradient(circle at 86% 40%,rgba(255,255,255,0.8),transparent 20%),linear-gradient(150deg,#9cc6ef 0%,#bcd8f2 42%,#e9f1fa 100%);}
+body.light .wcard{background:#a9cef0;background:-webkit-radial-gradient(22% 28%,circle,rgba(255,255,255,0.95),transparent 22%),-webkit-radial-gradient(72% 68%,circle,rgba(255,255,255,0.9),transparent 26%),-webkit-linear-gradient(150deg,#8fbdea 0%,#b3d3f1 45%,#e4eefb 100%);background:radial-gradient(circle at 22% 28%,rgba(255,255,255,0.95),transparent 22%),radial-gradient(circle at 72% 68%,rgba(255,255,255,0.9),transparent 26%),linear-gradient(150deg,#8fbdea 0%,#b3d3f1 45%,#e4eefb 100%);border:1px solid rgba(15,23,42,0.12);}
+.wcard .wcond,.wcard .wtemp,.wcard .wst b{color:#0b2034 !important;}
+.wcard .wloc,.wcard .wst,.wcard .wunit{color:rgba(11,32,52,0.62) !important;}
+body.light .wglow{opacity:0.5;}
+body.light .wtemp{font-weight:500;color:#0b1220;}
+body.light .wcond{color:#0b1220;}
+body.light .wst b{color:#0b1220;}
+/* duża szklana kula */
+.wglow{position:absolute;top:50%;left:50%;width:300px;height:300px;margin:-150px 0 0 -150px;border-radius:50%;background:-webkit-radial-gradient(50% 36%,circle,rgba(255,255,255,0.75),rgba(255,255,255,0.25) 45%,transparent 66%);background:radial-gradient(circle at 50% 36%,rgba(255,255,255,0.75),rgba(255,255,255,0.25) 45%,transparent 66%);-webkit-box-shadow:inset 0 2px 40px rgba(255,255,255,0.4);box-shadow:inset 0 2px 40px rgba(255,255,255,0.4);pointer-events:none;z-index:0;}
+.wsun{position:absolute;top:8%;left:50%;width:140px;height:140px;margin-left:-70px;border-radius:50%;background:-webkit-radial-gradient(50% 50%,circle,rgba(251,191,36,0.30),transparent 62%);background:radial-gradient(circle,rgba(251,191,36,0.30),transparent 62%);pointer-events:none;z-index:0;}
+.d3-left .wcard{-webkit-flex:1 1 auto;flex:1 1 auto;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;}
+.d3-left .wcard .wc-inner{-webkit-flex:1 1 auto;flex:1 1 auto;}
+.d3-left .wcard .waqline{margin-top:auto;}
+.d3-left .gauge{-webkit-flex:0 0 auto;flex:0 0 auto;}
+.wc-inner{position:relative;padding:14px 18px 14px;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;-webkit-justify-content:flex-start;justify-content:flex-start;z-index:1;}
+.wtop{display:-webkit-flex;display:flex;-webkit-justify-content:space-between;justify-content:space-between;-webkit-align-items:center;align-items:center;margin-bottom:6px;}
+.wtop>*+*{margin-left:8px;}
+.wcond{font-size:21px;font-weight:700;color:var(--bright);letter-spacing:-0.02em;line-height:1.2;}
+.wloc{font-size:11px;color:var(--dim);margin-top:3px;}
+.wtemp{font-size:70px;font-weight:500;color:var(--bright);line-height:1;letter-spacing:-0.04em;text-align:center;margin:10px 0 12px;}
+.wunit{font-size:26px;color:var(--dim);font-weight:300;margin-left:2px;}
+.wsvg{width:78px;height:78px;-webkit-flex-shrink:0;flex-shrink:0;filter:drop-shadow(0 8px 16px rgba(0,0,0,0.28));}
+.wstats{display:-webkit-flex;display:flex;margin-top:2px;}
+.wstats>*+*{margin-left:6px;}
+.wst{-webkit-flex:1;flex:1;text-align:center;font-size:10px;color:var(--dim);line-height:1.35;}
+.wst b{display:block;color:var(--bright);font-weight:700;font-size:18px;letter-spacing:-0.02em;margin-bottom:1px;}
+.wfc{display:-webkit-flex;display:flex;margin-top:10px;padding-top:10px;border-top:1px solid var(--glass-b);}
+.wfc>*+*{margin-left:5px;}
+.wfd{-webkit-flex:1 1 0;flex:1 1 0;min-width:0;text-align:center;padding:7px 2px;border-radius:13px;background:var(--glass2);border:1px solid var(--glass-b);overflow:hidden;}
+.wfd .wdn{font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;font-weight:700;}
+.wfd .wft{font-size:14px;font-weight:700;color:var(--bright);margin-top:4px;letter-spacing:-0.03em;white-space:nowrap;}
+.wfd .wfi{width:24px;height:24px;margin:4px auto 0;}
+.waqline{margin-top:12px;}
+
+/* TEMP kafle */
+.rtrow{display:-webkit-flex;display:flex;width:100%;}
+.rtrow>*+*{margin-left:14px;}
+.rtcard{-webkit-flex:1;flex:1;padding:14px 8px;text-align:center;min-width:0;overflow:hidden;}
+.rtcard:nth-child(1){border-color:rgba(251,146,60,0.22);}
+.rtcard:nth-child(2){border-color:rgba(var(--accent-rgb),0.22);}
+.rtcard:nth-child(3){border-color:rgba(147,197,253,0.18);}
+.rtcard:nth-child(4){border-color:rgba(196,181,253,0.18);}
+.rtcard:nth-child(5){border-color:rgba(52,211,153,0.18);}
+.rtname{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:8px;}
+.rtval{font-size:30px;font-weight:500;color:var(--bright);line-height:1;letter-spacing:-0.02em;}
+.rthum{font-size:11px;color:var(--dim);margin-top:5px;font-weight:600;}
+
+/* QUICK tiles */
+.qrow{display:-webkit-flex;display:flex;}
+.qrow>*+*{margin-left:10px;}
+.qtile{-webkit-flex:1;flex:1;padding:16px 10px;text-align:center;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-transition:-webkit-transform .15s;transition:transform .15s;}
+.qtile:active{opacity:0.8;-webkit-transform:scale(0.97);transform:scale(0.97);}
+.qico{font-size:28px;line-height:1;margin-bottom:8px;}
+.qname{font-size:12px;color:var(--dim);font-weight:500;}
+
+/* TOP ROW — pogoda + karty stanu (jak w referencji) */
+.dash-top{display:-webkit-flex;display:flex;-webkit-flex:0 0 auto;flex:0 0 auto;}
+.dash-top>*+*{margin-left:10px;}
+.dash-top .wcard{-webkit-flex:1.9;flex:1.9;}
+.statecol{-webkit-flex:1;flex:1;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;min-width:0;}
+.statecol>*+*{margin-top:10px;}
+.statecard{-webkit-flex:1;flex:1;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;padding:18px 20px;border-radius:var(--r-lg);cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-transition:-webkit-transform .15s;transition:transform .15s;-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--shadow);overflow:hidden;}
+.statecard:active{-webkit-transform:scale(0.98);transform:scale(0.98);}
+.sc-l{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;min-width:0;}
+.sc-l>*+*{margin-left:12px;}
+.scico{font-size:24px;line-height:1;-webkit-flex-shrink:0;flex-shrink:0;}
+.scname{font-size:17px;font-weight:700;color:var(--bright);letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.scstate{font-size:14px;font-weight:700;letter-spacing:-0.01em;-webkit-flex-shrink:0;flex-shrink:0;}
+.sc-rose{background:-webkit-linear-gradient(135deg,rgba(251,113,133,0.20),rgba(251,113,133,0.05));background:linear-gradient(135deg,rgba(251,113,133,0.20),rgba(251,113,133,0.05));border:1px solid rgba(251,113,133,0.28);}
+.sc-rose .scstate{color:#be123c;}
+.sc-amber{background:-webkit-linear-gradient(135deg,rgba(251,191,36,0.20),rgba(251,191,36,0.05));background:linear-gradient(135deg,rgba(251,191,36,0.20),rgba(251,191,36,0.05));border:1px solid rgba(251,191,36,0.28);}
+.sc-amber .scstate{color:#b45309;}
+.sc-emerald{background:-webkit-linear-gradient(135deg,rgba(52,211,153,0.20),rgba(52,211,153,0.05));background:linear-gradient(135deg,rgba(52,211,153,0.20),rgba(52,211,153,0.05));border:1px solid rgba(52,211,153,0.28);}
+.sc-emerald .scstate{color:#0a7a52;}
+
+/* ===== LAYOUT PRO (3 kolumny) ===== */
+.d3{display:-webkit-flex;display:flex;-webkit-flex:1 1 auto;flex:1 1 auto;min-height:0;}
+.d3-left,.d3-mid{margin-right:14px;}
+.d3-col{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
+.d3-col>*+*{margin-top:14px;}
+.d3-mid>*+*{margin-top:9px;}
+.d3-col::-webkit-scrollbar{display:none;}
+.d3-left{-webkit-flex:0 0 27%;flex:0 0 27%;}
+.d3-mid{-webkit-flex:1 1 auto;flex:1 1 auto;}
+.d3-right{-webkit-flex:0 0 25%;flex:0 0 25%;}
+
+/* AQ ring gauge */
+.gauge{padding:7px;text-align:center;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;-webkit-flex:0 0 auto;flex:0 0 auto;}
+.gauge-svg{width:60px;height:60px;}
+.gauge{color:#0b1220;}
+.gauge-lbl{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#0b1220;font-weight:800;margin-top:4px;}
+.gauge-val{font-size:12px;font-weight:800;color:#0b1220;margin-top:1px;}
+.gauge-svg #gauge-pct{fill:#0b1220;font-weight:800;}
+.gauge-svg text{fill:#0b1220 !important;}
+.aqbars{display:-webkit-flex;display:flex;-webkit-align-items:flex-end;align-items:flex-end;height:24px;margin-top:6px;width:100%;max-width:230px;padding:4px 6px;border-radius:14px;background:var(--glass2);border:1px solid var(--glass-b);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);-webkit-box-shadow:inset 0 1px 0 rgba(255,255,255,0.35),0 4px 14px rgba(0,0,0,0.12);box-shadow:inset 0 1px 0 rgba(255,255,255,0.35),0 4px 14px rgba(0,0,0,0.12);-webkit-box-sizing:border-box;box-sizing:border-box;}
+.aqbars i{-webkit-flex:1;flex:1;min-width:2px;height:10%;margin-left:2px;border-radius:3px;background:-webkit-linear-gradient(bottom,rgba(var(--accent-rgb),0.55),rgba(var(--accent-rgb),0.95));background:linear-gradient(0deg,rgba(var(--accent-rgb),0.55),rgba(var(--accent-rgb),0.95));-webkit-box-shadow:inset 0 1px 0 rgba(255,255,255,0.5),0 0 6px rgba(var(--accent-rgb),0.45);box-shadow:inset 0 1px 0 rgba(255,255,255,0.5),0 0 6px rgba(var(--accent-rgb),0.45);-webkit-transition:height .5s;transition:height .5s;}
+
+/* Room grid PRO */
+.rgrid{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:-5px;-webkit-flex:0 0 auto;flex:0 0 auto;}
+.rcell{-webkit-flex:1 1 calc(33.33% - 10px);flex:1 1 calc(33.33% - 10px);margin:5px;min-width:0;position:relative;padding:7px 10px 6px;overflow:hidden;}
+.rcell-h{display:-webkit-flex;display:flex;-webkit-justify-content:space-between;justify-content:space-between;-webkit-align-items:center;align-items:center;margin-bottom:4px;}
+.rcell-name{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:700;}
+.rbulb{width:26px;height:26px;border-radius:50%;border:1px solid var(--glass-b);background:var(--glass2);display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;font-size:13px;cursor:pointer;-webkit-flex-shrink:0;flex-shrink:0;}
+.rbulb.on{background:rgba(var(--accent-rgb),0.22);border-color:rgba(var(--accent-rgb),0.5);color:var(--accent);-webkit-box-shadow:0 0 16px rgba(var(--accent-rgb),0.4);box-shadow:0 0 16px rgba(var(--accent-rgb),0.4);}
+.rcell.lit{background:rgba(var(--accent-rgb),0.16);border-color:rgba(var(--accent-rgb),0.45);-webkit-box-shadow:0 0 22px rgba(var(--accent-rgb),0.35),inset 0 0 18px rgba(var(--accent-rgb),0.12);box-shadow:0 0 22px rgba(var(--accent-rgb),0.35),inset 0 0 18px rgba(var(--accent-rgb),0.12);}
+.rcell.lit .rcell-name{color:var(--accent);}
+.ricon{font-size:22px;line-height:1;text-align:center;margin:0 0 2px;}
+.rcell .rtval{font-size:20px;font-weight:400;color:var(--bright);line-height:1;letter-spacing:-0.02em;text-align:center;}
+/* Garderoba + Ogród mniejsze (~30%) by zmieściła się kuchnia */
+.rgrid .rcell:nth-child(4),.rgrid .rcell:nth-child(5){padding:8px 11px 7px;}
+.rgrid .rcell:nth-child(4) .rcell-h,.rgrid .rcell:nth-child(5) .rcell-h{margin-bottom:2px;}
+.rgrid .rcell:nth-child(4) .ricon,.rgrid .rcell:nth-child(5) .ricon{font-size:20px;margin:0 0 2px;}
+.rgrid .rcell:nth-child(4) .rtval,.rgrid .rcell:nth-child(5) .rtval{font-size:18px;}
+.rgrid .rcell:nth-child(4) .rthum,.rgrid .rcell:nth-child(5) .rthum{font-size:10px;}
+.rcell .rthum{font-size:10px;color:var(--dim);margin-top:2px;text-align:center;}
+
+/* Wiersz kontrolek (Schody / Brama) */
+.ctlrow{display:-webkit-flex;display:flex;-webkit-flex:0 0 auto;flex:0 0 auto;min-height:72px;}
+.ctlrow>*+*{margin-left:10px;}
+.ctlrow .statecard{-webkit-flex:1;flex:1;}
+.d3-right .ctlrow{-webkit-flex-direction:column;flex-direction:column;min-height:0;}
+.d3-right .ctlrow>*+*{margin-top:14px;margin-left:0;}
+.d3-right .ctlrow .statecard{padding:15px 16px;-webkit-flex:0 0 auto;flex:0 0 auto;}
+.d3-right .scico{font-size:21px;}
+.d3-right .scname{font-size:15px;}
+.d3-right .scstate{font-size:13px;}
+
+/* Karta kuchni — przełączniki + lodówka (kompakt, bez przewijania) */
+.kcard{-webkit-flex:0 0 auto;flex:0 0 auto;padding:9px 12px;}
+.kc-h{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;margin-bottom:7px;}
+.kc-t{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:700;}
+.kc-fridge{font-size:13px;color:var(--text);font-weight:600;}
+.kc-fridge b{color:var(--bright);font-weight:700;font-size:16px;}
+.ktemps{display:-webkit-flex;display:flex;}
+.ktemps>*+*{margin-left:8px;}
+.ktemp{-webkit-flex:1;flex:1;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;padding:6px 9px;border-radius:11px;border:1px solid var(--glass-b);background:var(--glass2);}
+.ktemp-i{font-size:15px;margin-right:7px;}
+.ktemp-m{min-width:0;}
+.ktemp-l{display:block;font-size:8px;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);font-weight:700;}
+.ktemp-v{font-size:16px;font-weight:400;color:var(--bright);letter-spacing:-0.02em;line-height:1.1;}
+
+/* Kamera na pulpicie (pod Spotify) */
+.camcard-dash{-webkit-flex:0 0 auto;flex:0 0 auto;min-width:0;}
+.camcard-dash img{min-height:120px;}
+.camcard-dash .camoff{min-height:120px;}
+/* Karta biegania */
+.runcard{-webkit-flex:0 0 auto;flex:0 0 auto;padding:10px 12px;}
+.run-h{display:-webkit-flex;display:flex;-webkit-align-items:baseline;align-items:baseline;-webkit-justify-content:space-between;justify-content:space-between;margin-bottom:6px;}
+.run-t{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:700;}
+.run-date{font-size:11px;color:var(--dim);font-weight:600;}
+.run-ev{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;padding:7px 10px;border-radius:10px;background:var(--glass2);border:1px solid var(--glass-b);}
+.run-ev+.run-ev{margin-top:8px;}
+.run-time{font-size:13px;font-weight:700;color:var(--accent);width:46px;-webkit-flex-shrink:0;flex-shrink:0;}
+.run-sum{font-size:13px;font-weight:600;color:var(--bright);line-height:1.35;}
+.run-empty{font-size:12px;color:var(--dim);font-weight:600;padding:4px 0;}
+.chiprow{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:-4px;}
+.ktog{-webkit-flex:1 1 calc(50% - 8px);flex:1 1 calc(50% - 8px);margin:4px;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;padding:9px 12px;border-radius:14px;border:1px solid var(--glass-b);background:var(--glass2);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;-webkit-user-select:none;user-select:none;}
+.ktog:active{-webkit-transform:scale(0.98);transform:scale(0.98);}
+.ktl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ktsw{width:38px;height:22px;border-radius:999px;background:rgba(127,127,127,0.30);position:relative;-webkit-flex-shrink:0;flex-shrink:0;-webkit-transition:background .2s;transition:background .2s;}
+.ktsw i{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;-webkit-box-shadow:0 1px 3px rgba(0,0,0,0.35);box-shadow:0 1px 3px rgba(0,0,0,0.35);-webkit-transition:left .2s;transition:left .2s;}
+.ktog.on{border-color:rgba(var(--accent-rgb),0.45);color:var(--bright);}
+.ktog.on .ktsw{background:var(--accent);-webkit-box-shadow:0 0 12px rgba(var(--accent-rgb),0.45);box-shadow:0 0 12px rgba(var(--accent-rgb),0.45);}
+.ktog.on .ktsw i{left:18px;}
+
+/* Karta energii — aktualny pobór */
+.ecard{-webkit-flex:0 0 auto;flex:0 0 auto;padding:12px 16px;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;-webkit-justify-content:center;justify-content:center;position:relative;overflow:hidden;background:-webkit-linear-gradient(135deg,rgba(251,191,36,0.28),var(--glass2) 58%);background:linear-gradient(135deg,rgba(251,191,36,0.28),var(--glass2) 58%);}
+body.light .ecard{background:-webkit-linear-gradient(135deg,rgba(251,191,36,0.12),rgba(255,255,255,0.96) 55%);background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(255,255,255,0.96) 55%);}
+.ecard:before{content:'';position:absolute;top:-25%;right:-8%;width:58%;height:150%;border-radius:50%;background:-webkit-radial-gradient(32% 38%,circle,rgba(168,85,247,0.5),transparent 60%),-webkit-radial-gradient(72% 60%,circle,rgba(56,189,248,0.45),transparent 60%),-webkit-radial-gradient(52% 82%,circle,rgba(244,114,182,0.45),transparent 60%);background:radial-gradient(circle at 32% 38%,rgba(168,85,247,0.5),transparent 60%),radial-gradient(circle at 72% 60%,rgba(56,189,248,0.45),transparent 60%),radial-gradient(circle at 52% 82%,rgba(244,114,182,0.45),transparent 60%);-webkit-filter:blur(20px);filter:blur(20px);opacity:0.7;pointer-events:none;z-index:0;}
+.ecard>*{position:relative;z-index:1;}
+.ecard-h{display:-webkit-flex;display:flex;-webkit-align-items:baseline;align-items:baseline;-webkit-justify-content:space-between;justify-content:space-between;margin-bottom:8px;}
+.ecard-t{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:700;}
+.ecard-now{font-size:30px;font-weight:300;color:var(--bright);letter-spacing:-0.03em;line-height:1;}
+.ecard-now .eu{font-size:15px;color:var(--dim);font-weight:400;margin-left:3px;}
+.ephases{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;}
+.ephases>*+*{margin-top:8px;}
+.eph{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;}
+.eph>*+*{margin-left:10px;}
+.eph-l{font-size:10px;font-weight:700;color:var(--dim);width:22px;-webkit-flex-shrink:0;flex-shrink:0;}
+.eph-bar{-webkit-flex:1;flex:1;height:9px;border-radius:9px;background:rgba(127,127,127,0.16);position:relative;}
+.eph-bar>i{position:absolute;top:0;left:0;height:100%;width:0;border-radius:9px;background:-webkit-linear-gradient(left,#fbbf24,#fb923c);background:linear-gradient(90deg,#fbbf24,#fb923c);-webkit-box-shadow:0 0 12px rgba(251,191,36,0.6);box-shadow:0 0 12px rgba(251,191,36,0.6);-webkit-transition:width .6s;transition:width .6s;}
+.eph-bar>i b{position:absolute;right:-7px;top:50%;margin-top:-9px;font-size:13px;line-height:1;filter:drop-shadow(0 0 5px rgba(251,191,36,0.9));}
+.eph-v{font-size:12px;font-weight:600;color:var(--text);width:54px;text-align:right;-webkit-flex-shrink:0;flex-shrink:0;}
+
+/* Spotify PRO */
+.spro{-webkit-flex:0 0 auto;flex:0 0 auto;padding:14px;}
+.spro-top{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;margin-bottom:10px;}
+.spro-lbl{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:700;}
+.spro-badge{width:18px;height:18px;border-radius:50%;background:#1db954;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;font-size:11px;}
+.spro-body{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;margin-bottom:12px;}
+.spro-body>*+*{margin-left:12px;}
+.spro-art{width:52px;height:52px;border-radius:12px;-webkit-flex-shrink:0;flex-shrink:0;background:var(--glass2) -webkit-radial-gradient(50% 0,circle,rgba(var(--accent-rgb),0.4),transparent 70%);background:var(--glass2);background-size:cover;background-position:center;box-shadow:0 4px 14px rgba(0,0,0,0.3);}
+.spro-meta{min-width:0;}
+.spro-track{font-size:14px;font-weight:700;color:var(--bright);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-0.01em;}
+.spro-artist{font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
+.wave{display:-webkit-flex;display:flex;-webkit-align-items:flex-end;align-items:flex-end;height:26px;margin-bottom:10px;}
+.wave span+span{margin-left:2px;}
+.wave span{-webkit-flex:1;flex:1;background:-webkit-linear-gradient(bottom,var(--accent2),var(--accent));background:linear-gradient(0deg,var(--accent2),var(--accent));border-radius:2px;opacity:.55;height:30%;}
+.wave.playing span{-webkit-animation:wv 1s ease-in-out infinite alternate;animation:wv 1s ease-in-out infinite alternate;}
+.wave span:nth-child(2n){-webkit-animation-delay:.15s;animation-delay:.15s;}
+.wave span:nth-child(3n){-webkit-animation-delay:.3s;animation-delay:.3s;}
+.wave span:nth-child(4n){-webkit-animation-delay:.45s;animation-delay:.45s;}
+@-webkit-keyframes wv{0%{height:20%}100%{height:95%}}
+@keyframes wv{0%{height:20%}100%{height:95%}}
+
+/* Speaker rows */
+.spk{-webkit-flex:0 0 auto;flex:0 0 auto;padding:12px 14px;cursor:pointer;}
+.spk-h{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;}
+.spk-name{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.spk-play{width:26px;height:26px;border-radius:50%;border:1px solid var(--glass-b);background:var(--glass2);font-size:11px;color:var(--text);-webkit-flex-shrink:0;flex-shrink:0;}
+.spk-play.on{background:rgba(var(--accent-rgb),0.2);border-color:rgba(var(--accent-rgb),0.45);color:var(--accent);}
+.spk-bar{height:4px;border-radius:4px;background:rgba(20,17,13,0.12);overflow:hidden;margin-top:8px;}
+body.light .spk-bar{background:rgba(15,23,42,0.08);}
+.spk-bar>i{display:block;height:100%;background:-webkit-linear-gradient(left,var(--accent2),var(--accent));background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:4px;width:0;}
+
+/* MEDIA */
+.mrow{display:-webkit-flex;display:flex;width:100%;height:100%;min-height:0;}
+.mrow>*+*{margin-left:10px;}
+.mcol{-webkit-flex:1;flex:1;padding:14px 12px;min-width:0;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;-webkit-justify-content:space-between;justify-content:space-between;overflow:hidden;}
+.mcol.spot{border-color:rgba(var(--accent-rgb),0.3);box-shadow:var(--shadow),0 0 32px rgba(var(--accent-rgb),0.12);}
+.mt{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.12em;font-weight:600;margin-bottom:8px;}
+.mtrack{font-size:14px;color:var(--bright);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;letter-spacing:-0.01em;}
+.martist{font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:10px;}
+.mctrl{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;}
+.mctrl>*+*{margin-left:8px;}
+.mbtn{background:var(--glass2);border:1px solid var(--glass-b);border-radius:14px;color:var(--text);font-size:16px;padding:9px 0;cursor:pointer;-webkit-flex:1;flex:1;max-width:54px;text-align:center;-webkit-user-select:none;user-select:none;}
+.mbtn:active{background:var(--accent-dim);}
+.mbtn.play{background:rgba(var(--accent-rgb),0.2);border-color:rgba(var(--accent-rgb),0.38);color:var(--accent);font-size:18px;max-width:60px;}
+.volr{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;margin-top:10px;}
+.volr>*+*{margin-left:8px;}
+.volbw{-webkit-flex:1;flex:1;height:5px;background:rgba(255,255,255,0.08);border-radius:5px;overflow:hidden;}
+body.light .volbw{background:rgba(15,23,42,0.08);}
+.volset{height:14px;cursor:pointer;border-radius:7px;background:rgba(20,17,13,0.12);}
+.volset .volb{border-radius:7px;}
+.volset:active{-webkit-transform:scaleY(1.15);transform:scaleY(1.15);}
+.volb{height:100%;background:-webkit-linear-gradient(left,var(--accent2),var(--accent));background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:5px;}
+.volv{font-size:10px;color:var(--dim);width:30px;text-align:right;font-weight:600;}
+
+/* BOTTOM */
+.aqcard{-webkit-flex:1.3;flex:1.3;padding:12px 14px;}
+.aqtitle{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
+.aqgrid{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:-5px -8px;}
+.aqgrid>*{margin:5px 8px;}
+.aqitem{font-size:10px;color:var(--dim);}
+.aqitem b{font-size:17px;font-weight:500;color:var(--bright);display:block;margin-top:2px;}
+.glance{display:-webkit-flex;display:flex;-webkit-flex:1;flex:1;}
+.glance>*+*{margin-left:10px;}
+.gcard{-webkit-flex:1;flex:1;padding:12px;}
+.gtitle{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
+.grow{display:-webkit-flex;display:flex;-webkit-justify-content:space-between;justify-content:space-between;}
+.gi{text-align:center;-webkit-flex:1;flex:1;}
+.gi .gl{font-size:9px;color:var(--dim);}
+.gi .gv{font-size:18px;font-weight:400;color:var(--bright);margin-top:4px;}
+
+.lc{cursor:pointer;padding:12px 8px;text-align:center;-webkit-user-select:none;user-select:none;}
+.lc.on{box-shadow:var(--shadow),0 0 20px rgba(var(--accent-rgb),0.16);border-color:rgba(var(--accent-rgb),0.35);}
+.lc.loading{opacity:0.5;pointer-events:none;}
+.lname{font-size:10px;color:var(--dim);margin-top:6px;}
+.lstate{font-size:10px;font-weight:600;text-transform:uppercase;margin-top:4px;letter-spacing:.06em;}
+.lstate.on{color:var(--accent);}
+.lstate.off{color:rgba(255,255,255,0.2);}
+.lsvg{width:22px;height:22px;margin:0 auto;}
+.sr{display:-webkit-flex;display:flex;-webkit-justify-content:space-between;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--glass-b);}
+.sr:last-child{border-bottom:none;}
+.srl{font-size:12px;color:var(--dim);}
+.srv{font-size:13px;color:var(--bright);font-weight:500;}
+.sbtn{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;padding:12px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);color:var(--text);font-size:13px;cursor:pointer;width:100%;margin-bottom:8px;}
+.slabel{font-size:10px;color:var(--dim);text-transform:uppercase;}
+.sval{font-size:22px;font-weight:500;color:var(--bright);}
+.sunit{font-size:12px;color:var(--dim);}
+.ebig{font-size:44px;font-weight:300;color:var(--bright);}
+.eunit{font-size:14px;color:var(--dim);}
+.aqb{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600;text-transform:uppercase;}
+.aq-g{background:rgba(16,122,86,0.16);color:#0a7a52;}
+.aq-m{background:rgba(180,83,9,0.15);color:#b45309;}
+.aq-b{background:rgba(185,28,28,0.14);color:#b91c1c;}
+
+#dim{position:fixed;top:0;left:0;right:0;bottom:0;z-index:500;background:#000;opacity:0;pointer-events:none;-webkit-transition:opacity 1.4s ease;transition:opacity 1.4s ease;}
+#dim.on{opacity:1;pointer-events:auto;}
+#dim.on.night{opacity:1;}
+#diml{position:absolute;bottom:48px;left:0;right:0;text-align:center;color:rgba(255,255,255,0.22);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;}
+#app.scr-dim{opacity:0.06;-webkit-filter:brightness(0.35);filter:brightness(0.35);-webkit-transition:opacity 1.2s ease,-webkit-filter 1.2s ease;transition:opacity 1.2s ease,filter 1.2s ease;}
+#cs{font-size:10px;padding:5px 11px;border-radius:999px;background:var(--glass);border:1px solid var(--glass-b);color:var(--dim);-webkit-flex-shrink:0;flex-shrink:0;white-space:nowrap;-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);}
+#cs.ok{border-color:rgba(var(--accent-rgb),0.4);color:var(--accent);}
+#cs.err{border-color:rgba(248,113,113,0.35);color:var(--danger);}
+#mot{font-size:10px;padding:5px 11px;border-radius:999px;background:var(--glass);border:1px solid var(--glass-b);color:var(--dim);-webkit-flex-shrink:0;flex-shrink:0;white-space:nowrap;-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);}
+#mot.on{border-color:rgba(var(--accent-rgb),0.45);color:var(--accent);}
+#mot.off{border-color:rgba(255,255,255,0.12);}
+#mot.bad{border-color:rgba(248,113,113,0.35);color:var(--danger);}
+body.light .amb-l,body.light .amb-r,body.light .amb-m{opacity:0.22;}
+body.light header,body.light nav{background:transparent;}
+body.light nav{background:var(--glass);}
+</style>
+</head>
+<body>
+
+<div id="amb"><div class="amb-l"></div><div class="amb-r"></div><div class="amb-m"></div></div>
+
+<!-- CONFIG -->
+<div id="cfg">
+  <div class="cbox">
+    <h2>DOM<span>.</span></h2>
+    <p>Dane zapisują się automatycznie.</p>
+    <div class="cf"><label>Adres HA</label><input type="url" id="cu" placeholder="http://192.168.68.65:8123" autocorrect="off" autocapitalize="off"></div>
+    <div class="cf"><label>Access Token</label><input type="password" id="ct" placeholder="eyJ0eXAi..." autocomplete="off"><div id="cts" class="csaved">✓ Token zapisany</div></div>
+    <div class="cf"><label>Czas ściemnienia (sek)</label><input type="number" id="cd" value="45" min="10" max="600"></div>
+    <div class="cf"><label>Czujnik ruchu (entity_id)</label><input type="text" id="cm" placeholder="binary_sensor.hobeian_zg_204z" autocorrect="off" autocapitalize="off"></div>
+    <div class="cf">
+      <label>Motyw</label>
+      <div style="display:-webkit-flex;display:flex;">
+        <button id="btn-dark" onclick="setTheme('dark')" style="flex:1;padding:9px;background:var(--accent);border:none;border-radius:var(--rsm);color:#000;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">🌙 Ciemny</button>
+        <button id="btn-light" onclick="setTheme('light')" style="flex:1;margin-left:8px;padding:9px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rsm);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;">☀️ Jasny</button>
+      </div>
+    </div>
+    <div class="cf">
+      <label>Tło — czerń → szarość</label>
+      <input type="range" id="cbg" class="crange" min="0" max="100" value="0" oninput="setBg(this.value)" onchange="setBg(this.value)">
+    </div>
+    <div class="cf">
+      <label>Kolor akcentu</label>
+      <div id="swatches" class="swatches">
+        <button type="button" class="sw" data-acc="indigo" onclick="setAccent('indigo')" style="background:#818cf8" title="Indygo"></button>
+        <button type="button" class="sw" data-acc="blue" onclick="setAccent('blue')" style="background:#3b82f6" title="Niebieski"></button>
+        <button type="button" class="sw" data-acc="violet" onclick="setAccent('violet')" style="background:#a78bfa" title="Fiolet"></button>
+        <button type="button" class="sw" data-acc="teal" onclick="setAccent('teal')" style="background:#2dd4bf" title="Morski"></button>
+        <button type="button" class="sw" data-acc="emerald" onclick="setAccent('emerald')" style="background:#34d399" title="Zielony"></button>
+        <button type="button" class="sw" data-acc="amber" onclick="setAccent('amber')" style="background:#fbbf24" title="Bursztyn"></button>
+        <button type="button" class="sw" data-acc="rose" onclick="setAccent('rose')" style="background:#fb7185" title="Różowy"></button>
+        <button type="button" class="sw" data-acc="cyan" onclick="setAccent('cyan')" style="background:#22d3ee" title="Cyjan"></button>
+      </div>
+    </div>
+    <button class="cbtn" onclick="saveConfig()">Połącz</button>
+    <p class="cnote">Token: HA → Profil → Long-Lived Access Tokens</p>
+    <p class="cnote" style="margin-top:6px;">Ściemnianie: czujnik HA + dotknięcie ekranu. Safari nie steruje jasnością iPadu — tylko warstwa na ekranie.</p>
+    <p style="font-size:10px;color:var(--dim);text-align:center;margin-top:6px;opacity:.5;">v7.5 — iPad Panel</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" class="h">
+  <header>
+    <div class="hd-left">
+      <button class="menu-btn" onclick="showConfig()" title="Ustawienia">☰</button>
+      <div id="mot" title="binary_sensor.hobeian_zg_204z">◌ ruch</div>
+      <div id="cs">⬤ łączenie...</div>
+    </div>
+    <div class="hd-right">
+      <span id="ver">v10.5</span>
+      <button class="hbtn" onclick="location.reload()" title="Odśwież">↺</button>
+    </div>
+  </header>
+
+  <nav>
+    <button class="tb a" onclick="sv('dom',this)"><span class="tbi">🏠</span>Dom</button>
+    <button class="tb" onclick="sv('salon',this)"><span class="tbi">🛋️</span>Salon</button>
+    <button class="tb" onclick="sv('sypialnia',this)"><span class="tbi">🛏️</span>Sypialnia</button>
+    <button class="tb" onclick="sv('kuchnia',this)"><span class="tbi">🍳</span>Kuchnia</button>
+    <button class="tb" onclick="sv('lazienki',this)"><span class="tbi">🛁</span>Łazienki</button>
+    <button class="tb" onclick="sv('ogrod',this)"><span class="tbi">🌳</span>Ogród</button>
+    <button class="tb" onclick="sv('energia',this)"><span class="tbi">⚡</span>Energia</button>
+    <button class="tb" onclick="sv('drukarka',this)"><span class="tbi">🖨️</span>K1C</button>
+    <button class="tb" onclick="sv('kamery',this)"><span class="tbi">📷</span>Kamery</button>
+    <button class="tb" onclick="openZero(this)"><span class="tbi">🌐</span>Zero</button>
+  </nav>
+
+  <div id="content">
+
+    <!-- DOM – pełny ekran, układ jak dynamic_md3 (bez kamer) -->
+    <div id="view-dom" class="view active">
+      <div class="dash">
+
+        <!-- 3 kolumny PRO -->
+        <div class="d3">
+
+          <!-- LEWA: pogoda + jakość powietrza -->
+          <div class="d3-col d3-left">
+            <div class="wcard glass" id="wcard">
+              <div class="wsun"></div>
+              <div class="wglow"></div>
+              <div class="wc-inner">
+                <div class="wtop">
+                  <div class="wlab">
+                    <div class="wcond" id="wd">ładowanie...</div>
+                    <div class="wloc">📍 Dom</div>
+                  </div>
+                  <svg class="wsvg" id="wsvg" viewBox="0 0 36 36" fill="none"></svg>
+                </div>
+                <div class="wtemp"><span id="wt">--</span><span class="wunit">°C</span></div>
+                <div class="wstats">
+                  <div class="wst"><b id="wp">--</b><span>hPa</span></div>
+                  <div class="wst"><b id="wh">--</b><span>%</span></div>
+                  <div class="wst"><b id="ww">--</b><span>km/h</span></div>
+                </div>
+                <div class="waqline" id="waq"></div>
+                <div class="wfc" id="wfc"></div>
+              </div>
+            </div>
+            <div class="card gauge">
+              <svg class="gauge-svg" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="52" stroke="rgba(127,127,127,0.18)" stroke-width="10" fill="none"/>
+                <circle id="gauge-arc" cx="60" cy="60" r="52" stroke="#34d399" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="327" stroke-dashoffset="327" transform="rotate(-90 60 60)"/>
+                <text id="gauge-pct" x="60" y="57" text-anchor="middle" fill="currentColor" font-size="24" font-weight="700">--</text>
+                <text x="60" y="76" text-anchor="middle" fill="currentColor" opacity="0.45" font-size="9" letter-spacing="1">NORMA PM2.5</text>
+              </svg>
+              <div class="gauge-lbl">Jakość powietrza</div>
+              <div class="gauge-val" id="gauge-lab">--</div>
+              <div class="aqbars" id="aqbars"></div>
+            </div>
+          </div>
+
+          <!-- ŚRODEK: pokoje + strefy -->
+          <div class="d3-col d3-mid">
+            <div class="rgrid">
+              <div class="rcell glass">
+                <div class="rcell-h"><span class="rcell-name">Salon</span><div class="rbulb" id="rb-salon" onclick="toggleBulb('light.swiatlo_salon_swiatlo','rb-salon')">💡</div></div>
+                <div class="ricon">🛋️</div>
+                <div class="rtval"><span id="rt-s">--</span>°</div>
+                <div class="rthum"><span id="rh-s">--</span>%</div>
+              </div>
+              <div class="rcell glass">
+                <div class="rcell-h"><span class="rcell-name">Sypialnia</span><div class="rbulb" id="rb-syp" onclick="toggleBulb('light.swiatlo_sypialnia_swiatlo','rb-syp')">💡</div></div>
+                <div class="ricon">🛏️</div>
+                <div class="rtval"><span id="rt-sy">--</span>°</div>
+                <div class="rthum"><span id="rh-sy">--</span>%</div>
+              </div>
+              <div class="rcell glass">
+                <div class="rcell-h"><span class="rcell-name">Łazienka</span><div class="rbulb" id="rb-laz" onclick="toggleBulb('light.swiatlo_lazienka_swiatlo','rb-laz')">💡</div></div>
+                <div class="ricon">🛁</div>
+                <div class="rtval"><span id="rt-l">--</span>°</div>
+                <div class="rthum"><span id="rh-l">--</span>%</div>
+              </div>
+              <div class="rcell glass">
+                <div class="rcell-h"><span class="rcell-name">Garderoba</span><div class="rbulb" id="rb-gar" onclick="toggleBulb('light.swiatlo_garderoba_swiatlo','rb-gar')">💡</div></div>
+                <div class="ricon">🧥</div>
+                <div class="rtval"><span id="rt-g">--</span>°</div>
+                <div class="rthum"><span id="rh-g">--</span>%</div>
+              </div>
+              <div class="rcell glass">
+                <div class="rcell-h"><span class="rcell-name">Ogród</span><div class="rbulb" id="rb-ogr" onclick="toggleBulb('light.wiatrolap_gorne_swiatlo','rb-ogr')">💡</div></div>
+                <div class="ricon">🌳</div>
+                <div class="rtval"><span id="rt-o">--</span>°</div>
+                <div class="rthum"><span id="rh-o">--</span>%</div>
+              </div>
+            </div>
+            <div class="card ecard">
+              <div class="ecard-h">
+                <span class="ecard-t">⚡ Pobór mocy</span>
+                <span class="ecard-now"><span id="e-now">--</span><span class="eu">W</span></span>
+              </div>
+              <div class="ephases">
+                <div class="eph"><div class="eph-l">L1</div><div class="eph-bar"><i id="e-b1"><b>⚡</b></i></div><div class="eph-v"><span id="e-pp1">--</span> W</div></div>
+                <div class="eph"><div class="eph-l">L2</div><div class="eph-bar"><i id="e-b2"><b>⚡</b></i></div><div class="eph-v"><span id="e-pp2">--</span> W</div></div>
+                <div class="eph"><div class="eph-l">L3</div><div class="eph-bar"><i id="e-b3"><b>⚡</b></i></div><div class="eph-v"><span id="e-pp3">--</span> W</div></div>
+              </div>
+            </div>
+            <div class="card runcard" id="runcard">
+              <div class="run-h"><span class="run-t">🏃 Bieganie dziś</span><span class="run-date" id="run-date">--</span></div>
+              <div class="run-body" id="run-body"><div class="run-empty">Sprawdzam plan…</div></div>
+            </div>
+            <div class="card kcard">
+              <div class="kc-h">
+                <span class="kc-t">❄️ Lodówka</span>
+              </div>
+              <div class="ktemps">
+                <div class="ktemp"><span class="ktemp-i">🧊</span><div class="ktemp-m"><span class="ktemp-l">Lodówka</span><span class="ktemp-v"><span id="ft2">--</span>°</span></div></div>
+                <div class="ktemp"><span class="ktemp-i">❄️</span><div class="ktemp-m"><span class="ktemp-l">Zamrażalka</span><span class="ktemp-v"><span id="fzt">--</span>°</span></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PRAWA: Spotify + głośniki -->
+          <div class="d3-col d3-right">
+            <div class="card spro">
+              <div class="spro-top"><span class="spro-lbl">Spotify</span><span class="spro-badge">♪</span></div>
+              <div class="spro-body">
+                <div class="spro-art" id="sp-art"></div>
+                <div class="spro-meta">
+                  <div class="spro-track" id="sp-t">--</div>
+                  <div class="spro-artist" id="sp-a">--</div>
+                </div>
+              </div>
+              <div class="wave" id="sp-wave"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+              <div class="mctrl">
+                <button class="mbtn" onclick="mCmd('media_player.spotify_marcin_solowiow','media_previous_track')">⏮</button>
+                <button class="mbtn play" id="sp-p" onclick="mPP('media_player.spotify_marcin_solowiow','sp-p')">▶</button>
+                <button class="mbtn" onclick="mCmd('media_player.spotify_marcin_solowiow','media_next_track')">⏭</button>
+              </div>
+              <div class="volr"><div class="volbw volset" id="sp-vbw" onclick="setVol(event,'media_player.spotify_marcin_solowiow',this)"><div class="volb" id="sp-vb" style="width:0%"></div></div><div class="volv" id="sp-vv">0%</div></div>
+            </div>
+            <div class="camcard camcard-dash" id="dashcam-card">
+              <img id="cam-dash" alt="Brama"><div class="camoff" id="camoff-dash">brak obrazu</div><div class="camlbl">📷 Brama</div>
+            </div>
+            <div class="ctlrow">
+              <div class="statecard sc-rose" id="sc-brama" onclick="tSwitch('switch.smart_switch_b78c',null,true)">
+                <div class="sc-l"><span class="scico">🔒</span><span class="scname">Brama</span></div>
+                <span class="scstate" id="ss-brama">--</span>
+              </div>
+              <div class="statecard sc-emerald" id="sc-furtka" onclick="tSwitch('switch.furtka',null,true)">
+                <div class="sc-l"><span class="scico">🚪</span><span class="scname">Furtka</span></div>
+                <span class="scstate" id="ss-furtka">--</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Dół -->
+        <div class="dash-b dash-row">
+          <div class="aqcard glass">
+            <div class="aqtitle">Jakość powietrza</div>
+            <div class="aqgrid">
+              <div class="aqitem">PM2.5<b><span id="pm25">--</span></b></div>
+              <div class="aqitem">PM10<b><span id="pm10">--</span></b></div>
+              <div class="aqitem">Norma PM2.5<b><span id="pm25n">--</span>%</b></div>
+              <div class="aqitem">Norma PM10<b><span id="pm10n">--</span>%</b></div>
+              <div class="aqitem" id="waq2"></div>
+            </div>
+          </div>
+          <div class="glance">
+            <div class="gcard glass">
+              <div class="gtitle">Paczkomat</div>
+              <div class="grow">
+                <div class="gi"><div class="gl">Temp</div><div class="gv"><span id="pk-t">--</span>°</div></div>
+                <div class="gi"><div class="gl">Wilg.</div><div class="gv"><span id="pk-h">--</span>%</div></div>
+                <div class="gi"><div class="gl">Ciśn.</div><div class="gv"><span id="pk-p">--</span></div></div>
+              </div>
+            </div>
+            <div class="gcard glass">
+              <div class="gtitle">Ogród</div>
+              <div class="grow">
+                <div class="gi"><div class="gl">Temp</div><div class="gv"><span id="og-t">--</span>°</div></div>
+                <div class="gi"><div class="gl">Wilg.</div><div class="gv"><span id="og-h">--</span>%</div></div>
+                <div class="gi"><div class="gl">Ciśn.</div><div class="gv"><span id="og-p">--</span></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SALON -->
+    <div id="view-salon" class="view">
+      <div class="st">Oświetlenie</div>
+      <div class="g3">
+        <div class="card lc" id="lc-s1" onclick="tLight('light.swiatlo_salon_swiatlo','lc-s1','ls-s1')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Salon 1</div><div class="lstate off" id="ls-s1">off</div></div>
+        <div class="card lc" id="lc-s2" onclick="tLight('light.swiatlo_salon_swiatlo_2','lc-s2','ls-s2')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Salon 2</div><div class="lstate off" id="ls-s2">off</div></div>
+        <div class="card lc" id="lc-s3" onclick="tLight('light.swiatlo_salon_swiatlo_3','lc-s3','ls-s3')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Salon 3</div><div class="lstate off" id="ls-s3">off</div></div>
+        <div class="card lc" id="lc-slo" onclick="tLight('light.led_salon_okno','lc-slo','ls-slo')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 3h14M5 21h14M3 7h18M3 17h18"/></svg></div><div class="lname">LED okno</div><div class="lstate off" id="ls-slo">off</div></div>
+        <div class="card lc" id="lc-stv" onclick="tLight('light.led_tv_2','lc-stv','ls-stv')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg></div><div class="lname">LED TV</div><div class="lstate off" id="ls-stv">off</div></div>
+      </div>
+      <div class="st">Czujniki</div>
+      <div class="card"><div class="sr"><div class="srl">Temperatura</div><div class="srv"><span id="ss-t">--</span> °C</div></div><div class="sr"><div class="srl">Wilgotność</div><div class="srv"><span id="ss-h">--</span> %</div></div><div class="sr"><div class="srl">Ciśnienie</div><div class="srv"><span id="ss-p">--</span> hPa</div></div></div>
+      <div class="st">TV Samsung</div>
+      <div class="card mc">
+        <div class="mtrack" id="tv-t">--</div>
+        <div class="mctrl" style="margin-top:8px;">
+          <button class="mbtn" onclick="mCmd('media_player.samsung_q70aa_85_tv_qe85q70aatxxh','media_previous_track')">⏮</button>
+          <button class="mbtn play" id="tv-p" onclick="mPP('media_player.samsung_q70aa_85_tv_qe85q70aatxxh','tv-p')">▶</button>
+          <button class="mbtn" onclick="mCmd('media_player.samsung_q70aa_85_tv_qe85q70aatxxh','media_next_track')">⏭</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SYPIALNIA -->
+    <div id="view-sypialnia" class="view">
+      <div class="st">Oświetlenie</div>
+      <div class="g3">
+        <div class="card lc" id="lc-sy1" onclick="tLight('light.swiatlo_sypialnia_swiatlo','lc-sy1','ls-sy1')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Sypialnia</div><div class="lstate off" id="ls-sy1">off</div></div>
+        <div class="card lc" id="lc-sym" onclick="tSwitch('switch.marcin_sypialnia','lc-sym','ls-sym')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><div class="lname">Marcin</div><div class="lstate off" id="ls-sym">off</div></div>
+        <div class="card lc" id="lc-symz" onclick="tSwitch('switch.marzenka_sypialnia','lc-symz','ls-symz')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><div class="lname">Marzenka</div><div class="lstate off" id="ls-symz">off</div></div>
+      </div>
+      <div class="st">Czujniki</div>
+      <div class="card"><div class="sr"><div class="srl">Temperatura</div><div class="srv"><span id="ssy-t">--</span> °C</div></div><div class="sr"><div class="srl">Wilgotność</div><div class="srv"><span id="ssy-h">--</span> %</div></div><div class="sr"><div class="srl">Ciśnienie</div><div class="srv"><span id="ssy-p">--</span> hPa</div></div></div>
+    </div>
+
+    <!-- KUCHNIA -->
+    <div id="view-kuchnia" class="view">
+      <div class="st">Oświetlenie</div>
+      <div class="g4">
+        <div class="card lc" id="lc-k2" onclick="tLight('light.swiatlo_kuchnia_swiatlo_2','lc-k2','ls-k2')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Kuchnia 2</div><div class="lstate off" id="ls-k2">off</div></div>
+        <div class="card lc" id="lc-k3" onclick="tLight('light.swiatlo_kuchnia_swiatlo_3','lc-k3','ls-k3')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Kuchnia 3</div><div class="lstate off" id="ls-k3">off</div></div>
+        <div class="card lc" id="lc-kl" onclick="tLight('light.led_kuchnia','lc-kl','ls-kl')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 3h14M5 21h14M3 7h18M3 17h18"/></svg></div><div class="lname">LED</div><div class="lstate off" id="ls-kl">off</div></div>
+        <div class="card lc" id="lc-kli" onclick="tLight('light.led_kuchnia_i','lc-kli','ls-kli')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 3h14M5 21h14M3 7h18M3 17h18"/></svg></div><div class="lname">LED i</div><div class="lstate off" id="ls-kli">off</div></div>
+      </div>
+      <div class="st">Lodówka</div>
+      <div class="card"><div class="sr"><div class="srl">Drzwi lodówka</div><div class="srv" id="fd">--</div></div><div class="sr"><div class="srl">Drzwi zamrażarka</div><div class="srv" id="fzd">--</div></div><div class="sr"><div class="srl">Temperatura</div><div class="srv"><span id="ft">--</span> °C</div></div><div class="sr"><div class="srl">Moc</div><div class="srv"><span id="fp">--</span> W</div></div></div>
+      <div class="st">AGD</div>
+      <div class="g2">
+        <div class="card"><div class="slabel">Pralka LG</div><div class="sval" style="font-size:13px;margin-top:4px;" id="pralka">--</div></div>
+        <div class="card"><div class="slabel">Suszarka LG</div><div class="sval" style="font-size:13px;margin-top:4px;" id="suszarka">--</div></div>
+      </div>
+    </div>
+
+    <!-- ŁAZIENKI -->
+    <div id="view-lazienki" class="view">
+      <div class="st">Łazienka dół</div>
+      <div class="g3">
+        <div class="card lc" id="lc-ld1" onclick="tLight('light.swiatlo_lazienka_swiatlo','lc-ld1','ls-ld1')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Dół 1</div><div class="lstate off" id="ls-ld1">off</div></div>
+        <div class="card lc" id="lc-ld2" onclick="tLight('light.swiatlo_lazienka_swiatlo_2','lc-ld2','ls-ld2')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Dół 2</div><div class="lstate off" id="ls-ld2">off</div></div>
+        <div class="card lc" id="lc-ld3" onclick="tLight('light.swiatlo_lazienka_swiatlo_3','lc-ld3','ls-ld3')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Dół 3</div><div class="lstate off" id="ls-ld3">off</div></div>
+      </div>
+      <div class="st">Łazienka góra</div>
+      <div class="g3">
+        <div class="card lc" id="lc-lg1" onclick="tLight('light.lazienka_gora_swiatlo_swiatlo','lc-lg1','ls-lg1')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Góra 1</div><div class="lstate off" id="ls-lg1">off</div></div>
+        <div class="card lc" id="lc-lg2" onclick="tLight('light.lazienka_gora_swiatlo_swiatlo_2','lc-lg2','ls-lg2')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Góra 2</div><div class="lstate off" id="ls-lg2">off</div></div>
+        <div class="card lc" id="lc-lg3" onclick="tLight('light.lazienka_gora_swiatlo_swiatlo_3','lc-lg3','ls-lg3')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Góra 3</div><div class="lstate off" id="ls-lg3">off</div></div>
+      </div>
+      <div class="st">Czujniki</div>
+      <div class="card"><div class="sr"><div class="srl">Temperatura</div><div class="srv"><span id="sl-t">--</span> °C</div></div><div class="sr"><div class="srl">Wilgotność</div><div class="srv"><span id="sl-h">--</span> %</div></div><div class="sr"><div class="srl">Bateria</div><div class="srv"><span id="sl-b">--</span> %</div></div></div>
+      <div class="st">Garderoba</div>
+      <div class="g3">
+        <div class="card lc" id="lc-gd1" onclick="tLight('light.swiatlo_garderoba_swiatlo','lc-gd1','ls-gd1')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Gard 1</div><div class="lstate off" id="ls-gd1">off</div></div>
+        <div class="card lc" id="lc-gd2" onclick="tLight('light.swiatlo_garderoba_swiatlo_2','lc-gd2','ls-gd2')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Gard 2</div><div class="lstate off" id="ls-gd2">off</div></div>
+        <div class="card lc" id="lc-gd3" onclick="tLight('light.swiatlo_garderoba_swiatlo_3','lc-gd3','ls-gd3')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Gard 3</div><div class="lstate off" id="ls-gd3">off</div></div>
+      </div>
+    </div>
+
+    <!-- OGRÓD -->
+    <div id="view-ogrod" class="view">
+      <div class="st">Czujniki</div>
+      <div class="g3">
+        <div class="card"><div class="slabel">Temperatura</div><div class="sval"><span id="so-t">--</span><span class="sunit">°C</span></div></div>
+        <div class="card"><div class="slabel">Wilgotność</div><div class="sval"><span id="so-h">--</span><span class="sunit">%</span></div></div>
+        <div class="card"><div class="slabel">Ciśnienie</div><div class="sval" style="font-size:18px;"><span id="so-p">--</span><span class="sunit" style="font-size:9px;"> hPa</span></div></div>
+      </div>
+      <div class="st">Sterowanie</div>
+      <button class="sbtn" onclick="tSwitch('switch.smart_switch_b78c',null,true)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Otwórz / Zamknij Bramę
+      </button>
+      <div class="st">Wiatrołap</div>
+      <div class="g2">
+        <div class="card lc" id="lc-wt1" onclick="tLight('light.wiatrolap_gorne_swiatlo','lc-wt1','ls-wt1')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Wiatrołap 1</div><div class="lstate off" id="ls-wt1">off</div></div>
+        <div class="card lc" id="lc-wt2" onclick="tLight('light.wiatrolap_gorne_swiatlo_2','lc-wt2','ls-wt2')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Wiatrołap 2</div><div class="lstate off" id="ls-wt2">off</div></div>
+      </div>
+    </div>
+
+    <!-- ENERGIA -->
+    <div id="view-energia" class="view">
+      <div class="st">Moc całkowita</div>
+      <div class="card" style="text-align:center;padding:14px;">
+        <div class="ebig"><span id="e-tot">--</span><span class="eunit"> W</span></div>
+        <div style="font-size:10px;color:var(--dim);margin-top:3px;">pobór chwilowy</div>
+      </div>
+      <div class="st">Fazy</div>
+      <div class="g3">
+        <div class="card"><div class="slabel">L1</div><div class="sval" style="font-size:20px;"><span id="e-v1">--</span><span class="sunit">V</span></div><div class="ssub"><span id="e-p1">--</span> W</div></div>
+        <div class="card"><div class="slabel">L2</div><div class="sval" style="font-size:20px;"><span id="e-v2">--</span><span class="sunit">V</span></div><div class="ssub"><span id="e-p2">--</span> W</div></div>
+        <div class="card"><div class="slabel">L3</div><div class="sval" style="font-size:20px;"><span id="e-v3">--</span><span class="sunit">V</span></div><div class="ssub"><span id="e-p3">--</span> W</div></div>
+      </div>
+      <div class="st">Licznik</div>
+      <div class="card"><div class="slabel">Energia całkowita</div><div class="sval" style="font-size:28px;"><span id="e-kwh">--</span><span class="sunit"> kWh</span></div></div>
+    </div>
+
+    <!-- DRUKARKA -->
+    <div id="view-drukarka" class="view">
+      <div class="st">Status</div>
+      <div class="card"><div class="sr"><div class="srl">Status</div><div class="srv" id="k-st">--</div></div><div class="sr"><div class="srl">Postęp</div><div class="srv"><span id="k-pg">--</span> %</div></div><div class="sr"><div class="srl">Obiekt</div><div class="srv" id="k-ob">--</div></div><div class="sr"><div class="srl">Czas</div><div class="srv" id="k-ti">--</div></div><div class="sr"><div class="srl">Do końca</div><div class="srv" id="k-le">--</div></div></div>
+      <div class="st">Temperatury</div>
+      <div class="g2">
+        <div class="card"><div class="slabel">Głowica</div><div class="sval"><span id="k-nz">--</span><span class="sunit">°C</span></div></div>
+        <div class="card"><div class="slabel">Stół</div><div class="sval"><span id="k-bd">--</span><span class="sunit">°C</span></div></div>
+      </div>
+      <div class="st">Sterowanie</div>
+      <div class="g3">
+        <button class="sbtn" style="margin-bottom:0;" onclick="haPost('button','press',{entity_id:'button.k1c_creality_pause_print'})">⏸ Pauza</button>
+        <button class="sbtn" style="margin-bottom:0;" onclick="haPost('button','press',{entity_id:'button.k1c_creality_resume_print'})">▶ Wznów</button>
+        <button class="sbtn" style="margin-bottom:0;border-color:rgba(255,71,87,.3);color:var(--danger);" onclick="haPost('button','press',{entity_id:'button.k1c_creality_stop_print'})">⏹ Stop</button>
+      </div>
+      <div class="st">Pozycja</div>
+      <div class="card"><div class="sr"><div class="srl">Warstwa</div><div class="srv"><span id="k-lw">--</span> / <span id="k-ls">--</span></div></div><div class="sr"><div class="srl">X / Y</div><div class="srv"><span id="k-x">--</span> / <span id="k-y">--</span></div></div></div>
+    </div>
+
+    <!-- KAMERY -->
+    <div id="view-kamery" class="view">
+      <div class="st">Kamery na żywo</div>
+      <div class="camgrid">
+        <div class="camcard"><img id="cam-front" alt="Front"><div class="camoff" id="camoff-front">brak obrazu</div><div class="camlbl">Front</div></div>
+        <div class="camcard"><img id="cam-tyl" alt="Tył"><div class="camoff" id="camoff-tyl">brak obrazu</div><div class="camlbl">Tył</div></div>
+      </div>
+      <p style="font-size:11px;color:var(--dim);margin-top:10px;text-align:center;">Migawka odświeżana co ~2 s (camera_proxy).</p>
+    </div>
+
+    <!-- ZERO MIEKISZON — pełna strona (iframe blokuje logowanie na iOS 10) -->
+    <div id="view-zero" class="view">
+      <div class="zero-panel glass">
+        <div class="zero-logo">ZERO MIEKISZON</div>
+        <div class="zero-sub">#ZeroMiekiszon · Maraton 27.09.2026<br>Treningi · dieta · zakupy · statsy</div>
+        <button type="button" class="zero-btn" onclick="openZero()">Otwórz ZeroMiekiszon →</button>
+        <a class="zero-link" href="https://zeromiekiszon.pl/legacy/?sw=off" onclick="openZeroLegacy(event)">Wersja dla iPad 4 (iOS 10)</a>
+        <div id="zero-note" class="zero-note" style="display:none;">
+          <b>iPad 4 / iOS 10:</b> główna strona używa składni JS (??, ?.), której stary Safari nie rozumie — cały skrypt się nie ładuje i logowanie nie działa. Wgraj na serwer wersję <code>/legacy/</code> (skrypt <code>fix-zeromiekiszon-ios10.js</code> w tym folderze).
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="dim" onclick="wakeScreen(true)"><div id="diml">dotknij ekran · ruch rozjaśnia</div></div>
+
+<script>
+// STORAGE
+var _st={};
+function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e){}return _st[k]||null;}
+function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
+
+// CONFIG
+var HA='',TOK='',DIM=45000;
+var MOTION='binary_sensor.hobeian_zg_204z';
+var SUN='sun.sun';
+
+function loadConfig(){
+  HA=sGet('ha_url')||'http://192.168.68.65:8123';
+  TOK=sGet('ha_token')||'';
+  var d=sGet('ha_dim'); if(d) DIM=parseInt(d,10)*1000;
+  var m=sGet('ha_motion'); if(m) MOTION=m;
+  if(HA&&TOK){document.getElementById('cfg').className='h';document.getElementById('app').className='';startApp();}
+  else{
+    document.getElementById('cfg').className='';
+    document.getElementById('app').className='h';
+    prefillDefaults();
+  }
+}
+
+function saveConfig(){
+  var u=document.getElementById('cu').value.trim().replace(/\/$/,'');
+  var t=document.getElementById('ct').value.trim();
+  var d=parseInt(document.getElementById('cd').value,10)||45;
+  var mo=document.getElementById('cm').value.trim();
+  if(!u){alert('Podaj adres HA.');return;}
+  var tok=t||TOK; if(!tok){alert('Podaj token.');return;}
+  sSet('ha_url',u); sSet('ha_token',tok); sSet('ha_dim',d);
+  if(mo) sSet('ha_motion',mo);
+  HA=u; TOK=tok; DIM=d*1000;
+  if(mo) MOTION=mo;
+  document.getElementById('cfg').className='h';
+  document.getElementById('app').className='';
+  startApp();
+}
+
+function showConfig(){
+  document.getElementById('cu').value=HA;
+  document.getElementById('ct').value='';
+  document.getElementById('cd').value=DIM/1000;
+  var cm=document.getElementById('cm'); if(cm) cm.value=MOTION;
+  var s=document.getElementById('cts'); if(s) s.style.display=TOK?'block':'none';
+  var sl=document.getElementById('cbg'); if(sl) sl.value=BGLVL;
+  document.getElementById('cfg').className='';
+}
+
+// CLOCK
+var DNI=['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
+var MIES=['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
+function tick(){
+  var n=new Date(),h=n.getHours(),m=n.getMinutes();
+  var c=document.getElementById('clock');
+  if(c) c.textContent=(h<10?'0':'')+h+':'+(m<10?'0':'')+m;
+  var d=document.getElementById('cdate');
+  if(d) d.textContent=DNI[n.getDay()]+', '+n.getDate()+' '+MIES[n.getMonth()];
+}
+
+// TABS — ZeroMiekiszon otwieramy w pełnym oknie (nie iframe: cookies/localStorage)
+var ZERO_URL='https://zeromiekiszon.pl';
+var ZERO_LEGACY_URL='https://zeromiekiszon.pl/legacy/';
+
+function isLegacySafari(){
+  var ua=navigator.userAgent;
+  if(/OS [89]_/.test(ua))return true;
+  if(/OS 10_/.test(ua))return true;
+  try{new Function('null??1');return false;}catch(e){return true;}
+}
+
+function panelReturnUrl(){
+  var base=HA||sGet('ha_url')||'http://192.168.68.65:8123';
+  base=base.replace(/\/$/,'');
+  return base+'/local/ipad.html?v2';
+}
+
+function openZero(btn){
+  var base=isLegacySafari()?ZERO_LEGACY_URL:ZERO_URL;
+  var q=base.indexOf('?')>=0?'&':'?';
+  location.href=base+q+'sw=off&return='+encodeURIComponent(panelReturnUrl());
+}
+
+function openZeroLegacy(ev){
+  if(ev&&ev.preventDefault)ev.preventDefault();
+  location.href=ZERO_LEGACY_URL+'?sw=off&return='+encodeURIComponent(panelReturnUrl());
+}
+
+function sv(id,btn){
+  if(id==='zero'){
+    if(btn){var bs=document.querySelectorAll('.tb');for(var k=0;k<bs.length;k++)bs[k].className='tb';btn.className='tb a';}
+    var note=document.getElementById('zero-note');
+    if(note&&isLegacySafari())note.style.display='block';
+    var vs=document.querySelectorAll('.view');
+    for(var i=0;i<vs.length;i++)vs[i].className='view';
+    var el=document.getElementById('view-zero');if(el)el.className='view active';
+    return;
+  }
+  var vs=document.querySelectorAll('.view');
+  for(var i=0;i<vs.length;i++) vs[i].className='view';
+  var el=document.getElementById('view-'+id); if(el) el.className='view active';
+  var bs=document.querySelectorAll('.tb');
+  for(var j=0;j<bs.length;j++) bs[j].className='tb';
+  if(btn) btn.className='tb a';
+  if(id==='kamery') refreshCameras();
+}
+
+// API
+function haGet(path,cb){
+  var x=new XMLHttpRequest();
+  x.open('GET',HA+'/api/'+path,true);
+  x.setRequestHeader('Authorization','Bearer '+TOK);
+  x.setRequestHeader('Content-Type','application/json');
+  x.timeout=8000;
+  x.onload=function(){if(x.status===200){try{cb(null,JSON.parse(x.responseText));}catch(e){cb(e);}}else{cb(new Error(x.status));}};
+  x.onerror=function(){cb(new Error('net'));};
+  x.ontimeout=function(){cb(new Error('timeout'));};
+  x.send();
+}
+
+function haPost(domain,svc,data,cb){
+  var x=new XMLHttpRequest();
+  x.open('POST',HA+'/api/services/'+domain+'/'+svc,true);
+  x.setRequestHeader('Authorization','Bearer '+TOK);
+  x.setRequestHeader('Content-Type','application/json');
+  x.timeout=8000;
+  x.onload=function(){if(cb){try{cb(null,JSON.parse(x.responseText));}catch(e){cb(null,[]); }}};
+  x.onerror=function(){if(cb)cb(new Error('net'));};
+  x.ontimeout=function(){if(cb)cb(new Error('timeout'));};
+  x.send(JSON.stringify(data));
+}
+
+// STATE
+var E={};
+function st(id){var e=E[id];return e?e.state:'--';}
+function at(id,k){var e=E[id];return(e&&e.attributes&&e.attributes[k]!==undefined)?e.attributes[k]:'--';}
+function tx(id,val){var el=document.getElementById(id);if(!el)return;var v=val;if(v===undefined||v===null||v==='unavailable'||v==='unknown')v='--';el.textContent=v;}
+function fmt1(v){
+  var n=parseFloat(v);
+  if(isNaN(n)||v===undefined||v===null||v==='unavailable'||v==='unknown'||v==='--')return '--';
+  return (Math.round(n*10)/10).toFixed(1);
+}
+var AQHIST=[];
+var AQENT='sensor.parcel_locker_wol02bapp_pm_2_5';
+var AQLAST=0;
+function renderAqBars(){
+  var el=document.getElementById('aqbars'); if(!el)return;
+  if(!AQHIST.length){ el.innerHTML=''; return; }
+  var mn=AQHIST[0],mx=AQHIST[0],i;
+  for(i=0;i<AQHIST.length;i++){ if(AQHIST[i]<mn)mn=AQHIST[i]; if(AQHIST[i]>mx)mx=AQHIST[i]; }
+  var rng=mx-mn; if(rng<1)rng=1;
+  var h=''; for(i=0;i<AQHIST.length;i++){ var p=Math.round(18+(AQHIST[i]-mn)/rng*82); h+='<i style="height:'+p+'%"></i>'; }
+  el.innerHTML=h;
+}
+function loadAqHistory(){
+  if(typeof HA==='undefined'||!HA||!TOK)return;
+  var now=Date.now(); if(now-AQLAST<300000&&AQHIST.length)return; AQLAST=now;
+  var start=new Date(now-6*3600*1000).toISOString();
+  haGet('history/period/'+encodeURIComponent(start)+'?filter_entity_id='+AQENT+'&minimal_response&significant_changes_only=0',function(err,data){
+    if(err||!data||!data[0]||!data[0].length)return;
+    var arr=data[0],vals=[],i,n;
+    for(i=0;i<arr.length;i++){ n=parseFloat(arr[i].state); if(!isNaN(n))vals.push(n); }
+    if(!vals.length)return;
+    var BUCKETS=24,out=[],step=vals.length/BUCKETS,b,from,to,s,c,k;
+    if(vals.length<=BUCKETS){ out=vals; }
+    else{ for(b=0;b<BUCKETS;b++){ from=Math.floor(b*step); to=Math.floor((b+1)*step); s=0;c=0; for(k=from;k<to&&k<vals.length;k++){ s+=vals[k]; c++; } out.push(c?s/c:vals[from]); } }
+    AQHIST=out; renderAqBars();
+  });
+}
+function updAqBars(v){
+  var n=parseFloat(v);
+  if(!isNaN(n)){
+    if(!AQHIST.length){ AQHIST=[n]; }
+    else if(AQHIST[AQHIST.length-1]!==n){ AQHIST.push(n); if(AQHIST.length>24)AQHIST.shift(); }
+    renderAqBars();
+  }
+  loadAqHistory();
+}
+var CAL_ENT='calendar.bieganie';
+var RUNLAST=0;
+function pad2(n){return (n<10?'0':'')+n;}
+function loadRunToday(){
+  if(typeof HA==='undefined'||!HA||!TOK)return;
+  var now=Date.now(); if(now-RUNLAST<1800000&&RUNLAST)return; RUNLAST=now;
+  var d=new Date();
+  var s=new Date(d.getFullYear(),d.getMonth(),d.getDate(),0,0,0);
+  var e=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1,0,0,0);
+  var dn=document.getElementById('run-date'); if(dn){var dni=['Niedz.','Pon.','Wt.','Śr.','Czw.','Pt.','Sob.'];dn.textContent=dni[d.getDay()]+' '+pad2(d.getDate())+'.'+pad2(d.getMonth()+1);}
+  haGet('calendars/'+CAL_ENT+'?start='+encodeURIComponent(s.toISOString())+'&end='+encodeURIComponent(e.toISOString()),function(err,data){
+    var body=document.getElementById('run-body'); if(!body)return;
+    if(err){ body.innerHTML='<div class="run-empty">Brak połączenia z kalendarzem</div>'; return; }
+    if(!data||!data.length){ body.innerHTML='<div class="run-empty">Dziś brak treningu 💤</div>'; return; }
+    var h='',i,ev,sum;
+    for(i=0;i<data.length;i++){
+      ev=data[i]; sum=ev.summary||ev.message||'Trening';
+      h+='<div class="run-ev"><span class="run-sum">'+sum+'</span></div>';
+    }
+    body.innerHTML=h;
+  });
+}
+function fmtPres(v){
+  var n=parseFloat(v);
+  if(isNaN(n)||v===undefined||v===null||v==='unavailable'||v==='unknown'||v==='--')return '--';
+  if(n<200) n=n*33.8639;
+  return Math.round(n).toString();
+}
+
+// WEATHER PL
+var WPL={
+  'clear-night':'Bezchmurnie (noc)','cloudy':'Pochmurno','fog':'Mgła','hail':'Grad',
+  'lightning':'Burza','lightning-rainy':'Burza z deszczem','partlycloudy':'Częściowo pochmurno',
+  'pouring':'Ulewa','rainy':'Deszcz','sleet':'Deszcz ze śniegiem','snowy':'Śnieg',
+  'snowy-rainy':'Deszcz ze śniegiem','sunny':'Słonecznie','windy':'Wietrznie','exceptional':'Wyjątkowo'
+};
+function wPl(s){if(!s||s==='--')return '—'; return WPL[s]||String(s).replace(/-/g,' ');}
+
+function wSvgSmall(state){
+  var s=state||'';
+  var cloud='<path d="M6 14 a3.2 3.2 0 0 1 0-6.4 a4 4 0 0 1 7.7-1 a3 3 0 0 1 .8 5.8 z" fill="#cdd6e4"/>';
+  if(s.indexOf('sunny')>=0||s==='clear') return '<circle cx="9" cy="9" r="4" fill="#fbbf24"/><g stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round"><line x1="9" y1="1.5" x2="9" y2="3.5"/><line x1="9" y1="14.5" x2="9" y2="16.5"/><line x1="1.5" y1="9" x2="3.5" y2="9"/><line x1="14.5" y1="9" x2="16.5" y2="9"/></g>';
+  if(s.indexOf('clear-night')>=0||s.indexOf('night')>=0) return '<path d="M12 11a5 5 0 1 1-4.5-6.5A4 4 0 0 0 12 11z" fill="#c2cdea"/>';
+  if(s.indexOf('partly')>=0) return '<circle cx="12" cy="6" r="3" fill="#fbbf24"/>'+cloud;
+  if(s.indexOf('rain')>=0||s.indexOf('pour')>=0) return cloud+'<g stroke="#5b9bd5" stroke-width="1.5" stroke-linecap="round"><line x1="6" y1="15" x2="5" y2="17.5"/><line x1="9" y1="15" x2="8" y2="17.5"/><line x1="12" y1="15" x2="11" y2="17.5"/></g>';
+  if(s.indexOf('snow')>=0) return cloud+'<g stroke="#dbe6f5" stroke-width="1.4" stroke-linecap="round"><line x1="6" y1="15" x2="6" y2="17.5"/><line x1="9" y1="15" x2="9" y2="17.5"/><line x1="12" y1="15" x2="12" y2="17.5"/></g>';
+  if(s.indexOf('thunder')>=0||s.indexOf('lightning')>=0) return cloud+'<polygon points="10,13 7.5,13 9,16 7,16 10.5,20 9.5,16.5 11.5,16.5" fill="#fbbf24"/>';
+  return cloud;
+}
+
+function fcDay(off){
+  var dy=['nd','pn','wt','śr','cz','pt','so'];
+  var d=new Date(); d.setDate(d.getDate()+off);
+  return dy[d.getDay()];
+}
+function drawForecast(){
+  var box=document.getElementById('wfc'); if(!box)return;
+  var we=E[weatherEid()];
+  var fc=(FC_DATA&&FC_DATA.length)?FC_DATA:((we&&we.attributes&&we.attributes.forecast)?we.attributes.forecast:[]);
+  var dy=['nd','pn','wt','śr','cz','pt','so'];
+  var html='',i,n;
+  for(i=0;i<5;i++){
+    var it=fc[i]||null;
+    var dn,cond,tmp;
+    if(it){
+      var dd=it.datetime||it.date||null;
+      n=dd?new Date(String(dd).replace(' ','T')):null;
+      dn=(n&&!isNaN(n.getTime()))?dy[n.getDay()]:fcDay(i);
+      cond=it.condition||it.state||'';
+      var tv=it.temperature;
+      if(tv===undefined||tv===null)tv=it.temp;
+      if(tv===undefined||tv===null)tv=it.templow;
+      tmp=(tv!==undefined&&tv!==null)?fmt1(tv):'--';
+    } else {
+      dn=fcDay(i); cond=''; tmp='--';
+    }
+    html+='<div class="wfd"><div class="wdn">'+dn+'</div><svg class="wfi" viewBox="0 0 18 18" fill="none">'+wSvgSmall(cond)+'</svg><div class="wft">'+tmp+'°</div></div>';
+  }
+  box.innerHTML=html; box.style.display='';
+}
+
+// WEATHER SVG
+function drawWeather(state){
+  var el=document.getElementById('wsvg'); if(!el)return;
+  var s=state||'';
+  var defs='<defs>'+
+    '<radialGradient id="gSun" cx="50%" cy="42%" r="60%"><stop offset="0%" stop-color="#fff3b0"/><stop offset="55%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#f59e0b"/></radialGradient>'+
+    '<linearGradient id="gCloud" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#c3ccd9"/></linearGradient>'+
+    '<linearGradient id="gCloudDark" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#9aa6b8"/><stop offset="100%" stop-color="#6b7689"/></linearGradient>'+
+    '<linearGradient id="gMoon" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e8eefc"/><stop offset="100%" stop-color="#aebbe0"/></linearGradient>'+
+    '<linearGradient id="gRain" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#7fb6ff"/><stop offset="100%" stop-color="#4f86d6"/></linearGradient>'+
+    '</defs>';
+  var sun='<circle cx="18" cy="17" r="7.5" fill="url(#gSun)"/><g stroke="#fbbf24" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="3" x2="18" y2="7"/><line x1="18" y1="27" x2="18" y2="31"/><line x1="4" y1="17" x2="8" y2="17"/><line x1="28" y1="17" x2="32" y2="17"/><line x1="8" y1="7" x2="10.5" y2="9.5"/><line x1="25.5" y1="24.5" x2="28" y2="27"/><line x1="28" y1="7" x2="25.5" y2="9.5"/><line x1="8" y1="27" x2="10.5" y2="24.5"/></g>';
+  var cloud='<path d="M11 26 a6 6 0 0 1 0-12 a7.5 7.5 0 0 1 14.4-2 a5.5 5.5 0 0 1 1.6 10.8 a3 3 0 0 1-.6.2 z" fill="url(#gCloud)"/>';
+  var svg='';
+  if(s.indexOf('sunny')>=0||s==='clear'){
+    svg=sun;
+  } else if(s.indexOf('clear-night')>=0||s.indexOf('night')>=0){
+    svg='<path d="M24 22a10 10 0 1 1-9-13 8 8 0 0 0 9 13z" fill="url(#gMoon)"/>';
+  } else if(s.indexOf('partlycloudy')>=0||s.indexOf('partly')>=0){
+    svg='<circle cx="24" cy="11" r="5.5" fill="url(#gSun)"/><g stroke="#fbbf24" stroke-width="1.6" stroke-linecap="round"><line x1="24" y1="2" x2="24" y2="4.5"/><line x1="31" y1="11" x2="33" y2="11"/><line x1="29.5" y1="5.5" x2="31" y2="4"/></g>'+cloud;
+  } else if(s.indexOf('rainy')>=0||s.indexOf('pour')>=0){
+    svg=cloud+'<g stroke="url(#gRain)" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="27" x2="10" y2="32"/><line x1="18" y1="27" x2="16" y2="32"/><line x1="24" y1="27" x2="22" y2="32"/></g>';
+  } else if(s.indexOf('snow')>=0){
+    svg=cloud+'<g stroke="#dbe6f5" stroke-width="2" stroke-linecap="round"><line x1="12" y1="27" x2="12" y2="32"/><line x1="9.5" y1="29.5" x2="14.5" y2="29.5"/><line x1="18" y1="27" x2="18" y2="32"/><line x1="15.5" y1="29.5" x2="20.5" y2="29.5"/><line x1="24" y1="27" x2="24" y2="32"/><line x1="21.5" y1="29.5" x2="26.5" y2="29.5"/></g>';
+  } else if(s.indexOf('thunder')>=0||s.indexOf('lightning')>=0){
+    svg='<path d="M11 24 a6 6 0 0 1 0-12 a7.5 7.5 0 0 1 14.4-2 a5.5 5.5 0 0 1 1.6 10.8 z" fill="url(#gCloudDark)"/><polygon points="19,21 14,21 17,27 13.5,27 20,36 18,28 22,28" fill="#fbbf24"/>';
+  } else if(s.indexOf('fog')>=0){
+    svg=cloud+'<g stroke="#b0bec5" stroke-width="2.2" stroke-linecap="round" opacity=".85"><line x1="8" y1="29" x2="28" y2="29"/><line x1="10" y1="33" x2="26" y2="33"/></g>';
+  } else if(s.indexOf('wind')>=0){
+    svg='<g stroke="#9aa6b8" stroke-width="2.4" stroke-linecap="round" fill="none"><path d="M4 13 Q14 8 22 13 Q28 16.5 31 12"/><path d="M4 20 Q12 16 20 20 Q27 24 31 19"/><path d="M6 27 Q15 23 23 27"/></g>';
+  } else {
+    svg=cloud;
+  }
+  el.innerHTML=defs+svg;
+}
+
+// AQ
+function aqColor(val){
+  var v=String(val).toLowerCase();
+  if(v.indexOf('very_good')>=0||v.indexOf('very good')>=0) return {cls:'aq-g',label:'Bardzo dobry'};
+  if(v.indexOf('good')>=0) return {cls:'aq-g',label:'Dobry'};
+  if(v.indexOf('moderate')>=0) return {cls:'aq-m',label:'Umiarkowany'};
+  if(v.indexOf('bad')>=0||v.indexOf('poor')>=0) return {cls:'aq-b',label:'Zły'};
+  return {cls:'',label:val};
+}
+
+// Wybór encji pogody (gdyby forecast_dom zmienił nazwę)
+function weatherOk(k){ return E[k]&&E[k].state!=='unavailable'&&E[k].state!=='unknown'&&E[k].state!=='--'; }
+function weatherEid(){
+  if(weatherOk('weather.forecast_dom')) return 'weather.forecast_dom';
+  for(var k in E){ if(k.indexOf('weather.')===0&&weatherOk(k)) return k; }
+  if(E['weather.forecast_dom']) return 'weather.forecast_dom';
+  for(var k2 in E){ if(k2.indexOf('weather.')===0) return k2; }
+  return 'weather.forecast_dom';
+}
+var FC_DATA=null,FCLAST=0,FCBUSY=false,FCTRY=0;
+function fcExtract(sr){
+  if(!sr) return null;
+  for(var k in sr){ if(sr[k]&&sr[k].forecast&&sr[k].forecast.length) return sr[k].forecast; }
+  return null;
+}
+function fcGotData(fc){
+  if(fc&&fc.length){ FC_DATA=fc; FCLAST=Date.now(); FCBUSY=false; drawForecast(); return true; }
+  return false;
+}
+function wsForecast(WID){
+  // Pobranie prognozy przez WebSocket (niezawodne na iOS 10)
+  try{
+    var url=HA.replace(/^http/,'ws')+'/api/websocket';
+    var ws=new WebSocket(url);
+    var done=false;
+    var fin=function(){ FCBUSY=false; try{ws.close();}catch(e){} };
+    var to=setTimeout(function(){ if(!done){done=true;fin();} },9000);
+    ws.onmessage=function(ev){
+      var m; try{ m=JSON.parse(ev.data); }catch(e){ return; }
+      if(m.type==='auth_required'){ ws.send(JSON.stringify({type:'auth',access_token:TOK})); return; }
+      if(m.type==='auth_ok'){
+        ws.send(JSON.stringify({id:1,type:'call_service',domain:'weather',service:'get_forecasts',service_data:{type:'daily'},target:{entity_id:WID},return_response:true}));
+        return;
+      }
+      if(m.type==='auth_invalid'){ done=true; clearTimeout(to); fin(); return; }
+      if(m.type==='result'&&m.id===1){
+        done=true; clearTimeout(to);
+        var resp=(m.result&&(m.result.response||m.result))||null;
+        fcGotData(fcExtract(resp));
+        fin();
+      }
+    };
+    ws.onerror=function(){ if(!done){done=true;clearTimeout(to);fin();} };
+    ws.onclose=function(){ if(!done){done=true;clearTimeout(to);FCBUSY=false;} };
+  }catch(e){ FCBUSY=false; }
+}
+function loadForecast(){
+  if(typeof HA==='undefined'||!HA||!TOK)return;
+  if(FCBUSY)return;
+  var now=Date.now();
+  if(FC_DATA&&FC_DATA.length&&now-FCLAST<900000)return; // mamy dane → odśwież co 15 min
+  if(!FC_DATA&&now-FCTRY<8000)return;                    // brak danych → ponawiaj co ~8 s
+  FCBUSY=true; FCTRY=now;
+  var WID=weatherEid();
+  var x=new XMLHttpRequest();
+  x.open('POST',HA+'/api/services/weather/get_forecasts?return_response',true);
+  x.setRequestHeader('Authorization','Bearer '+TOK);
+  x.setRequestHeader('Content-Type','application/json');
+  x.timeout=8000;
+  x.onload=function(){
+    if(x.status===200){
+      try{
+        var r=JSON.parse(x.responseText);
+        var sr=r.service_response||r;
+        if(fcGotData(fcExtract(sr))) return;
+      }catch(e){}
+    }
+    wsForecast(WID); // XHR nie zwrócił danych → próba WebSocket
+  };
+  x.onerror=function(){ wsForecast(WID); };
+  x.ontimeout=function(){ wsForecast(WID); };
+  x.send(JSON.stringify({type:'daily',entity_id:WID}));
+}
+// tx, ale nie nadpisuje wartości gdy chwilowo brak danych ('--')
+function txKeep(id,val){
+  if(val===undefined||val===null||val==='--') return;
+  tx(id,val);
+}
+
+// UPDATE
+function upd(){
+  // WEATHER
+  var WID=weatherEid();
+  var ws=st(WID);
+  if(ws!=='--'&&ws!=='unavailable'&&ws!=='unknown') drawWeather(ws);
+  loadForecast();
+  drawForecast();
+  txKeep('wt', fmt1(at(WID,'temperature')));
+  if(ws!=='--'&&ws!=='unavailable'&&ws!=='unknown') tx('wd', wPl(ws));
+  txKeep('wh', fmt1(at(WID,'humidity')));
+  txKeep('ww', fmt1(at(WID,'wind_speed')));
+  txKeep('wp', fmtPres(at(WID,'pressure')));
+  tx('pm25', fmt1(st('sensor.parcel_locker_wol02bapp_pm_2_5')));
+  updAqBars(st('sensor.parcel_locker_wol02bapp_pm_2_5'));
+  loadRunToday();
+  tx('pm10', fmt1(st('sensor.parcel_locker_wol02bapp_pm_10')));
+  tx('pm25n', fmt1(st('sensor.parcel_locker_wol02bapp_norma_pm_2_5')));
+  tx('pm10n', fmt1(st('sensor.parcel_locker_wol02bapp_norma_pm_10')));
+  var aqi=st('sensor.parcel_locker_wol02bapp_polish_air_quality_index');
+  var aqr=aqColor(aqi);
+  var waqEl=document.getElementById('waq');
+  if(waqEl) waqEl.innerHTML='<span class="aqb '+aqr.cls+'">'+aqr.label+'</span>';
+  var waq2El=document.getElementById('waq2');
+  if(waq2El) waq2El.innerHTML='<span class="aqb '+aqr.cls+'">Indeks PL: '+aqr.label+'</span>';
+
+  // ROOM TEMPS
+  tx('rt-s', fmt1(st('sensor.termometr_salon_temperatura')));
+  tx('rh-s', fmt1(st('sensor.termometr_salon_wilgotnosc')));
+  tx('rt-sy', fmt1(st('sensor.termometr_sypialnia_temperatura')));
+  tx('rh-sy', fmt1(st('sensor.termometr_sypialnia_wilgotnosc')));
+  tx('rt-l', fmt1(st('sensor.termometr_lazienka_temperatura')));
+  tx('rh-l', fmt1(st('sensor.termometr_lazienka_wilgotnosc')));
+  tx('rt-g', fmt1(st('sensor.temperatura_garderoba_temperatura')));
+  tx('rh-g', fmt1(st('sensor.temperatura_garderoba_wilgotnosc')));
+  tx('rt-o', fmt1(st('sensor.termometr_ogrod_temperatura')));
+  tx('rh-o', fmt1(st('sensor.termometr_ogrod_wilgotnosc')));
+
+  // ZEWNĘTRZNE
+  tx('pk-t', fmt1(st('sensor.parcel_locker_wol02bapp_temperatura')));
+  tx('pk-h', fmt1(st('sensor.parcel_locker_wol02bapp_wilgotnosc')));
+  tx('pk-p', fmt1(st('sensor.parcel_locker_wol02bapp_cisnienie')));
+  tx('og-t', fmt1(st('sensor.termometr_ogrod_temperatura')));
+  tx('og-h', fmt1(st('sensor.termometr_ogrod_wilgotnosc')));
+  tx('og-p', fmt1(st('sensor.termometr_ogrod_cisnienie')));
+
+  // MEDIA
+  updMedia('media_player.spotify_marcin_solowiow','sp-t','sp-a','sp-p','sp-vb','sp-vv');
+  updMediaS('media_player.samsung_q70aa_85_tv_qe85q70aatxxh','tv-p',null,null);
+  tx('tv-t', at('media_player.samsung_q70aa_85_tv_qe85q70aatxxh','media_title')||st('media_player.samsung_q70aa_85_tv_qe85q70aatxxh'));
+  updSpotifyArt();
+
+  // GAUGE jakości powietrza + żarówki pokoi
+  updateGauge();
+  uBulb('light.swiatlo_salon_swiatlo','rb-salon');
+  uBulb('light.swiatlo_sypialnia_swiatlo','rb-syp');
+  uBulb('light.swiatlo_lazienka_swiatlo','rb-laz');
+  uBulb('light.swiatlo_garderoba_swiatlo','rb-gar');
+  uBulb('light.wiatrolap_gorne_swiatlo','rb-ogr');
+
+  // SALON LIGHTS
+  uLC('light.swiatlo_salon_swiatlo','lc-s1','ls-s1');
+  uLC('light.swiatlo_salon_swiatlo_2','lc-s2','ls-s2');
+  uLC('light.swiatlo_salon_swiatlo_3','lc-s3','ls-s3');
+  uLC('light.led_salon_okno','lc-slo','ls-slo');
+  uLC('light.led_tv_2','lc-stv','ls-stv');
+  tx('ss-t',fmt1(st('sensor.termometr_salon_temperatura')));
+  tx('ss-h',fmt1(st('sensor.termometr_salon_wilgotnosc')));
+  tx('ss-p',fmt1(st('sensor.termometr_salon_cisnienie')));
+
+  // SYPIALNIA
+  uLC('light.swiatlo_sypialnia_swiatlo','lc-sy1','ls-sy1');
+  uLC('switch.marcin_sypialnia','lc-sym','ls-sym');
+  uLC('switch.marzenka_sypialnia','lc-symz','ls-symz');
+  tx('ssy-t',fmt1(st('sensor.termometr_sypialnia_temperatura')));
+  tx('ssy-h',fmt1(st('sensor.termometr_sypialnia_wilgotnosc')));
+  tx('ssy-p',fmt1(st('sensor.termometr_sypialnia_cisnienie')));
+
+  // KUCHNIA
+  uLC('light.swiatlo_kuchnia_swiatlo_2','lc-k2','ls-k2');
+  uLC('light.swiatlo_kuchnia_swiatlo_3','lc-k3','ls-k3');
+  uLC('light.led_kuchnia','lc-kl','ls-kl');
+  uLC('light.led_kuchnia_i','lc-kli','ls-kli');
+  var fd2=st('binary_sensor.lodowka_fridge_door');
+  var fzd2=st('binary_sensor.lodowka_freezer_door');
+  tx('fd',fd2==='on'?'● Otwarte':fd2==='off'?'○ Zamknięte':'--');
+  tx('fzd',fzd2==='on'?'● Otwarte':fzd2==='off'?'○ Zamknięte':'--');
+  tx('ft',fmt1(st('sensor.lodowka_fridge_temperature')));
+  tx('fp',fmt1(st('sensor.lodowka_moc')));
+  tx('pralka',st('sensor.pralka_current_status'));
+  tx('suszarka',st('sensor.szuszarka_current_status'));
+
+  // ŁAZIENKI
+  uLC('light.swiatlo_lazienka_swiatlo','lc-ld1','ls-ld1');
+  uLC('light.swiatlo_lazienka_swiatlo_2','lc-ld2','ls-ld2');
+  uLC('light.swiatlo_lazienka_swiatlo_3','lc-ld3','ls-ld3');
+  uLC('light.lazienka_gora_swiatlo_swiatlo','lc-lg1','ls-lg1');
+  uLC('light.lazienka_gora_swiatlo_swiatlo_2','lc-lg2','ls-lg2');
+  uLC('light.lazienka_gora_swiatlo_swiatlo_3','lc-lg3','ls-lg3');
+  tx('sl-t',fmt1(st('sensor.termometr_lazienka_temperatura')));
+  tx('sl-h',fmt1(st('sensor.termometr_lazienka_wilgotnosc')));
+  tx('sl-b',fmt1(st('sensor.termometr_lazienka_bateria')));
+  uLC('light.swiatlo_garderoba_swiatlo','lc-gd1','ls-gd1');
+  uLC('light.swiatlo_garderoba_swiatlo_2','lc-gd2','ls-gd2');
+  uLC('light.swiatlo_garderoba_swiatlo_3','lc-gd3','ls-gd3');
+
+  // OGRÓD
+  tx('so-t',fmt1(st('sensor.termometr_ogrod_temperatura')));
+  tx('so-h',fmt1(st('sensor.termometr_ogrod_wilgotnosc')));
+  tx('so-p',fmt1(st('sensor.termometr_ogrod_cisnienie')));
+  uLC('light.wiatrolap_gorne_swiatlo','lc-wt1','ls-wt1');
+  uLC('light.wiatrolap_gorne_swiatlo_2','lc-wt2','ls-wt2');
+
+  // ENERGIA
+  tx('e-tot',fmt1(st('sensor.pobor_mocy_3_fazy')));
+  tx('e-v1',fmt1(st('sensor.zamel_mew_01_electricity_meter_voltage_phase_1')));
+  tx('e-v2',fmt1(st('sensor.zamel_mew_01_electricity_meter_voltage_phase_2')));
+  tx('e-v3',fmt1(st('sensor.zamel_mew_01_electricity_meter_voltage_phase_3')));
+  tx('e-p1',fmt1(st('sensor.zamel_mew_01_electricity_meter_power_active_phase_1')));
+  tx('e-p2',fmt1(st('sensor.zamel_mew_01_electricity_meter_power_active_phase_2')));
+  tx('e-p3',fmt1(st('sensor.zamel_mew_01_electricity_meter_power_active_phase_3')));
+  tx('e-kwh',fmt1(st('sensor.zamel_mew_01_electricity_meter_total_forward_active_energy')));
+
+  // K1C
+  tx('k-st',st('sensor.k1c_creality_print_status'));
+  tx('k-pg',fmt1(st('sensor.k1c_creality_print_progress')));
+  tx('k-ob',st('sensor.k1c_creality_current_object'));
+  tx('k-ti',st('sensor.k1c_creality_print_job_time'));
+  tx('k-le',st('sensor.k1c_creality_print_time_left'));
+  tx('k-nz',fmt1(st('sensor.k1c_creality_nozzle_temperature')));
+  tx('k-bd',fmt1(st('sensor.k1c_creality_bed_temperature')));
+  tx('k-lw',fmt1(st('sensor.k1c_creality_working_layer')));
+  tx('k-ls',fmt1(st('sensor.k1c_creality_total_layers')));
+  tx('k-x',fmt1(st('sensor.k1c_creality_position_x')));
+  tx('k-y',fmt1(st('sensor.k1c_creality_position_y')));
+
+  uStateCard('switch.smart_switch_b78c','sc-brama','ss-brama','Otwarta','Zamknięta');
+  uStateCard('switch.furtka','sc-furtka','ss-furtka','Otwarta','Zamknięta');
+  updEnergyCard();
+  uChip('light.swiatlo_kuchnia_swiatlo_2','ck-2');
+  uChip('light.swiatlo_kuchnia_swiatlo_3','ck-3');
+  uChip('light.led_kuchnia','ck-l');
+  uChip('light.led_kuchnia_i','ck-li');
+  tx('ft2', fmt1(st('sensor.lodowka_fridge_temperature')));
+  tx('fzt', fmt1(st('number.lodowka_freezer_temperature')));
+
+  handleMotion(st(MOTION));
+  if(typeof alignCols==='function') alignCols();
+}
+
+// Kolor mocy: 60 W = zielony -> 3000 W = czerwony (jak wskaźnik)
+function powerHue(p){
+  if(isNaN(p)) p=0;
+  var lo=60, hi=3000, t=(p-lo)/(hi-lo);
+  if(t<0)t=0; if(t>1)t=1;
+  return 140-140*t; // 140 zielony -> 0 czerwony
+}
+function powerColor(p){ return 'hsl('+Math.round(powerHue(p))+',82%,42%)'; }
+function powerColor2(p){ return 'hsl('+Math.round(powerHue(p))+',88%,55%)'; }
+
+function updEnergyCard(){
+  var tot=parseFloat(st('sensor.pobor_mocy_3_fazy'));
+  var p1=parseFloat(st('sensor.zamel_mew_01_electricity_meter_power_active_phase_1'));
+  var p2=parseFloat(st('sensor.zamel_mew_01_electricity_meter_power_active_phase_2'));
+  var p3=parseFloat(st('sensor.zamel_mew_01_electricity_meter_power_active_phase_3'));
+  var nowEl=document.getElementById('e-now');
+  if(nowEl) nowEl.textContent=isNaN(tot)?'--':Math.round(tot);
+  var MAXW=3680;
+  function setPh(p,vId,bId){
+    var v=document.getElementById(vId), b=document.getElementById(bId);
+    if(v) v.textContent=isNaN(p)?'--':Math.round(p);
+    if(b){
+      var pct=isNaN(p)?0:Math.max(0,Math.min(100,(p/MAXW)*100));
+      b.style.width=pct+'%';
+      var col=powerColor(p), col2=powerColor2(p);
+      b.style.background='-webkit-linear-gradient(left,'+col+','+col2+')';
+      b.style.background='linear-gradient(90deg,'+col+','+col2+')';
+      b.style.boxShadow='0 0 12px '+col2;
+      b.style.webkitBoxShadow='0 0 12px '+col2;
+    }
+  }
+  setPh(p1,'e-pp1','e-b1');
+  setPh(p2,'e-pp2','e-b2');
+  setPh(p3,'e-pp3','e-b3');
+}
+
+function uStateCard(eid,cardId,stId,onL,offL){
+  var s=st(eid);
+  var el=document.getElementById(stId);
+  if(el) el.textContent=(s==='on')?onL:(s==='off')?offL:'--';
+}
+
+function uLC(eid,cid,sid){
+  var s2=st(eid);
+  var c=document.getElementById(cid);
+  var se=document.getElementById(sid);
+  if(!c||!se)return;
+  if(s2==='on'){c.className='card lc on';se.className='lstate on';se.textContent='on';}
+  else{c.className='card lc';se.className='lstate off';se.textContent='off';}
+}
+
+function updMedia(eid,tid,aid,bid,vbid,vvid){
+  var e=E[eid]; if(!e)return;
+  var a=e.attributes||{};
+  var playing=(e.state==='playing');
+  tx(tid,a.media_title||'--');
+  if(aid) tx(aid,a.media_artist||'');
+  var b=document.getElementById(bid);
+  if(b){
+    if(b.className.indexOf('spk-play')>=0){
+      b.textContent=playing?'⏸':'▶';
+      b.className=playing?'spk-play on':'spk-play';
+    } else {
+      b.textContent=playing?'⏸':'▶';
+    }
+  }
+  var vol=a.volume_level!==undefined?Math.round(a.volume_level*100):0;
+  var vb=document.getElementById(vbid);var vv=document.getElementById(vvid);
+  if(vb) vb.style.width=vol+'%';
+  if(vv) vv.textContent=vol+'%';
+}
+
+function updMediaS(eid,bid,vbid,vvid){updMedia(eid,'_x',null,bid,vbid,vvid);}
+
+function updSpotifyArt(){
+  var e=E['media_player.spotify_marcin_solowiow'];
+  var art=document.getElementById('sp-art');
+  var wave=document.getElementById('sp-wave');
+  var playing=e&&e.state==='playing';
+  if(art&&e&&e.attributes&&e.attributes.entity_picture){
+    var pic=e.attributes.entity_picture;
+    var u=(pic.indexOf('http')===0)?pic:(HA+pic);
+    if(art.getAttribute('data-pic')!==u){
+      art.style.backgroundImage='url("'+u+'")';
+      art.setAttribute('data-pic',u);
+    }
+  }
+  if(wave) wave.className=playing?'wave playing':'wave';
+}
+
+function updateGauge(){
+  var arc=document.getElementById('gauge-arc');
+  var pctEl=document.getElementById('gauge-pct');
+  var labEl=document.getElementById('gauge-lab');
+  if(!arc) return;
+  var pct=parseFloat(st('sensor.parcel_locker_wol02bapp_norma_pm_2_5'));
+  var aqi=st('sensor.parcel_locker_wol02bapp_polish_air_quality_index');
+  var r=aqColor(aqi);
+  var circ=327;
+  var p=isNaN(pct)?0:Math.max(0,Math.min(100,pct));
+  arc.setAttribute('stroke-dashoffset', Math.round(circ*(1-p/100)));
+  var col=(r.cls==='aq-b')?'#f87171':(r.cls==='aq-m')?'#fbbf24':'#34d399';
+  arc.setAttribute('stroke',col);
+  if(pctEl) pctEl.textContent=isNaN(pct)?'--':Math.round(pct)+'%';
+  if(labEl){ labEl.textContent=r.label; labEl.style.color=col; }
+}
+
+function uBulb(eid,id){
+  var el=document.getElementById(id);
+  if(!el) return;
+  el.style.opacity='';
+  var on=(E[eid]&&E[eid].state==='on');
+  el.className=on?'rbulb on':'rbulb';
+  var cell=el.parentNode;
+  while(cell&&(' '+cell.className+' ').indexOf(' rcell ')<0){cell=cell.parentNode;}
+  if(cell){
+    var c=cell.className.replace(/\s*\blit\b/,'');
+    cell.className=on?c+' lit':c;
+  }
+}
+
+function uChip(eid,id){
+  var el=document.getElementById(id);
+  if(!el) return;
+  el.style.opacity='';
+  el.className=(E[eid]&&E[eid].state==='on')?'ktog on':'ktog';
+}
+
+function uZone(eid,id){
+  var el=document.getElementById(id);
+  if(!el) return;
+  el.className=(E[eid]&&E[eid].state==='on')?'zhot on':'zhot';
+}
+
+function toggleBulb(eid,id){
+  if(typeof event!=='undefined'&&event&&event.stopPropagation) event.stopPropagation();
+  var on=(E[eid]&&E[eid].state==='on');
+  var el=document.getElementById(id); if(el) el.style.opacity='0.5';
+  haPost('light',on?'turn_off':'turn_on',{entity_id:eid},function(){setTimeout(fetch15,700);});
+}
+
+// CONTROLS
+function tLight(eid,cid,sid){
+  var on=(E[eid]&&E[eid].state==='on');
+  var c=document.getElementById(cid); if(c) c.className='card lc loading';
+  haPost('light',on?'turn_off':'turn_on',{entity_id:eid},function(){setTimeout(fetch15,800);});
+}
+
+function tSwitch(eid,cid,pulse){
+  var on=(E[eid]&&E[eid].state==='on');
+  var svc=pulse?'toggle':(on?'turn_off':'turn_on');
+  if(cid){var c=document.getElementById(cid);if(c)c.className='card lc loading';}
+  haPost('switch',svc,{entity_id:eid},function(){setTimeout(fetch15,800);});
+}
+
+function mCmd(eid,svc){haPost('media_player',svc,{entity_id:eid},function(){setTimeout(fetch15,600);});}
+function mPP(eid,bid){
+  var svc=(E[eid]&&E[eid].state==='playing')?'media_pause':'media_play';
+  haPost('media_player',svc,{entity_id:eid},function(){setTimeout(fetch15,600);});
+}
+function setVol(ev,eid,el){
+  if(ev&&ev.stopPropagation) ev.stopPropagation();
+  var box=el||(ev&&ev.currentTarget);
+  if(!box) return;
+  var r=box.getBoundingClientRect();
+  var cx=(ev.touches&&ev.touches[0])?ev.touches[0].clientX:ev.clientX;
+  var frac=(cx-r.left)/r.width;
+  if(frac<0)frac=0; if(frac>1)frac=1;
+  var pct=Math.round(frac*100);
+  var fb=document.getElementById('sp-vb'); if(fb) fb.style.width=pct+'%';
+  var vv=document.getElementById('sp-vv'); if(vv) vv.textContent=pct+'%';
+  haPost('media_player','volume_set',{entity_id:eid,volume_level:frac},function(){setTimeout(fetch15,500);});
+}
+
+// FETCH
+function fetch15(){
+  haGet('states',function(err,data){
+    if(err){setC(false);return;}
+    setC(true);
+    E={};
+    for(var i=0;i<data.length;i++) E[data[i].entity_id]=data[i];
+    upd();
+  });
+}
+
+function setC(ok){
+  var el=document.getElementById('cs');
+  el.textContent=ok?'⬤ online':'⬤ błąd';
+  el.className=ok?'ok':'err';
+}
+
+// CAMERY — migawka przez /api/camera_proxy (entity_picture jest podpisane tokenem)
+var CAMS=[['camera.front','cam-front','camoff-front'],['camera.tyl','cam-tyl','camoff-tyl']];
+function camUrl(eid){
+  var e=E[eid];
+  if(!e||!e.attributes||!e.attributes.entity_picture) return '';
+  var p=e.attributes.entity_picture;
+  return (p.indexOf('http')===0)?p:(HA+p);
+}
+function setCamImg(eid,imgId,offId){
+  var img=document.getElementById(imgId);
+  var off=document.getElementById(offId);
+  if(!img) return;
+  var u=camUrl(eid);
+  if(!u){ if(!img.getAttribute('src')){img.style.display='none';if(off)off.style.display='flex';} return; }
+  var full=u+(u.indexOf('?')>=0?'&':'?')+'_='+(new Date()).getTime();
+  var pre=new Image();
+  pre.onload=function(){
+    img.src=full;
+    img.style.display='block';
+    if(off)off.style.display='none';
+  };
+  pre.onerror=function(){
+    if(!img.getAttribute('src')){ img.style.display='none'; if(off)off.style.display='flex'; }
+  };
+  pre.src=full;
+}
+function refreshCameras(){
+  var v=document.getElementById('view-kamery');
+  if(v&&v.className.indexOf('active')>=0){
+    for(var i=0;i<CAMS.length;i++){ setCamImg(CAMS[i][0],CAMS[i][1],CAMS[i][2]); }
+  }
+  var d=document.getElementById('view-dom');
+  if(d&&d.className.indexOf('active')>=0){ setCamImg('camera.front','cam-dash','camoff-dash'); }
+}
+
+// DIM — binary_sensor.hobeian_zg_204z (ZG-204Z, Zigbee)
+var lastMotionState=null;
+var idleTimer=null;
+var dimmed=false;
+
+function isMotionActive(state){
+  var s=String(state||'').toLowerCase();
+  return s==='on'||s==='true'||s==='detected'||s==='occupied'||s==='motion';
+}
+
+function updateMotionUI(state){
+  var el=document.getElementById('mot');
+  if(!el) return;
+  el.title=MOTION+(state?' · '+state:'');
+  if(!state||state==='unavailable'||state==='unknown'||state==='--'){
+    el.textContent='◌ brak sygnału';
+    el.className='bad';
+    return;
+  }
+  if(isMotionActive(state)){
+    el.textContent='● ruch';
+    el.className='on';
+  }else{
+    el.textContent='○ cisza';
+    el.className='off';
+  }
+}
+
+function armDimTimer(){
+  if(idleTimer) clearTimeout(idleTimer);
+  idleTimer=setTimeout(function(){
+    idleTimer=null;
+    setDim(true);
+  },DIM);
+}
+
+function wakeCams(){
+  // po wybudzeniu token kamery (entity_picture) bywa nieświeży → pobierz świeży stan i przeładuj
+  try{
+    haGet('states/camera.front',function(err,data){
+      if(!err&&data){ E['camera.front']=data; setCamImg('camera.front','cam-dash','camoff-dash'); }
+    });
+  }catch(e){}
+  try{ refreshCameras(); }catch(e){}
+}
+function wakeScreen(manual){
+  if(idleTimer){clearTimeout(idleTimer);idleTimer=null;}
+  setDim(false);
+  wakeCams();
+  setTimeout(wakeCams,900);
+  if(manual||!isMotionActive(lastMotionState)) armDimTimer();
+}
+
+function handleMotion(state){
+  if(!state||state==='--') return;
+  updateMotionUI(state);
+  if(state==='unavailable'||state==='unknown') return;
+  if(state===lastMotionState) return;
+  lastMotionState=state;
+  if(isMotionActive(state)) wakeScreen(false);
+  else armDimTimer();
+}
+
+function setDim(on){
+  var d=document.getElementById('dim');
+  var app=document.getElementById('app');
+  if(!d) return;
+  if(on&&!dimmed){
+    var night=E[SUN]&&E[SUN].state==='below_horizon';
+    d.className=night?'on night':'on';
+    if(app) app.className='scr-dim';
+    dimmed=true;
+  } else if(!on&&dimmed){
+    d.className='';
+    if(app) app.className='';
+    dimmed=false;
+  }
+}
+
+function pollMotion(){
+  haGet('states/'+encodeURIComponent(MOTION),function(err,data){
+    if(err||!data){
+      updateMotionUI('unavailable');
+      return;
+    }
+    E[MOTION]=data;
+    if(data.state) handleMotion(data.state);
+  });
+}
+
+// THEME
+var curTheme='dark';
+var BGLVL=0;
+function bgHex(n){n=Math.max(0,Math.min(255,n));var s=n.toString(16);return s.length<2?'0'+s:s;}
+function bgGrad(v){
+  var g=Math.round(8+v*2.0);
+  var a='#'+bgHex(g+5)+bgHex(g+3)+bgHex(g);
+  var b='#'+bgHex(g)+bgHex(g)+bgHex(g);
+  var c='#'+bgHex(g)+bgHex(g)+bgHex(g+7);
+  return 'linear-gradient(145deg,'+a+' 0%,'+b+' 50%,'+c+' 100%)';
+}
+function applyBg(){
+  var amb=document.getElementById('amb');
+  var root=document.documentElement;
+  if(curTheme==='light'){
+    document.body.style.background='';
+    if(amb) amb.style.background='';
+    root.style.removeProperty('--on-bg');
+    return;
+  }
+  var st=bgGrad(BGLVL);
+  document.body.style.background=st;
+  if(amb) amb.style.background=st;
+  var g=Math.round(8+BGLVL*2.0);
+  root.style.setProperty('--on-bg', g>120?'#15120c':'#efece4');
+}
+function setBg(v){
+  BGLVL=parseInt(v,10)||0;
+  sSet('bg_level',BGLVL);
+  applyBg();
+}
+function setTheme(t){
+  curTheme=t;
+  sSet('theme',t);
+  document.body.className=(t==='light')?'light':'';
+  applyBg();
+  var bd=document.getElementById('btn-dark');
+  var bl=document.getElementById('btn-light');
+  if(bd&&bl){
+    bd.style.background=t==='dark'?'var(--accent)':'var(--glass)';
+    bd.style.color=t==='dark'?'#0a0c12':'var(--text)';
+    bl.style.background=t==='light'?'var(--accent)':'var(--glass)';
+    bl.style.color=t==='light'?'#0a0c12':'var(--text)';
+  }
+}
+
+// ACCENT — kilka kolorów do wyboru
+var ACCENTS={
+  indigo:{hex:'#818cf8',rgb:'129,140,248'},
+  blue:{hex:'#3b82f6',rgb:'59,130,246'},
+  violet:{hex:'#a78bfa',rgb:'167,139,250'},
+  teal:{hex:'#2dd4bf',rgb:'45,212,191'},
+  emerald:{hex:'#10b981',rgb:'16,185,129'},
+  amber:{hex:'#fbbf24',rgb:'251,191,36'},
+  rose:{hex:'#fb7185',rgb:'251,113,133'},
+  cyan:{hex:'#22d3ee',rgb:'34,211,238'}
+};
+function setAccent(name){
+  var a=ACCENTS[name]||ACCENTS.indigo;
+  sSet('accent',name);
+  var root=document.documentElement;
+  root.style.setProperty('--accent',a.hex);
+  root.style.setProperty('--accent-rgb',a.rgb);
+  root.style.setProperty('--accent-dim','rgba('+a.rgb+',0.16)');
+  var sw=document.querySelectorAll('.sw');
+  for(var i=0;i<sw.length;i++){
+    if(sw[i].getAttribute('data-acc')===name) sw[i].className='sw sel';
+    else sw[i].className='sw';
+  }
+  if(curTheme) setTheme(curTheme);
+}
+
+function loadTheme(){
+  var bl=sGet('bg_level');
+  if(bl!==null&&bl!=='') BGLVL=parseInt(bl,10)||0;
+  var sl=document.getElementById('cbg'); if(sl) sl.value=BGLVL;
+  setTheme('dark');
+  var ac=sGet('accent')||'emerald';
+  setAccent(ac);
+}
+
+// START
+function startApp(){
+  tick(); setInterval(tick,30000);
+  fetch15(); setInterval(fetch15,15000);
+  pollMotion(); setInterval(pollMotion,2000);
+  setInterval(refreshCameras,2000);
+  fixHeight();
+  armDimTimer();
+  document.addEventListener('touchstart',function(){wakeScreen(true);},true);
+}
+
+// Pre-fill defaults jeśli puste
+function prefillDefaults(){
+  var u=document.getElementById('cu');
+  var t=document.getElementById('ct');
+  var cm=document.getElementById('cm');
+  if(u&&!u.value) u.value='http://192.168.68.65:8123';
+  if(cm&&!cm.value) cm.value='binary_sensor.hobeian_zg_204z';
+  if(t&&!t.value&&!TOK) t.placeholder='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
+}
+
+loadConfig(); tick(); loadTheme();
+
+// Fix Safari / iPad – pełna wysokość ekranu
+function fixHeight(){
+  var h=window.innerHeight,w=window.innerWidth;
+  var app=document.getElementById('app');
+  var cfg=document.getElementById('cfg');
+  if(app){app.style.height=h+'px';app.style.width=w+'px';}
+  if(cfg){cfg.style.height=h+'px';}
+  alignCols();
+}
+// Pogoda równa siatce pokoi (gauge wypełnia resztę => równy z energią+kuchnią)
+function alignCols(){
+  var w=document.getElementById('wcard');
+  var g=document.querySelector('.rgrid');
+  if(w&&g){
+    var hh=g.offsetHeight;
+    if(hh>0) w.style.height=hh+'px';
+  }
+}
+fixHeight();
+setTimeout(alignCols,300);
+setTimeout(alignCols,1200);
+window.addEventListener('resize',fixHeight);
+window.addEventListener('orientationchange',function(){setTimeout(fixHeight,300);});
+</script>
+</body>
+</html>
