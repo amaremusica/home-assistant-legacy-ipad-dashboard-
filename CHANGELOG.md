@@ -2,6 +2,14 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.8.0] — 2026-06-14
+
+### Dodane
+- **Zakładka ♪ Muzyka** — przeglądanie biblioteki Spotify (playlisty → utwory), odtwarzanie na wybranym urządzeniu.
+- Wybór wyjścia: Wzmacniacz / iPhone / MacBook (z `source_list` HA).
+- W ☰: pole **Spotify — domyślne wyjście** (domyślnie „Wzmacniacz”).
+- Przycisk ▶ przy playlistach — odtwarzanie całej listy bez wchodzenia w utwory.
+
 ## [11.7.6] — 2026-06-14
 
 ### Naprawione
