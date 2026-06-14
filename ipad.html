@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.7.4 -->
+<!-- build: v11.7.5 -->
 <title>Dom</title>
 <style>
 :root {
@@ -593,7 +593,7 @@ body.light nav{background:var(--glass);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.7.4</span>
+      <span id="ver">v11.7.5</span>
       <button class="hbtn" onclick="forceReload()" title="Odśwież">↺</button>
     </div>
   </header>
@@ -756,7 +756,8 @@ body.light nav{background:var(--glass);}
               <div class="volr"><div class="volbw volset" id="sp-vbw" onclick="mSpVol(event,this)"><div class="volb" id="sp-vb" style="width:0%"></div></div><div class="volv" id="sp-vv">0%</div></div>
             </div>
             <div class="camcard camcard-dash" id="dashcam-card">
-              <img id="cam-dash" alt="Brama"><div class="camoff" id="camoff-dash">brak obrazu</div><div class="camlbl">📷 Brama</div>
+              <video id="cam-dash-v" autoplay muted playsinline webkit-playsinline></video>
+              <img id="cam-dash" alt="Brama" style="display:none"><div class="camoff" id="camoff-dash">brak obrazu</div><div class="camlbl">📷 Brama</div>
             </div>
             <div class="ctlrow">
               <div class="statecard sc-rose" id="sc-brama" onclick="tSwitch('switch.smart_switch_b78c',null,true)">
@@ -950,10 +951,10 @@ body.light nav{background:var(--glass);}
     <div id="view-kamery" class="view">
       <div class="st">Kamery na żywo</div>
       <div class="camgrid">
-        <div class="camcard"><img id="cam-front" alt="Front"><div class="camoff" id="camoff-front">brak obrazu</div><div class="camlbl">Front</div></div>
-        <div class="camcard"><img id="cam-tyl" alt="Tył"><div class="camoff" id="camoff-tyl">brak obrazu</div><div class="camlbl">Tył</div></div>
+        <div class="camcard"><video id="cam-front-v" autoplay muted playsinline webkit-playsinline></video><img id="cam-front" alt="Front" style="display:none"><div class="camoff" id="camoff-front">brak obrazu</div><div class="camlbl">Front</div></div>
+        <div class="camcard"><video id="cam-tyl-v" autoplay muted playsinline webkit-playsinline></video><img id="cam-tyl" alt="Tył" style="display:none"><div class="camoff" id="camoff-tyl">brak obrazu</div><div class="camlbl">Tył</div></div>
       </div>
-      <p id="cam-note" style="font-size:11px;color:var(--dim);margin-top:10px;text-align:center;">Strumień na żywo (MJPEG).</p>
+      <p id="cam-note" style="font-size:11px;color:var(--dim);margin-top:10px;text-align:center;">EZVIZ — strumień HLS (Safari) lub MJPEG.</p>
     </div>
 
     <!-- ZERO MIEKISZON — pełna strona (iframe blokuje logowanie na iOS 10) -->
@@ -1012,7 +1013,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.7.4';
+var BUILD='11.7.5';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var MOTION='binary_sensor.motion';
@@ -2174,11 +2175,17 @@ function setC(ok){
   el.className=ok?'ok':'err';
 }
 
-// CAMERY — strumień MJPEG (camera_proxy_stream) + migawka jako fallback
-var CAMS=[['camera.front','cam-front','camoff-front'],['camera.tyl','cam-tyl','camoff-tyl']];
+// CAMERY — EZVIZ: HLS (Safari/iPad) → MJPEG → migawka
+var CAMS=[['camera.front','cam-front','cam-front-v','camoff-front'],['camera.tyl','cam-tyl','cam-tyl-v','camoff-tyl']];
+var CAM_DASH=['camera.front','cam-dash','cam-dash-v','camoff-dash'];
 var CAM_STREAM=true;
 var camLive={};
 
+function camHlsUrl(eid,pl){
+  if(!HA||!TOK) return '';
+  pl=pl||'playlist.m3u8';
+  return HA.replace(/\/$/,'')+'/api/hls/'+eid+'/'+pl+'?token='+encodeURIComponent(TOK);
+}
 function camStreamUrl(eid){
   if(!HA||!TOK) return '';
   return HA.replace(/\/$/,'')+'/api/camera_proxy_stream/'+eid+'?token='+encodeURIComponent(TOK);
@@ -2193,21 +2200,34 @@ function camShowOff(offId,on){
   var off=document.getElementById(offId);
   if(off) off.style.display=on?'flex':'none';
 }
-function camStop(imgId,offId){
-  var img=document.getElementById(imgId);
-  if(!img) return;
+function camHideAll(img,vid){
+  if(vid){
+    try{ vid.pause(); }catch(e){}
+    vid.onerror=null;
+    vid.oncanplay=null;
+    vid.removeAttribute('src');
+    try{ vid.load(); }catch(e2){}
+    vid.style.display='none';
+  }
+  if(img){
+    img.onload=null;
+    img.onerror=null;
+    if(img.getAttribute('src')) img.removeAttribute('src');
+    img.style.display='none';
+  }
+}
+function camStop(imgId,vidId,offId){
   camLive[imgId]=null;
-  img.onload=null;
-  img.onerror=null;
-  if(img.getAttribute('src')) img.removeAttribute('src');
-  img.style.display='none';
+  camHideAll(document.getElementById(imgId),vidId?document.getElementById(vidId):null);
   camShowOff(offId,true);
 }
-function camSnapOnce(eid,imgId,offId){
+function camSnapOnce(eid,imgId,vidId,offId){
   var img=document.getElementById(imgId);
+  var vid=vidId?document.getElementById(vidId):null;
   if(!img) return;
+  camHideAll(img,vid);
   var base=camSnapUrl(eid);
-  if(!base){ if(!img.getAttribute('src')) camStop(imgId,offId); return; }
+  if(!base){ camStop(imgId,vidId,offId); return; }
   var full=base+(base.indexOf('?')>=0?'&':'?')+'_='+(new Date()).getTime();
   var pre=new Image();
   pre.onload=function(){
@@ -2216,38 +2236,59 @@ function camSnapOnce(eid,imgId,offId){
     camShowOff(offId,false);
     camLive[imgId]='snap';
   };
-  pre.onerror=function(){
-    if(!img.getAttribute('src')) camStop(imgId,offId);
-  };
+  pre.onerror=function(){ camStop(imgId,vidId,offId); };
   pre.src=full;
 }
-function camStartStream(eid,imgId,offId){
+function camStartMjpeg(eid,imgId,vidId,offId){
   var img=document.getElementById(imgId);
-  if(!img||!HA||!TOK) return;
-  if(camLive[imgId]==='stream'&&img.getAttribute('src')) return;
+  if(!img||!HA||!TOK){ camSnapOnce(eid,imgId,vidId,offId); return; }
+  camHideAll(img,vidId?document.getElementById(vidId):null);
   var u=camStreamUrl(eid);
-  camLive[imgId]='stream';
+  img.onerror=function(){
+    img.onerror=null;
+    camLive[imgId]=null;
+    camSnapOnce(eid,imgId,vidId,offId);
+  };
   img.onload=function(){
     img.style.display='block';
     camShowOff(offId,false);
-  };
-  img.onerror=function(){
-    camLive[imgId]=null;
-    camSnapOnce(eid,imgId,offId);
+    camLive[imgId]='mjpeg';
   };
   img.src=u;
   img.style.display='block';
   camShowOff(offId,false);
 }
-function camStart(eid,imgId,offId){
-  if(dimmed){ camStop(imgId,offId); return; }
-  if(CAM_STREAM) camStartStream(eid,imgId,offId);
-  else camSnapOnce(eid,imgId,offId);
+function camStartHls(eid,imgId,vidId,offId,pl){
+  var vid=document.getElementById(vidId);
+  var img=document.getElementById(imgId);
+  if(!vid||!HA||!TOK){ camStartMjpeg(eid,imgId,vidId,offId); return; }
+  if(camLive[imgId]==='hls'&&vid.getAttribute('src')) return;
+  camHideAll(img,vid);
+  pl=pl||'playlist.m3u8';
+  vid.oncanplay=function(){
+    vid.style.display='block';
+    camShowOff(offId,false);
+    camLive[imgId]='hls';
+  };
+  vid.onerror=function(){
+    vid.onerror=null;
+    if(pl==='playlist.m3u8') camStartHls(eid,imgId,vidId,offId,'master.m3u8');
+    else camStartMjpeg(eid,imgId,vidId,offId);
+  };
+  vid.src=camHlsUrl(eid,pl);
+  vid.style.display='block';
+  camShowOff(offId,false);
+  try{ vid.play(); }catch(e){}
+}
+function camStart(eid,imgId,vidId,offId){
+  if(dimmed){ camStop(imgId,vidId,offId); return; }
+  if(CAM_STREAM) camStartHls(eid,imgId,vidId,offId,'playlist.m3u8');
+  else camSnapOnce(eid,imgId,vidId,offId);
 }
 function camStopAll(){
   var i;
-  for(i=0;i<CAMS.length;i++) camStop(CAMS[i][1],CAMS[i][2]);
-  camStop('cam-dash','camoff-dash');
+  for(i=0;i<CAMS.length;i++) camStop(CAMS[i][1],CAMS[i][2],CAMS[i][3]);
+  camStop(CAM_DASH[1],CAM_DASH[2],CAM_DASH[3]);
 }
 function refreshCameras(){
   if(dimmed){ camStopAll(); return; }
@@ -2256,27 +2297,31 @@ function refreshCameras(){
   var vk=v&&v.className.indexOf('active')>=0;
   var vd=d&&d.className.indexOf('active')>=0;
   if(vk){
-    for(var i=0;i<CAMS.length;i++) camStart(CAMS[i][0],CAMS[i][1],CAMS[i][2]);
+    for(var i=0;i<CAMS.length;i++) camStart(CAMS[i][0],CAMS[i][1],CAMS[i][2],CAMS[i][3]);
   } else {
-    camStop(CAMS[0][1],CAMS[0][2]);
-    camStop(CAMS[1][1],CAMS[1][2]);
+    camStop(CAMS[0][1],CAMS[0][2],CAMS[0][3]);
+    camStop(CAMS[1][1],CAMS[1][2],CAMS[1][3]);
   }
-  if(vd) camStart('camera.front','cam-dash','camoff-dash');
-  else camStop('cam-dash','camoff-dash');
+  if(vd) camStart(CAM_DASH[0],CAM_DASH[1],CAM_DASH[2],CAM_DASH[3]);
+  else camStop(CAM_DASH[1],CAM_DASH[2],CAM_DASH[3]);
+}
+function camSlotByIds(imgId){
+  if(imgId==='cam-dash') return CAM_DASH;
+  var i;
+  for(i=0;i<CAMS.length;i++){ if(CAMS[i][1]===imgId) return CAMS[i]; }
+  return null;
 }
 function camHealthCheck(){
   if(dimmed||!CAM_STREAM) return;
-  var ids=['cam-dash','cam-front','cam-tyl'], i, img, key;
+  var ids=['cam-dash','cam-front','cam-tyl'], i, slot, img, vid, mode;
   for(i=0;i<ids.length;i++){
-    img=document.getElementById(ids[i]);
-    if(!img||!img.getAttribute('src')) continue;
-    if(camLive[ids[i]]!=='stream') continue;
-    if(img.naturalWidth===0){
-      key=ids[i];
-      if(key==='cam-dash') camStartStream('camera.front','cam-dash','camoff-dash');
-      else if(key==='cam-front') camStartStream('camera.front','cam-front','camoff-front');
-      else if(key==='cam-tyl') camStartStream('camera.tyl','cam-tyl','camoff-tyl');
-    }
+    slot=camSlotByIds(ids[i]);
+    if(!slot) continue;
+    mode=camLive[ids[i]];
+    img=document.getElementById(slot[1]);
+    vid=document.getElementById(slot[2]);
+    if(mode==='hls'&&vid&&(!vid.videoWidth||vid.readyState<2)) camStartHls(slot[0],slot[1],slot[2],slot[3],'playlist.m3u8');
+    else if(mode==='mjpeg'&&img&&img.naturalWidth===0) camStartMjpeg(slot[0],slot[1],slot[2],slot[3]);
   }
 }
 

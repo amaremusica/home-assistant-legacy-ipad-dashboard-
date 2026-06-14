@@ -2,6 +2,11 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.7.5] — 2026-06-14
+
+### Dodane
+- **Kamery EZVIZ (Front/Tył C8T)** — płynny strumień **HLS** w `<video>` (natywnie w Safari/iPad), potem MJPEG, na końcu migawka.
+
 ## [11.7.4] — 2026-06-14
 
 ### Dodane
