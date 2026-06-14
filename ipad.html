@@ -188,6 +188,10 @@ body.light .sp-chip.on{color:#fff;}
 .sp-radio{-webkit-flex:0 0 156px;flex:0 0 156px;height:156px;border-radius:12px;position:relative;overflow:hidden;cursor:pointer;box-shadow:var(--shadow);}
 .sp-radio-bg{position:absolute;top:0;left:0;right:0;bottom:0;background-size:cover;background-position:center;}
 .sp-radio-tint{position:absolute;top:0;left:0;right:0;bottom:0;}
+.sp-radio-t0{background:-webkit-linear-gradient(145deg,rgba(var(--accent-rgb),0.45),rgba(0,0,0,0.55));background:linear-gradient(145deg,rgba(var(--accent-rgb),0.45),rgba(0,0,0,0.55));}
+.sp-radio-t1{background:-webkit-linear-gradient(145deg,rgba(0,0,0,0.15),rgba(0,0,0,0.65));background:linear-gradient(145deg,rgba(0,0,0,0.15),rgba(0,0,0,0.65));}
+.sp-radio-t2{background:-webkit-linear-gradient(145deg,rgba(var(--accent-rgb),0.28),rgba(0,0,0,0.62));background:linear-gradient(145deg,rgba(var(--accent-rgb),0.28),rgba(0,0,0,0.62));}
+.sp-radio-t3{background:-webkit-linear-gradient(145deg,rgba(0,0,0,0.08),rgba(0,0,0,0.72));background:linear-gradient(145deg,rgba(0,0,0,0.08),rgba(0,0,0,0.72));}
 .sp-radio-badge{position:absolute;left:10px;top:10px;font-size:9px;font-weight:800;letter-spacing:.14em;color:#fff;background:rgba(0,0,0,0.35);padding:3px 7px;border-radius:4px;}
 .sp-radio-name{position:absolute;left:10px;right:10px;bottom:10px;font-size:15px;font-weight:800;color:#fff;line-height:1.15;text-shadow:0 2px 8px rgba(0,0,0,0.4);}
 .sp-loading{padding:24px 16px;color:var(--dim);font-size:13px;}
@@ -2285,7 +2289,7 @@ var SP_HOME_MAX=9;
 var SP_HOME_ORDER={'current_user_recently_played':1,'current_user_playlists':2,'new_releases':3,'current_user_saved_tracks':4,'current_user_top_artists':5,'current_user_top_tracks':6,'current_user_saved_albums':7,'current_user_followed_artists':8};
 var SP_SECTION_TITLES={'current_user_recently_played':'Ostatnie','current_user_saved_tracks':'Polubione utwory','current_user_saved_albums':'Zapisane albumy','new_releases':'Więcej tego, co lubisz','current_user_top_tracks':'Twoje hity','current_user_top_artists':'Polecane stacje','current_user_followed_artists':'Obserwujesz'};
 var SP_TITLE_PL={'Playlists':'Twoje playlisty','Recently played':'Ostatnie','Saved tracks':'Polubione utwory','Saved albums':'Zapisane albumy','New releases':'Nowości','Top tracks':'Top utwory','Top artists':'Top artyści','Followed artists':'Obserwowani artyści','Podcasts':'Podcasty','Spotify':'Biblioteka'};
-var SP_RADIO_TINTS=['rgba(var(--accent-rgb),0.72)','rgba(0,0,0,0.45)','rgba(var(--accent-rgb),0.55)','rgba(0,0,0,0.55)'];
+var SP_RADIO_TINTS=['sp-radio-t0','sp-radio-t1','sp-radio-t2','sp-radio-t3'];
 function spHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function spEscJs(s){ return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
 function spThumbUrl(u){ if(!u) return ''; return (u.indexOf('http')===0)?u:(HA+u); }
@@ -2526,7 +2530,7 @@ function spAppendRadioRow(title,items){
     tint=SP_RADIO_TINTS[i%SP_RADIO_TINTS.length];
     if(item.thumbnail) bg='<div class="sp-radio-bg" style="background-image:url(\''+spThumbUrl(item.thumbnail).replace(/'/g,'%27')+'\')"></div>';
     else bg='<div class="sp-radio-bg" style="background:-webkit-linear-gradient(145deg,var(--accent2),var(--accent));background:linear-gradient(145deg,var(--accent2),var(--accent));"></div>';
-    h+='<div class="sp-radio" onclick="spCardTap('+idx+')">'+bg+'<div class="sp-radio-tint" style="background:'+tint+'"></div><span class="sp-radio-badge">Radio</span><div class="sp-radio-name">'+spHtml(item.title)+'</div></div>';
+    h+='<div class="sp-radio" onclick="spCardTap('+idx+')">'+bg+'<div class="sp-radio-tint '+tint+'"></div><span class="sp-radio-badge">Radio</span><div class="sp-radio-name">'+spHtml(item.title)+'</div></div>';
   }
   h+='</div></div>';
   feed.innerHTML+=h;
