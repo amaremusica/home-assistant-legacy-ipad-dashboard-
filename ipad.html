@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.6.2 -->
+<!-- build: v11.6.3 -->
 <title>Dom</title>
 <style>
 :root {
@@ -577,7 +577,7 @@ body.light nav{background:var(--glass);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.6.2</span>
+      <span id="ver">v11.6.3</span>
       <button class="hbtn" onclick="forceReload()" title="Odśwież">↺</button>
     </div>
   </header>
@@ -987,7 +987,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.6.2';
+var BUILD='11.6.3';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var MOTION='binary_sensor.motion';
@@ -1085,6 +1085,17 @@ function forceReload(){
   else location.reload(true);
 }
 
+function verParts(v){
+  var p=String(v||'0').replace(/^v/i,'').split('.'), i, o=[0,0,0];
+  for(i=0;i<3;i++) o[i]=parseInt(p[i],10)||0;
+  return o;
+}
+function verCmp(a,b){
+  var pa=verParts(a), pb=verParts(b), i;
+  for(i=0;i<3;i++){ if(pa[i]>pb[i]) return 1; if(pa[i]<pb[i]) return -1; }
+  return 0;
+}
+
 function checkUpdate(){
   if(!HA) return;
   var url=HA.replace(/\/$/,'')+'/local/ipad-version.json?nocache='+Date.now();
@@ -1092,24 +1103,30 @@ function checkUpdate(){
   x.open('GET',url,true);
   x.onreadystatechange=function(){
     if(x.readyState!==4) return;
-    if(x.status!==200) return;
+    var bar=document.getElementById('upd-bar');
+    if(x.status!==200){
+      if(bar) bar.className='';
+      return;
+    }
     var remote='', data;
     try{ data=JSON.parse(x.responseText); remote=String(data.version||'').replace(/^v/i,''); }catch(e){ return; }
-    if(!remote||remote===BUILD) return;
+    if(!remote||verCmp(remote,BUILD)<=0){
+      if(bar) bar.className='';
+      return;
+    }
     if(sGet('upd_dismiss')===remote) return;
     updRemote=remote;
     var sub=document.getElementById('upd-sub');
     if(sub) sub.textContent='v'+BUILD+' → v'+remote;
-    var bar=document.getElementById('upd-bar');
     if(bar) bar.className='show';
   };
   x.send(null);
 }
 
 function applyUpdate(){
-  var v=updRemote||BUILD;
+  if(!updRemote||verCmp(updRemote,BUILD)<=0){ dismissUpdate(); return; }
   var base=(HA||'').replace(/\/$/,'');
-  window.location.href=base+'/local/ipad.html?v='+v+'&_='+Date.now();
+  window.location.href=base+'/local/ipad.html?v='+updRemote+'&_='+Date.now();
 }
 
 function dismissUpdate(){

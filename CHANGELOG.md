@@ -2,6 +2,12 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.6.3] — 2026-06-15
+
+### Naprawione
+- Baner aktualizacji tylko gdy wersja na serwerze **nowsza** (fix pętli `11.6.2 → 11.6`).
+- „Zaktualizuj” nie przeładowuje do starszej wersji.
+
 ## [11.6.2] — 2026-06-15
 
 ### Test
