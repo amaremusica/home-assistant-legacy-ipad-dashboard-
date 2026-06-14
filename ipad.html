@@ -2635,8 +2635,8 @@ function setVol(ev,eid,el){
   if(frac<0)frac=0; if(frac>1)frac=1;
   var pct=Math.round(frac*100);
   if(eid===SP_EID){
-    fb=document.getElementById('sp-vb'); if(fb) fb.style.width=pct+'%';
-    vv=document.getElementById('sp-vv'); if(vv) vv.textContent=pct+'%';
+    var fb=document.getElementById('sp-vb'); if(fb) fb.style.width=pct+'%';
+    var vv=document.getElementById('sp-vv'); if(vv) vv.textContent=pct+'%';
   }
   haPost('media_player','volume_set',{entity_id:eid,volume_level:frac},function(){ confirmEntity(eid); });
 }
