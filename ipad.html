@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v10.5 -->
+<!-- build: v11.6 -->
 <title>Dom</title>
 <style>
 :root {
@@ -112,6 +112,14 @@ header{-webkit-flex-shrink:0;flex-shrink:0;display:-webkit-flex;display:flex;-we
 #dstr{display:none;}
 .hbtn{background:var(--glass);border:1px solid var(--glass-b);border-radius:12px;padding:6px 10px;color:var(--dim);font-size:14px;cursor:pointer;-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);}
 #ver{font-size:9px;color:#64748b;opacity:1;font-weight:700;}
+#upd-bar{display:none;position:fixed;left:14px;right:14px;bottom:14px;z-index:800;padding:12px 16px;border-radius:var(--r);background:var(--glass2);border:1px solid var(--glass-b);box-shadow:var(--shadow);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);}
+#upd-bar.show{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;}
+.upd-txt{font-size:13px;font-weight:700;color:var(--bright);}
+.upd-sub{font-size:11px;font-weight:600;color:var(--dim);margin-top:2px;}
+.upd-btns{display:-webkit-flex;display:flex;-webkit-flex-shrink:0;flex-shrink:0;}
+.upd-btns>*+*{margin-left:8px;}
+.upd-btn{padding:8px 14px;border-radius:12px;border:1px solid var(--glass-b);font-size:12px;font-weight:700;cursor:pointer;-webkit-appearance:none;background:transparent;color:var(--dim);}
+.upd-yes{background:var(--accent);color:#0a0c12;border-color:transparent;}
 
 /* NAV — pill 2026 */
 nav{-webkit-flex-shrink:0;flex-shrink:0;display:-webkit-flex;display:flex;-webkit-justify-content:flex-start;justify-content:flex-start;background:var(--glass);border:1px solid var(--glass-b);border-radius:999px;margin:0 14px 8px;padding:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--shadow);}
@@ -127,7 +135,7 @@ body.light .tb.a{box-shadow:0 2px 12px rgba(15,23,42,0.08);}
 #view-dom{display:none;position:absolute;top:0;left:0;right:0;bottom:0;padding:4px 12px 10px;}
 #view-dom.view.active{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;}
 .dash{-webkit-flex:1;flex:1;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;height:100%;min-height:0;overflow:hidden;}
-.dash>*+*{margin-top:14px;}
+.dash>*+*{margin-top:9px;}
 .dash-w{-webkit-flex:0 0 auto;flex:0 0 auto;}
 .dash-t{-webkit-flex:0 0 auto;flex:0 0 auto;}
 .dash-q{-webkit-flex:0 0 auto;flex:0 0 auto;}
@@ -135,8 +143,8 @@ body.light .tb.a{box-shadow:0 2px 12px rgba(15,23,42,0.08);}
 .dash-b{-webkit-flex:0 0 auto;flex:0 0 auto;}
 .dash-row{display:-webkit-flex;display:flex;width:100%;}
 .dash-row>*+*{margin-left:14px;}
-#view-salon,#view-sypialnia,#view-kuchnia,#view-lazienki,#view-ogrod,#view-energia,#view-drukarka,#view-kamery,#view-zero{display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;position:absolute;top:0;left:0;right:0;bottom:0;padding:10px 12px;}
-#view-salon.active,#view-sypialnia.active,#view-kuchnia.active,#view-lazienki.active,#view-ogrod.active,#view-energia.active,#view-drukarka.active,#view-kamery.active{display:block;}
+#view-salon,#view-sypialnia,#view-kuchnia,#view-lazienki,#view-ogrod,#view-energia,#view-drukarka,#view-kamery,#view-zero,#view-pogoda{display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;position:absolute;top:0;left:0;right:0;bottom:0;padding:10px 12px;}
+#view-salon.active,#view-sypialnia.active,#view-kuchnia.active,#view-lazienki.active,#view-ogrod.active,#view-energia.active,#view-drukarka.active,#view-kamery.active,#view-pogoda.active{display:block;}
 .camgrid{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:-5px;}
 .camgrid>*{margin:5px;}
 .camcard{-webkit-flex:1 1 calc(50% - 10px);flex:1 1 calc(50% - 10px);min-width:280px;position:relative;border-radius:var(--r);overflow:hidden;background:#000;border:1px solid var(--glass-b);box-shadow:var(--shadow);}
@@ -145,6 +153,41 @@ body.light .tb.a{box-shadow:0 2px 12px rgba(15,23,42,0.08);}
 .camcard .camoff{position:absolute;top:0;left:0;right:0;bottom:0;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;color:rgba(255,255,255,0.5);font-size:13px;}
 #view-zero{padding:10px 12px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 #view-zero.active{display:block;}
+
+/* PEŁNA STRONA POGODY */
+.wp{max-width:1100px;margin:0 auto;}
+.wp-hero{position:relative;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;padding:22px 26px;border-radius:var(--r-lg);overflow:hidden;background:#bcd8f2;background:-webkit-radial-gradient(28% 26%,circle,rgba(255,255,255,0.95),transparent 24%),-webkit-linear-gradient(150deg,#9cc6ef 0%,#bcd8f2 45%,#e9f1fa 100%);background:radial-gradient(circle at 28% 26%,rgba(255,255,255,0.95),transparent 24%),linear-gradient(150deg,#9cc6ef 0%,#bcd8f2 45%,#e9f1fa 100%);}
+.wp-cond{font-size:26px;font-weight:800;color:#0b2034;letter-spacing:-0.02em;}
+.wp-loc{font-size:13px;color:rgba(11,32,52,0.6);margin-top:4px;}
+.wp-temp{font-size:74px;font-weight:500;color:#0b2034;line-height:1;letter-spacing:-0.04em;margin-top:10px;}
+.wp-unit{font-size:28px;color:rgba(11,32,52,0.55);font-weight:300;margin-left:2px;}
+.wp-feels{font-size:14px;color:rgba(11,32,52,0.62);font-weight:600;margin-top:8px;}
+.wp-icon{width:120px;height:120px;-webkit-flex-shrink:0;flex-shrink:0;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.25));}
+.wp-stats{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:9px -5px 0;}
+.wp-stat{-webkit-flex:1 1 calc(25% - 10px);flex:1 1 calc(25% - 10px);min-width:110px;margin:5px;padding:12px 14px;border-radius:16px;}
+.wp-sl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:700;}
+.wp-sv{font-size:20px;font-weight:700;color:var(--bright);margin-top:5px;letter-spacing:-0.02em;}
+.wp-sv small{font-size:11px;color:var(--dim);font-weight:600;}
+.wp-sec-t{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:700;margin:16px 4px 8px;}
+.wp-hourly{display:-webkit-flex;display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;}
+.wp-hourly>*+*{margin-left:8px;}
+.wp-hr{-webkit-flex:0 0 auto;flex:0 0 auto;width:64px;text-align:center;padding:12px 6px;border-radius:16px;background:var(--glass);border:1px solid var(--glass-b);box-shadow:var(--shadow);}
+.wp-hr-t{font-size:11px;font-weight:700;color:var(--dim);}
+.wp-hr-i{width:30px;height:30px;margin:6px auto 4px;}
+.wp-hr-tmp{font-size:16px;font-weight:700;color:var(--bright);letter-spacing:-0.02em;}
+.wp-hr-p{font-size:10px;font-weight:700;color:#2f7fd6;margin-top:3px;min-height:12px;}
+.wp-hr-p svg{width:7px;height:9px;fill:#2f7fd6;margin-right:2px;vertical-align:-1px;}
+.wp-daily{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;}
+.wp-daily>*+*{margin-top:8px;}
+.wp-dr{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;padding:12px 16px;border-radius:16px;background:var(--glass);border:1px solid var(--glass-b);box-shadow:var(--shadow);}
+.wp-dr-d{-webkit-flex:0 0 84px;flex:0 0 84px;font-size:14px;font-weight:700;color:var(--bright);text-transform:capitalize;}
+.wp-dr-i{width:30px;height:30px;-webkit-flex-shrink:0;flex-shrink:0;}
+.wp-dr-p{-webkit-flex:0 0 64px;flex:0 0 64px;font-size:12px;font-weight:700;color:#2f7fd6;text-align:center;}
+.wp-dr-p svg{width:8px;height:10px;fill:#2f7fd6;margin-right:2px;vertical-align:-1px;}
+.wp-dr-bar{-webkit-flex:1;flex:1;height:6px;border-radius:6px;margin:0 14px;background:rgba(20,17,13,0.1);position:relative;overflow:hidden;}
+.wp-dr-bar i{position:absolute;top:0;bottom:0;border-radius:6px;background:-webkit-linear-gradient(left,#5bb0f0,#fbbf24);background:linear-gradient(90deg,#5bb0f0,#fbbf24);}
+.wp-dr-lo{font-size:14px;font-weight:600;color:var(--dim);-webkit-flex:0 0 38px;flex:0 0 38px;text-align:right;}
+.wp-dr-hi{font-size:15px;font-weight:800;color:var(--bright);-webkit-flex:0 0 38px;flex:0 0 38px;text-align:right;}
 .zero-panel{text-align:center;padding:28px 20px;margin-top:12px;}
 .zero-logo{font-size:26px;font-weight:700;color:var(--bright);letter-spacing:.04em;margin-bottom:6px;}
 .zero-sub{font-size:12px;color:var(--dim);margin-bottom:18px;line-height:1.5;}
@@ -196,8 +239,16 @@ body.light .wst b{color:#0b1220;}
 .wfd{-webkit-flex:1 1 0;flex:1 1 0;min-width:0;text-align:center;padding:7px 2px;border-radius:13px;background:var(--glass2);border:1px solid var(--glass-b);overflow:hidden;}
 .wfd .wdn{font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;font-weight:700;}
 .wfd .wft{font-size:14px;font-weight:700;color:var(--bright);margin-top:4px;letter-spacing:-0.03em;white-space:nowrap;}
+.wfd .wflo{font-size:11px;font-weight:600;color:var(--dim);margin-left:3px;}
+.wcard .wfd .wflo{color:rgba(11,32,52,0.5);}
 .wfd .wfi{width:24px;height:24px;margin:4px auto 0;}
-.waqline{margin-top:12px;}
+.wfd .wfp{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;font-size:9px;font-weight:700;color:#2f7fd6;margin-top:2px;min-height:12px;}
+.wfd .wfp svg{width:7px;height:9px;fill:#2f7fd6;margin-right:2px;}
+.wfd .wfp-x{visibility:hidden;}
+.waqline{margin-top:12px;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;}
+.wsun-t{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;font-size:12px;font-weight:700;color:#0b2034;letter-spacing:-0.01em;}
+.wsun-t span+span{margin-left:8px;}
+.wsun-t svg{width:14px;height:14px;vertical-align:middle;margin-right:3px;}
 
 /* TEMP kafle */
 .rtrow{display:-webkit-flex;display:flex;width:100%;}
@@ -267,7 +318,8 @@ body.light .wst b{color:#0b1220;}
 .rcell{-webkit-flex:1 1 calc(33.33% - 10px);flex:1 1 calc(33.33% - 10px);margin:5px;min-width:0;position:relative;padding:7px 10px 6px;overflow:hidden;}
 .rcell-h{display:-webkit-flex;display:flex;-webkit-justify-content:space-between;justify-content:space-between;-webkit-align-items:center;align-items:center;margin-bottom:4px;}
 .rcell-name{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:700;}
-.rbulb{width:26px;height:26px;border-radius:50%;border:1px solid var(--glass-b);background:var(--glass2);display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;font-size:13px;cursor:pointer;-webkit-flex-shrink:0;flex-shrink:0;}
+.rbulb{width:32px;height:32px;border-radius:50%;border:1px solid var(--glass-b);background:var(--glass2);display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;font-size:15px;cursor:pointer;-webkit-flex-shrink:0;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
+.rbulb:active{-webkit-transform:scale(0.92);transform:scale(0.92);}
 .rbulb.on{background:rgba(var(--accent-rgb),0.22);border-color:rgba(var(--accent-rgb),0.5);color:var(--accent);-webkit-box-shadow:0 0 16px rgba(var(--accent-rgb),0.4);box-shadow:0 0 16px rgba(var(--accent-rgb),0.4);}
 .rcell.lit{background:rgba(var(--accent-rgb),0.16);border-color:rgba(var(--accent-rgb),0.45);-webkit-box-shadow:0 0 22px rgba(var(--accent-rgb),0.35),inset 0 0 18px rgba(var(--accent-rgb),0.12);box-shadow:0 0 22px rgba(var(--accent-rgb),0.35),inset 0 0 18px rgba(var(--accent-rgb),0.12);}
 .rcell.lit .rcell-name{color:var(--accent);}
@@ -353,7 +405,8 @@ body.light .ecard{background:-webkit-linear-gradient(135deg,rgba(251,191,36,0.12
 .spro{-webkit-flex:0 0 auto;flex:0 0 auto;padding:14px;}
 .spro-top{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;margin-bottom:10px;}
 .spro-lbl{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:700;}
-.spro-badge{width:18px;height:18px;border-radius:50%;background:#1db954;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;font-size:11px;}
+.spro-badge{width:20px;height:20px;border-radius:50%;background:#1db954;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;}
+.spro-badge svg{width:12px;height:12px;fill:#0b3d1e;}
 .spro-body{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;margin-bottom:12px;}
 .spro-body>*+*{margin-left:12px;}
 .spro-art{width:52px;height:52px;border-radius:12px;-webkit-flex-shrink:0;flex-shrink:0;background:var(--glass2) -webkit-radial-gradient(50% 0,circle,rgba(var(--accent-rgb),0.4),transparent 70%);background:var(--glass2);background-size:cover;background-position:center;box-shadow:0 4px 14px rgba(0,0,0,0.3);}
@@ -362,13 +415,8 @@ body.light .ecard{background:-webkit-linear-gradient(135deg,rgba(251,191,36,0.12
 .spro-artist{font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
 .wave{display:-webkit-flex;display:flex;-webkit-align-items:flex-end;align-items:flex-end;height:26px;margin-bottom:10px;}
 .wave span+span{margin-left:2px;}
-.wave span{-webkit-flex:1;flex:1;background:-webkit-linear-gradient(bottom,var(--accent2),var(--accent));background:linear-gradient(0deg,var(--accent2),var(--accent));border-radius:2px;opacity:.55;height:30%;}
-.wave.playing span{-webkit-animation:wv 1s ease-in-out infinite alternate;animation:wv 1s ease-in-out infinite alternate;}
-.wave span:nth-child(2n){-webkit-animation-delay:.15s;animation-delay:.15s;}
-.wave span:nth-child(3n){-webkit-animation-delay:.3s;animation-delay:.3s;}
-.wave span:nth-child(4n){-webkit-animation-delay:.45s;animation-delay:.45s;}
-@-webkit-keyframes wv{0%{height:20%}100%{height:95%}}
-@keyframes wv{0%{height:20%}100%{height:95%}}
+.wave span{-webkit-flex:1;flex:1;height:100%;background:-webkit-linear-gradient(bottom,var(--accent2),var(--accent));background:linear-gradient(0deg,var(--accent2),var(--accent));border-radius:2px;opacity:.6;-webkit-transform:scaleY(.22);transform:scaleY(.22);-webkit-transform-origin:bottom;transform-origin:bottom;-webkit-transition:-webkit-transform .2s ease-out;transition:transform .2s ease-out;}
+.wave.playing span{opacity:.85;}
 
 /* Speaker rows */
 .spk{-webkit-flex:0 0 auto;flex:0 0 auto;padding:12px 14px;cursor:pointer;}
@@ -390,34 +438,48 @@ body.light .spk-bar{background:rgba(15,23,42,0.08);}
 .martist{font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:10px;}
 .mctrl{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;}
 .mctrl>*+*{margin-left:8px;}
-.mbtn{background:var(--glass2);border:1px solid var(--glass-b);border-radius:14px;color:var(--text);font-size:16px;padding:9px 0;cursor:pointer;-webkit-flex:1;flex:1;max-width:54px;text-align:center;-webkit-user-select:none;user-select:none;}
-.mbtn:active{background:var(--accent-dim);}
-.mbtn.play{background:rgba(var(--accent-rgb),0.2);border-color:rgba(var(--accent-rgb),0.38);color:var(--accent);font-size:18px;max-width:60px;}
+.mbtn{background:var(--glass2);border:1px solid var(--glass-b);border-radius:14px;color:var(--text);padding:12px 0;cursor:pointer;-webkit-flex:1;flex:1;max-width:58px;text-align:center;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;}
+.mbtn:active{background:var(--accent-dim);-webkit-transform:scale(0.94);transform:scale(0.94);}
+.mbtn.play{background:rgba(var(--accent-rgb),0.2);border-color:rgba(var(--accent-rgb),0.38);color:var(--accent);max-width:60px;}
+.mbtn svg{width:19px;height:19px;display:block;margin:0 auto;fill:currentColor;}
+.mbtn.play svg{width:22px;height:22px;}
+.spprog{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;margin-bottom:10px;}
+.spprog>*+*{margin-left:8px;}
+.sppt{font-size:10px;color:var(--dim);font-weight:600;min-width:30px;text-align:center;-webkit-flex-shrink:0;flex-shrink:0;}
+.sppbar{-webkit-flex:1;flex:1;height:4px;border-radius:4px;background:rgba(20,17,13,0.14);overflow:hidden;}
+body.light .sppbar{background:rgba(15,23,42,0.1);}
+.sppfill{height:100%;width:0;background:-webkit-linear-gradient(left,var(--accent2),var(--accent));background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:4px;}
 .volr{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;margin-top:10px;}
 .volr>*+*{margin-left:8px;}
 .volbw{-webkit-flex:1;flex:1;height:5px;background:rgba(255,255,255,0.08);border-radius:5px;overflow:hidden;}
 body.light .volbw{background:rgba(15,23,42,0.08);}
-.volset{height:14px;cursor:pointer;border-radius:7px;background:rgba(20,17,13,0.12);}
-.volset .volb{border-radius:7px;}
+.volset{height:18px;cursor:pointer;border-radius:9px;background:rgba(20,17,13,0.12);-webkit-tap-highlight-color:transparent;}
+.volset .volb{border-radius:9px;}
 .volset:active{-webkit-transform:scaleY(1.15);transform:scaleY(1.15);}
 .volb{height:100%;background:-webkit-linear-gradient(left,var(--accent2),var(--accent));background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:5px;}
 .volv{font-size:10px;color:var(--dim);width:30px;text-align:right;font-weight:600;}
 
 /* BOTTOM */
-.aqcard{-webkit-flex:1.3;flex:1.3;padding:12px 14px;}
-.aqtitle{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
+.aqcard{-webkit-flex:1.3;flex:1.3;padding:9px 14px;}
+.aqtitle{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;}
 .aqgrid{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:-5px -8px;}
 .aqgrid>*{margin:5px 8px;}
 .aqitem{font-size:10px;color:var(--dim);}
-.aqitem b{font-size:17px;font-weight:500;color:var(--bright);display:block;margin-top:2px;}
+.aqitem b{font-size:16px;font-weight:500;color:var(--bright);display:block;margin-top:1px;}
 .glance{display:-webkit-flex;display:flex;-webkit-flex:1;flex:1;}
 .glance>*+*{margin-left:10px;}
-.gcard{-webkit-flex:1;flex:1;padding:12px;}
-.gtitle{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
+.gcard{-webkit-flex:1;flex:1;padding:9px 12px;}
+.gtitle{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;}
 .grow{display:-webkit-flex;display:flex;-webkit-justify-content:space-between;justify-content:space-between;}
+.trash-card{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;text-align:center;}
+.trash-ic{width:30px;height:30px;-webkit-flex-shrink:0;flex-shrink:0;margin-right:10px;fill:none;stroke:#94a3b8;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+.trash-info{min-width:0;text-align:left;}
+.trash-when{font-size:17px;font-weight:800;color:var(--bright);letter-spacing:-0.02em;line-height:1.05;}
+.trash-when.soon{color:#e0a800;}
+.trash-what{font-size:11px;font-weight:600;color:var(--dim);line-height:1.2;margin-top:2px;}
 .gi{text-align:center;-webkit-flex:1;flex:1;}
 .gi .gl{font-size:9px;color:var(--dim);}
-.gi .gv{font-size:18px;font-weight:400;color:var(--bright);margin-top:4px;}
+.gi .gv{font-size:16px;font-weight:400;color:var(--bright);margin-top:2px;}
 
 .lc{cursor:pointer;padding:12px 8px;text-align:center;-webkit-user-select:none;user-select:none;}
 .lc.on{box-shadow:var(--shadow),0 0 20px rgba(var(--accent-rgb),0.16);border-color:rgba(var(--accent-rgb),0.35);}
@@ -471,7 +533,10 @@ body.light nav{background:var(--glass);}
     <div class="cf"><label>Adres HA</label><input type="url" id="cu" placeholder="http://homeassistant.local:8123" autocorrect="off" autocapitalize="off"></div>
     <div class="cf"><label>Access Token</label><input type="password" id="ct" placeholder="eyJ0eXAi..." autocomplete="off"><div id="cts" class="csaved">✓ Token zapisany</div></div>
     <div class="cf"><label>Czas ściemnienia (sek)</label><input type="number" id="cd" value="45" min="10" max="600"></div>
-    <div class="cf"><label>Czujnik ruchu (entity_id)</label><input type="text" id="cm" placeholder="binary_sensor.hobeian_zg_204z" autocorrect="off" autocapitalize="off"></div>
+    <div class="cf"><label>Czujnik ruchu (entity_id)</label><input type="text" id="cm" placeholder="binary_sensor.motion" autocorrect="off" autocapitalize="off"></div>
+    <div class="cf"><label>Spotify (entity_id)</label><input type="text" id="csp" placeholder="media_player.spotify" autocorrect="off" autocapitalize="off"></div>
+    <div class="cf"><label>Kalendarz śmieci</label><input type="text" id="ctr" placeholder="calendar.trash" autocorrect="off" autocapitalize="off"></div>
+    <div class="cf"><label>Telewizor (entity_id)</label><input type="text" id="ctv" placeholder="media_player.living_room_tv" autocorrect="off" autocapitalize="off"></div>
     <div class="cf">
       <label>Motyw</label>
       <div style="display:-webkit-flex;display:flex;">
@@ -508,14 +573,25 @@ body.light nav{background:var(--glass);}
   <header>
     <div class="hd-left">
       <button class="menu-btn" onclick="showConfig()" title="Ustawienia">☰</button>
-      <div id="mot" title="binary_sensor.hobeian_zg_204z">◌ ruch</div>
+      <div id="mot" title="ruch">◌ ruch</div>
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v10.5</span>
-      <button class="hbtn" onclick="location.reload()" title="Odśwież">↺</button>
+      <span id="ver">v11.6</span>
+      <button class="hbtn" onclick="forceReload()" title="Odśwież">↺</button>
     </div>
   </header>
+
+  <div id="upd-bar">
+    <div>
+      <div class="upd-txt">Dostępna nowa wersja panelu</div>
+      <div class="upd-sub" id="upd-sub">--</div>
+    </div>
+    <div class="upd-btns">
+      <button class="upd-btn upd-no" onclick="dismissUpdate()">Później</button>
+      <button class="upd-btn upd-yes" onclick="applyUpdate()">Zaktualizuj</button>
+    </div>
+  </div>
 
   <nav>
     <button class="tb a" onclick="sv('dom',this)"><span class="tbi">🏠</span>Dom</button>
@@ -528,6 +604,7 @@ body.light nav{background:var(--glass);}
     <button class="tb" onclick="sv('drukarka',this)"><span class="tbi">🖨️</span>K1C</button>
     <button class="tb" onclick="sv('kamery',this)"><span class="tbi">📷</span>Kamery</button>
     <button class="tb" onclick="openZero(this)"><span class="tbi">🌐</span>Zero</button>
+    <button class="tb" onclick="sv('pogoda',this)"><span class="tbi">🌦️</span>Pogoda</button>
   </nav>
 
   <div id="content">
@@ -558,7 +635,7 @@ body.light nav{background:var(--glass);}
                   <div class="wst"><b id="wh">--</b><span>%</span></div>
                   <div class="wst"><b id="ww">--</b><span>km/h</span></div>
                 </div>
-                <div class="waqline" id="waq"></div>
+                <div class="waqline"><span id="waq"></span><span class="wsun-t" id="wsun"></span></div>
                 <div class="wfc" id="wfc"></div>
               </div>
             </div>
@@ -630,7 +707,7 @@ body.light nav{background:var(--glass);}
               </div>
               <div class="ktemps">
                 <div class="ktemp"><span class="ktemp-i">🧊</span><div class="ktemp-m"><span class="ktemp-l">Lodówka</span><span class="ktemp-v"><span id="ft2">--</span>°</span></div></div>
-                <div class="ktemp"><span class="ktemp-i">❄️</span><div class="ktemp-m"><span class="ktemp-l">Zamrażalka</span><span class="ktemp-v"><span id="fzt">--</span>°</span></div></div>
+                <div class="ktemp"><span class="ktemp-i">❄️</span><div class="ktemp-m"><span class="ktemp-l">Zamrażarka</span><span class="ktemp-v"><span id="fzt">--</span>°</span></div></div>
               </div>
             </div>
           </div>
@@ -638,7 +715,7 @@ body.light nav{background:var(--glass);}
           <!-- PRAWA: Spotify + głośniki -->
           <div class="d3-col d3-right">
             <div class="card spro">
-              <div class="spro-top"><span class="spro-lbl">Spotify</span><span class="spro-badge">♪</span></div>
+              <div class="spro-top"><span class="spro-lbl">Spotify</span><span class="spro-badge"><svg viewBox="0 0 24 24"><path d="M10 5.5V14a3 3 0 1 0 1.8 2.75V8.7l5 1.4V7.5L10 5.5z"/></svg></span></div>
               <div class="spro-body">
                 <div class="spro-art" id="sp-art"></div>
                 <div class="spro-meta">
@@ -647,12 +724,13 @@ body.light nav{background:var(--glass);}
                 </div>
               </div>
               <div class="wave" id="sp-wave"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+              <div class="spprog"><span class="sppt" id="sp-pos">0:00</span><div class="sppbar"><div class="sppfill" id="sp-pf"></div></div><span class="sppt" id="sp-dur">0:00</span></div>
               <div class="mctrl">
-                <button class="mbtn" onclick="mCmd('media_player.spotify','media_previous_track')">⏮</button>
-                <button class="mbtn play" id="sp-p" onclick="mPP('media_player.spotify','sp-p')">▶</button>
-                <button class="mbtn" onclick="mCmd('media_player.spotify','media_next_track')">⏭</button>
+                <button class="mbtn" onclick="mSpPrev()"><svg viewBox="0 0 24 24"><path d="M7 6h2.2v12H7zM20 6.4v11.2L11 12z"/></svg></button>
+                <button class="mbtn play" id="sp-p" onclick="mSpPP()"><svg viewBox="0 0 24 24"><path d="M7 5.5v13L18 12z"/></svg></button>
+                <button class="mbtn" onclick="mSpNext()"><svg viewBox="0 0 24 24"><path d="M14.8 6H17v12h-2.2zM4 6.4v11.2L13 12z"/></svg></button>
               </div>
-              <div class="volr"><div class="volbw volset" id="sp-vbw" onclick="setVol(event,'media_player.spotify',this)"><div class="volb" id="sp-vb" style="width:0%"></div></div><div class="volv" id="sp-vv">0%</div></div>
+              <div class="volr"><div class="volbw volset" id="sp-vbw" onclick="mSpVol(event,this)"><div class="volb" id="sp-vb" style="width:0%"></div></div><div class="volv" id="sp-vv">0%</div></div>
             </div>
             <div class="camcard camcard-dash" id="dashcam-card">
               <img id="cam-dash" alt="Brama"><div class="camoff" id="camoff-dash">brak obrazu</div><div class="camlbl">📷 Brama</div>
@@ -700,6 +778,10 @@ body.light nav{background:var(--glass);}
                 <div class="gi"><div class="gl">Ciśn.</div><div class="gv"><span id="og-p">--</span></div></div>
               </div>
             </div>
+            <div class="gcard glass trash-card" id="trash-card">
+              <svg class="trash-ic" id="trash-ic" viewBox="0 0 24 24"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13M10 11v6M14 11v6"/></svg>
+              <div class="trash-info"><div class="trash-when" id="trash-when">--</div><div class="trash-what" id="trash-what">sprawdzam…</div></div>
+            </div>
           </div>
         </div>
 
@@ -722,9 +804,9 @@ body.light nav{background:var(--glass);}
       <div class="card mc">
         <div class="mtrack" id="tv-t">--</div>
         <div class="mctrl" style="margin-top:8px;">
-          <button class="mbtn" onclick="mCmd('media_player.samsung_q70aa_85_tv_qe85q70aatxxh','media_previous_track')">⏮</button>
-          <button class="mbtn play" id="tv-p" onclick="mPP('media_player.samsung_q70aa_85_tv_qe85q70aatxxh','tv-p')">▶</button>
-          <button class="mbtn" onclick="mCmd('media_player.samsung_q70aa_85_tv_qe85q70aatxxh','media_next_track')">⏭</button>
+          <button class="mbtn" onclick="mTvPrev()"><svg viewBox="0 0 24 24"><path d="M7 6h2.2v12H7zM20 6.4v11.2L11 12z"/></svg></button>
+          <button class="mbtn play" id="tv-p" onclick="mTvPP()"><svg viewBox="0 0 24 24"><path d="M7 5.5v13L18 12z"/></svg></button>
+          <button class="mbtn" onclick="mTvNext()"><svg viewBox="0 0 24 24"><path d="M14.8 6H17v12h-2.2zM4 6.4v11.2L13 12z"/></svg></button>
         </div>
       </div>
     </div>
@@ -734,8 +816,8 @@ body.light nav{background:var(--glass);}
       <div class="st">Oświetlenie</div>
       <div class="g3">
         <div class="card lc" id="lc-sy1" onclick="tLight('light.swiatlo_sypialnia_swiatlo','lc-sy1','ls-sy1')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Sypialnia</div><div class="lstate off" id="ls-sy1">off</div></div>
-        <div class="card lc" id="lc-sym" onclick="tSwitch('switch.marcin_sypialnia','lc-sym','ls-sym')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><div class="lname">Marcin</div><div class="lstate off" id="ls-sym">off</div></div>
-        <div class="card lc" id="lc-symz" onclick="tSwitch('switch.marzenka_sypialnia','lc-symz','ls-symz')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><div class="lname">Marzenka</div><div class="lstate off" id="ls-symz">off</div></div>
+        <div class="card lc" id="lc-sym" onclick="tSwitch('switch.bedside_1','lc-sym','ls-sym')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><div class="lname">Łóżko 1</div><div class="lstate off" id="ls-sym">off</div></div>
+        <div class="card lc" id="lc-symz" onclick="tSwitch('switch.bedside_2','lc-symz','ls-symz')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><div class="lname">Łóżko 2</div><div class="lstate off" id="ls-symz">off</div></div>
       </div>
       <div class="st">Czujniki</div>
       <div class="card"><div class="sr"><div class="srl">Temperatura</div><div class="srv"><span id="ssy-t">--</span> °C</div></div><div class="sr"><div class="srl">Wilgotność</div><div class="srv"><span id="ssy-h">--</span> %</div></div><div class="sr"><div class="srl">Ciśnienie</div><div class="srv"><span id="ssy-p">--</span> hPa</div></div></div>
@@ -849,7 +931,52 @@ body.light nav{background:var(--glass);}
       <p style="font-size:11px;color:var(--dim);margin-top:10px;text-align:center;">Migawka odświeżana co ~2 s (camera_proxy).</p>
     </div>
 
-   
+    <!-- ZERO MIEKISZON — pełna strona (iframe blokuje logowanie na iOS 10) -->
+    <div id="view-zero" class="view">
+      <div class="zero-panel glass">
+        <div class="zero-logo">ZERO MIEKISZON</div>
+        <div class="zero-sub">#ZeroMiekiszon · Maraton 27.09.2026<br>Treningi · dieta · zakupy · statsy</div>
+        <button type="button" class="zero-btn" onclick="openZero()">Otwórz ZeroMiekiszon →</button>
+        <a class="zero-link" href="https://zeromiekiszon.pl/legacy/?sw=off" onclick="openZeroLegacy(event)">Wersja dla iPad 4 (iOS 10)</a>
+        <div id="zero-note" class="zero-note" style="display:none;">
+          <b>iPad 4 / iOS 10:</b> główna strona używa składni JS (??, ?.), której stary Safari nie rozumie — cały skrypt się nie ładuje i logowanie nie działa. Wgraj na serwer wersję <code>/legacy/</code> (skrypt <code>fix-zeromiekiszon-ios10.js</code> w tym folderze).
+        </div>
+      </div>
+    </div>
+
+    <div id="view-pogoda" class="view">
+      <div class="wp">
+        <div class="wp-hero glass">
+          <div class="wp-hero-l">
+            <div class="wp-cond" id="wp-cond">--</div>
+            <div class="wp-loc">📍 Dom</div>
+            <div class="wp-temp"><span id="wp-temp">--</span><span class="wp-unit">°C</span></div>
+            <div class="wp-feels" id="wp-feels"></div>
+          </div>
+          <svg class="wp-icon" id="wp-icon" viewBox="0 0 36 36" fill="none"></svg>
+        </div>
+
+        <div class="wp-stats">
+          <div class="wp-stat glass"><div class="wp-sl">Ciśnienie</div><div class="wp-sv"><span id="wp-press">--</span> <small>hPa</small></div></div>
+          <div class="wp-stat glass"><div class="wp-sl">Wilgotność</div><div class="wp-sv"><span id="wp-hum">--</span> <small>%</small></div></div>
+          <div class="wp-stat glass"><div class="wp-sl">Wiatr</div><div class="wp-sv"><span id="wp-wind">--</span> <small>km/h</small></div></div>
+          <div class="wp-stat glass"><div class="wp-sl">Kierunek</div><div class="wp-sv" id="wp-winddir">--</div></div>
+          <div class="wp-stat glass"><div class="wp-sl">Zachmurzenie</div><div class="wp-sv" id="wp-cloud">--</div></div>
+          <div class="wp-stat glass"><div class="wp-sl">Wschód</div><div class="wp-sv" id="wp-sunrise">--</div></div>
+          <div class="wp-stat glass"><div class="wp-sl">Zachód</div><div class="wp-sv" id="wp-sunset">--</div></div>
+          <div class="wp-stat glass"><div class="wp-sl">Jakość pow.</div><div class="wp-sv" id="wp-aq">--</div></div>
+        </div>
+
+        <div class="wp-sec-t">Godzinowo</div>
+        <div class="wp-hourly" id="wp-hourly"></div>
+
+        <div class="wp-sec-t">Najbliższe dni</div>
+        <div class="wp-daily" id="wp-daily"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <div id="dim" onclick="wakeScreen(true)"><div id="diml">dotknij ekran · ruch rozjaśnia</div></div>
 
@@ -860,15 +987,28 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
+var BUILD='11.6';
 var HA='',TOK='',DIM=45000;
-var MOTION='binary_sensor.hobeian_zg_204z';
+var updRemote='';
+var MOTION='binary_sensor.motion';
+var SP_EID='media_player.spotify';
+var TV_EID='media_player.living_room_tv';
+var TRASH_ENT='calendar.trash';
 var SUN='sun.sun';
 
+function loadEntConfig(){
+  var m=sGet('ha_motion'); if(m) MOTION=m;
+  var sp=sGet('ha_spotify'); if(sp) SP_EID=sp;
+  var tv=sGet('ha_tv'); if(tv) TV_EID=tv;
+  var tr=sGet('ha_trash'); if(tr) TRASH_ENT=tr;
+  var mot=document.getElementById('mot'); if(mot) mot.title=MOTION;
+}
+
 function loadConfig(){
+  loadEntConfig();
   HA=sGet('ha_url')||'';
   TOK=sGet('ha_token')||'';
   var d=sGet('ha_dim'); if(d) DIM=parseInt(d,10)*1000;
-  var m=sGet('ha_motion'); if(m) MOTION=m;
   if(HA&&TOK){document.getElementById('cfg').className='h';document.getElementById('app').className='';startApp();}
   else{
     document.getElementById('cfg').className='';
@@ -882,12 +1022,17 @@ function saveConfig(){
   var t=document.getElementById('ct').value.trim();
   var d=parseInt(document.getElementById('cd').value,10)||45;
   var mo=document.getElementById('cm').value.trim();
+  var sp=document.getElementById('csp').value.trim();
+  var tr=document.getElementById('ctr').value.trim();
+  var tv=document.getElementById('ctv').value.trim();
   if(!u){alert('Podaj adres HA.');return;}
   var tok=t||TOK; if(!tok){alert('Podaj token.');return;}
   sSet('ha_url',u); sSet('ha_token',tok); sSet('ha_dim',d);
-  if(mo) sSet('ha_motion',mo);
+  if(mo){ sSet('ha_motion',mo); MOTION=mo; }
+  if(sp){ sSet('ha_spotify',sp); SP_EID=sp; }
+  if(tr){ sSet('ha_trash',tr); TRASH_ENT=tr; }
+  if(tv){ sSet('ha_tv',tv); TV_EID=tv; }
   HA=u; TOK=tok; DIM=d*1000;
-  if(mo) MOTION=mo;
   document.getElementById('cfg').className='h';
   document.getElementById('app').className='';
   startApp();
@@ -898,6 +1043,9 @@ function showConfig(){
   document.getElementById('ct').value='';
   document.getElementById('cd').value=DIM/1000;
   var cm=document.getElementById('cm'); if(cm) cm.value=MOTION;
+  var csp=document.getElementById('csp'); if(csp) csp.value=SP_EID;
+  var ctr=document.getElementById('ctr'); if(ctr) ctr.value=TRASH_ENT;
+  var ctv=document.getElementById('ctv'); if(ctv) ctv.value=TV_EID;
   var s=document.getElementById('cts'); if(s) s.style.display=TOK?'block':'none';
   var sl=document.getElementById('cbg'); if(sl) sl.value=BGLVL;
   document.getElementById('cfg').className='';
@@ -914,8 +1062,9 @@ function tick(){
   if(d) d.textContent=DNI[n.getDay()]+', '+n.getDate()+' '+MIES[n.getMonth()];
 }
 
-
-
+// TABS — ZeroMiekiszon otwieramy w pełnym oknie (nie iframe: cookies/localStorage)
+var ZERO_URL='https://zeromiekiszon.pl';
+var ZERO_LEGACY_URL='https://zeromiekiszon.pl/legacy/';
 
 function isLegacySafari(){
   var ua=navigator.userAgent;
@@ -925,9 +1074,48 @@ function isLegacySafari(){
 }
 
 function panelReturnUrl(){
-  var base=HA||sGet('ha_url')||'http://homeassistant.local:8123';
+  var base=HA||sGet('ha_url')||'';
   base=base.replace(/\/$/,'');
-  return base+'/local/ipad.html?v2';
+  return base+'/local/ipad.html?v='+BUILD;
+}
+
+function forceReload(){
+  var base=(HA||sGet('ha_url')||'').replace(/\/$/,'');
+  if(base) window.location.href=base+'/local/ipad.html?v='+BUILD+'&_='+Date.now();
+  else location.reload(true);
+}
+
+function checkUpdate(){
+  if(!HA) return;
+  var url=HA.replace(/\/$/,'')+'/local/ipad-version.json?nocache='+Date.now();
+  var x=new XMLHttpRequest();
+  x.open('GET',url,true);
+  x.onreadystatechange=function(){
+    if(x.readyState!==4) return;
+    if(x.status!==200) return;
+    var remote='', data;
+    try{ data=JSON.parse(x.responseText); remote=String(data.version||'').replace(/^v/i,''); }catch(e){ return; }
+    if(!remote||remote===BUILD) return;
+    if(sGet('upd_dismiss')===remote) return;
+    updRemote=remote;
+    var sub=document.getElementById('upd-sub');
+    if(sub) sub.textContent='v'+BUILD+' → v'+remote;
+    var bar=document.getElementById('upd-bar');
+    if(bar) bar.className='show';
+  };
+  x.send(null);
+}
+
+function applyUpdate(){
+  var v=updRemote||BUILD;
+  var base=(HA||'').replace(/\/$/,'');
+  window.location.href=base+'/local/ipad.html?v='+v+'&_='+Date.now();
+}
+
+function dismissUpdate(){
+  if(updRemote) sSet('upd_dismiss',updRemote);
+  var bar=document.getElementById('upd-bar');
+  if(bar) bar.className='';
 }
 
 function openZero(btn){
@@ -958,6 +1146,7 @@ function sv(id,btn){
   for(var j=0;j<bs.length;j++) bs[j].className='tb';
   if(btn) btn.className='tb a';
   if(id==='kamery') refreshCameras();
+  if(id==='pogoda'){ loadForecast(); loadHourly(); drawWeatherPage(); }
 }
 
 // API
@@ -1033,6 +1222,7 @@ function updAqBars(v){
 }
 var CAL_ENT='calendar.bieganie';
 var RUNLAST=0;
+var TRASHLAST=0;
 function pad2(n){return (n<10?'0':'')+n;}
 function loadRunToday(){
   if(typeof HA==='undefined'||!HA||!TOK)return;
@@ -1052,6 +1242,64 @@ function loadRunToday(){
     }
     body.innerHTML=h;
   });
+}
+var RUNLAST=0;
+function evStart(ev){
+  var s=ev.start;
+  if(!s) return ev.start_time||ev.startTime||null;
+  if(typeof s==='string') return s;
+  return s.dateTime||s.date||null;
+}
+function loadTrash(){
+  if(typeof HA==='undefined'||!HA||!TOK)return;
+  var now=Date.now(); if(now-TRASHLAST<1800000&&TRASHLAST)return; TRASHLAST=now;
+  var d=new Date();
+  var s=new Date(d.getFullYear(),d.getMonth(),d.getDate(),0,0,0);
+  var e=new Date(d.getFullYear(),d.getMonth(),d.getDate()+22,0,0,0);
+  haGet('calendars/'+TRASH_ENT+'?start='+encodeURIComponent(s.toISOString())+'&end='+encodeURIComponent(e.toISOString()),function(err,data){
+    var wEl=document.getElementById('trash-when'), tEl=document.getElementById('trash-what');
+    if(!wEl||!tEl) return;
+    if(err){ wEl.textContent='--'; tEl.textContent='brak połączenia'; return; }
+    if(!data||!data.length){ wEl.textContent='Brak'; tEl.textContent='najbliższe 3 tyg.'; return; }
+    var best=null,bestT=null,i,stStr,t;
+    for(i=0;i<data.length;i++){
+      stStr=evStart(data[i]); if(!stStr) continue;
+      t=new Date(String(stStr).replace(' ','T')); if(isNaN(t.getTime())) continue;
+      if(t.getTime()<s.getTime()-86400000) continue;
+      if(bestT===null||t.getTime()<bestT){ bestT=t.getTime(); best=data[i]; }
+    }
+    if(best===null){ wEl.textContent='Brak'; tEl.textContent='najbliższe 3 tyg.'; return; }
+    var bt=new Date(bestT);
+    var sd=new Date(bt.getFullYear(),bt.getMonth(),bt.getDate());
+    var days=Math.round((sd.getTime()-s.getTime())/86400000);
+    var dni=['niedz.','pon.','wt.','śr.','czw.','pt.','sob.'];
+    var whenTxt;
+    if(days<=0) whenTxt='Dziś';
+    else if(days===1) whenTxt='Jutro';
+    else whenTxt=dni[bt.getDay()]+' '+pad2(bt.getDate())+'.'+pad2(bt.getMonth()+1);
+    wEl.textContent=whenTxt;
+    wEl.className=(days<=1)?'trash-when soon':'trash-when';
+    var ty=trashType(best.summary||best.message||'');
+    tEl.textContent=ty.label;
+    var ic=document.getElementById('trash-ic'); if(ic) ic.style.stroke=ty.color;
+  });
+}
+function trashType(sum){
+  var s=String(sum||'').toLowerCase();
+  if(s.indexOf('bio')>=0||s.indexOf('zielon')>=0||s.indexOf('biodegrad')>=0||s.indexOf('traw')>=0||s.indexOf('ogrod')>=0||s.indexOf('ogród')>=0||s.indexOf('brązow')>=0||s.indexOf('brazow')>=0)
+    return {label:'Bio / zielone', color:'#2e9e4f'};
+  if(s.indexOf('plastik')>=0||s.indexOf('tworzyw')>=0||s.indexOf('metal')>=0||s.indexOf('żółt')>=0||s.indexOf('zolt')>=0||s.indexOf('segreg')>=0)
+    return {label:'Plastik / metal', color:'#e0a800'};
+  if(s.indexOf('papier')>=0||s.indexOf('niebiesk')>=0||s.indexOf('makulat')>=0)
+    return {label:'Papier', color:'#3b82f6'};
+  if(s.indexOf('szk')>=0)
+    return {label:'Szkło', color:'#1f9e89'};
+  if(s.indexOf('zmieszan')>=0||s.indexOf('komunaln')>=0||s.indexOf('czarn')>=0||s.indexOf('resztkow')>=0)
+    return {label:'Zmieszane', color:'#64748b'};
+  // skróć długą nazwę, jeśli nieznany typ
+  var lbl=String(sum||'Wywóz').replace(/odbiór odpadów:?/i,'').replace(/\s*-\s*\d.*$/,'').replace(/\s+/g,' ').trim();
+  if(lbl.length>22) lbl=lbl.substring(0,21)+'…';
+  return {label:lbl||'Wywóz', color:'#94a3b8'};
 }
 function fmtPres(v){
   var n=parseFloat(v);
@@ -1094,20 +1342,24 @@ function drawForecast(){
   var html='',i,n;
   for(i=0;i<5;i++){
     var it=fc[i]||null;
-    var dn,cond,tmp;
+    var dn,cond,hi,lo,pp;
     if(it){
       var dd=it.datetime||it.date||null;
       n=dd?new Date(String(dd).replace(' ','T')):null;
       dn=(n&&!isNaN(n.getTime()))?dy[n.getDay()]:fcDay(i);
       cond=it.condition||it.state||'';
-      var tv=it.temperature;
-      if(tv===undefined||tv===null)tv=it.temp;
-      if(tv===undefined||tv===null)tv=it.templow;
-      tmp=(tv!==undefined&&tv!==null)?fmt1(tv):'--';
+      var tv=it.temperature; if(tv===undefined||tv===null)tv=it.temp;
+      hi=(tv!==undefined&&tv!==null&&!isNaN(parseFloat(tv)))?Math.round(parseFloat(tv))+'°':'--';
+      var tl=it.templow; if(tl===undefined||tl===null)tl=it.temperature_low;
+      lo=(tl!==undefined&&tl!==null&&!isNaN(parseFloat(tl)))?Math.round(parseFloat(tl))+'°':'';
+      pp=it.precipitation_probability; if(pp===undefined||pp===null)pp=it.precipitation;
+      pp=(pp!==undefined&&pp!==null&&!isNaN(parseFloat(pp))&&parseFloat(pp)>0)?Math.round(parseFloat(pp)):null;
     } else {
-      dn=fcDay(i); cond=''; tmp='--';
+      dn=fcDay(i); cond=''; hi='--'; lo=''; pp=null;
     }
-    html+='<div class="wfd"><div class="wdn">'+dn+'</div><svg class="wfi" viewBox="0 0 18 18" fill="none">'+wSvgSmall(cond)+'</svg><div class="wft">'+tmp+'°</div></div>';
+    var lohtml=lo?('<span class="wflo">'+lo+'</span>'):'';
+    var pphtml=(pp!==null)?('<div class="wfp"><svg viewBox="0 0 12 16"><path d="M6 1C6 1 1.5 7 1.5 10.5a4.5 4.5 0 0 0 9 0C10.5 7 6 1 6 1z"/></svg>'+pp+'%</div>'):'<div class="wfp wfp-x"></div>';
+    html+='<div class="wfd"><div class="wdn">'+dn+'</div><svg class="wfi" viewBox="0 0 18 18" fill="none">'+wSvgSmall(cond)+'</svg><div class="wft">'+hi+lohtml+'</div>'+pphtml+'</div>';
   }
   box.innerHTML=html; box.style.display='';
 }
@@ -1115,6 +1367,9 @@ function drawForecast(){
 // WEATHER SVG
 function drawWeather(state){
   var el=document.getElementById('wsvg'); if(!el)return;
+  el.innerHTML=weatherSvgInner(state||'');
+}
+function weatherSvgInner(state){
   var s=state||'';
   var defs='<defs>'+
     '<radialGradient id="gSun" cx="50%" cy="42%" r="60%"><stop offset="0%" stop-color="#fff3b0"/><stop offset="55%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#f59e0b"/></radialGradient>'+
@@ -1145,7 +1400,7 @@ function drawWeather(state){
   } else {
     svg=cloud;
   }
-  el.innerHTML=defs+svg;
+  return defs+svg;
 }
 
 // AQ
@@ -1231,6 +1486,131 @@ function loadForecast(){
   x.ontimeout=function(){ wsForecast(WID); };
   x.send(JSON.stringify({type:'daily',entity_id:WID}));
 }
+// ----- PROGNOZA GODZINOWA (dla strony Pogoda) -----
+var FC_HOURLY=null,FCHLAST=0,FCHBUSY=false,FCHTRY=0;
+function fchGot(fc){ if(fc&&fc.length){ FC_HOURLY=fc; FCHLAST=Date.now(); FCHBUSY=false; drawWeatherPage(); return true; } return false; }
+function wsHourly(WID){
+  try{
+    var url=HA.replace(/^http/,'ws')+'/api/websocket';
+    var ws=new WebSocket(url); var done=false;
+    var fin=function(){ FCHBUSY=false; try{ws.close();}catch(e){} };
+    var to=setTimeout(function(){ if(!done){done=true;fin();} },9000);
+    ws.onmessage=function(ev){
+      var m; try{ m=JSON.parse(ev.data); }catch(e){ return; }
+      if(m.type==='auth_required'){ ws.send(JSON.stringify({type:'auth',access_token:TOK})); return; }
+      if(m.type==='auth_ok'){ ws.send(JSON.stringify({id:2,type:'call_service',domain:'weather',service:'get_forecasts',service_data:{type:'hourly'},target:{entity_id:WID},return_response:true})); return; }
+      if(m.type==='auth_invalid'){ done=true; clearTimeout(to); fin(); return; }
+      if(m.type==='result'&&m.id===2){ done=true; clearTimeout(to); var resp=(m.result&&(m.result.response||m.result))||null; fchGot(fcExtract(resp)); fin(); }
+    };
+    ws.onerror=function(){ if(!done){done=true;clearTimeout(to);fin();} };
+    ws.onclose=function(){ if(!done){done=true;clearTimeout(to);FCHBUSY=false;} };
+  }catch(e){ FCHBUSY=false; }
+}
+function loadHourly(){
+  if(typeof HA==='undefined'||!HA||!TOK)return;
+  if(FCHBUSY)return;
+  var now=Date.now();
+  if(FC_HOURLY&&FC_HOURLY.length&&now-FCHLAST<1800000)return;
+  if(!FC_HOURLY&&now-FCHTRY<8000)return;
+  FCHBUSY=true; FCHTRY=now;
+  var WID=weatherEid();
+  var x=new XMLHttpRequest();
+  x.open('POST',HA+'/api/services/weather/get_forecasts?return_response',true);
+  x.setRequestHeader('Authorization','Bearer '+TOK);
+  x.setRequestHeader('Content-Type','application/json');
+  x.timeout=8000;
+  x.onload=function(){ if(x.status===200){ try{ var r=JSON.parse(x.responseText); var sr=r.service_response||r; if(fchGot(fcExtract(sr))) return; }catch(e){} } wsHourly(WID); };
+  x.onerror=function(){ wsHourly(WID); };
+  x.ontimeout=function(){ wsHourly(WID); };
+  x.send(JSON.stringify({type:'hourly',entity_id:WID}));
+}
+function windDir(deg){
+  var d=parseFloat(deg); if(isNaN(d)) return '--';
+  var dirs=['N','NE','E','SE','S','SW','W','NW'];
+  return dirs[Math.round(((d%360)/45))%8];
+}
+function hhmm(iso){
+  if(!iso) return '--';
+  var dt=new Date(String(iso).replace(' ','T')); if(isNaN(dt.getTime())) return '--';
+  var h=dt.getHours(),m=dt.getMinutes();
+  return h+':'+(m<10?'0'+m:m);
+}
+var DROP='<svg viewBox="0 0 12 16"><path d="M6 1C6 1 1.5 7 1.5 10.5a4.5 4.5 0 0 0 9 0C10.5 7 6 1 6 1z"/></svg>';
+function fcPrec(it){
+  var pp=it.precipitation_probability; if(pp===undefined||pp===null)pp=it.precipitation;
+  if(pp===undefined||pp===null||isNaN(parseFloat(pp))||parseFloat(pp)<=0) return null;
+  return Math.round(parseFloat(pp));
+}
+function renderHourly(){
+  var box=document.getElementById('wp-hourly'); if(!box) return;
+  var fc=FC_HOURLY||[];
+  if(!fc.length){ box.innerHTML='<div class="wp-hr"><div class="wp-hr-t">--</div></div>'; return; }
+  var html='',i,n=Math.min(fc.length,14);
+  for(i=0;i<n;i++){
+    var it=fc[i]||{};
+    var dt=it.datetime?new Date(String(it.datetime).replace(' ','T')):null;
+    var t=(dt&&!isNaN(dt.getTime()))?(dt.getHours()+':00'):'--';
+    var tv=it.temperature; var tmp=(tv!==undefined&&tv!==null&&!isNaN(parseFloat(tv)))?Math.round(parseFloat(tv))+'°':'--';
+    var pp=fcPrec(it);
+    var pph=(pp!==null)?(DROP+pp+'%'):'';
+    html+='<div class="wp-hr"><div class="wp-hr-t">'+t+'</div><svg class="wp-hr-i" viewBox="0 0 18 18" fill="none">'+wSvgSmall(it.condition||'')+'</svg><div class="wp-hr-tmp">'+tmp+'</div><div class="wp-hr-p">'+pph+'</div></div>';
+  }
+  box.innerHTML=html;
+}
+function renderDailyFull(){
+  var box=document.getElementById('wp-daily'); if(!box) return;
+  var fc=FC_DATA||[];
+  if(!fc.length){ box.innerHTML='<div class="wp-dr"><div class="wp-dr-d">--</div></div>'; return; }
+  // zakres min/max do skalowania paska
+  var lo=999,hi=-999,i;
+  for(i=0;i<fc.length&&i<7;i++){
+    var h=parseFloat(fc[i].temperature); var l=parseFloat(fc[i].templow);
+    if(!isNaN(h)){ if(h>hi)hi=h; if(h<lo)lo=h; }
+    if(!isNaN(l)){ if(l>hi)hi=l; if(l<lo)lo=l; }
+  }
+  if(hi<=lo) hi=lo+1;
+  var dy=['niedz','pon','wt','śr','czw','pt','sob'];
+  var html='';
+  for(i=0;i<fc.length&&i<7;i++){
+    var it=fc[i]||{};
+    var dt=it.datetime?new Date(String(it.datetime).replace(' ','T')):null;
+    var dn=(dt&&!isNaN(dt.getTime()))?(i===0?'Dziś':dy[dt.getDay()]):fcDay(i);
+    var H=parseFloat(it.temperature), L=parseFloat(it.templow);
+    var hiS=!isNaN(H)?Math.round(H)+'°':'--';
+    var loS=!isNaN(L)?Math.round(L)+'°':'';
+    var pp=fcPrec(it); var pph=(pp!==null)?(DROP+pp+'%'):'';
+    var bL=!isNaN(L)?L:lo, bH=!isNaN(H)?H:hi;
+    var left=Math.round((bL-lo)/(hi-lo)*100), w=Math.round((bH-bL)/(hi-lo)*100);
+    if(w<8)w=8; if(left>92)left=92;
+    html+='<div class="wp-dr"><div class="wp-dr-d">'+dn+'</div><svg class="wp-dr-i" viewBox="0 0 18 18" fill="none">'+wSvgSmall(it.condition||'')+'</svg><div class="wp-dr-p">'+pph+'</div><div class="wp-dr-lo">'+loS+'</div><div class="wp-dr-bar"><i style="left:'+left+'%;width:'+w+'%"></i></div><div class="wp-dr-hi">'+hiS+'</div></div>';
+  }
+  box.innerHTML=html;
+}
+function drawWeatherPage(){
+  var v=document.getElementById('view-pogoda'); if(!v) return;
+  var WID=weatherEid(); var e=E[WID];
+  if(e){
+    var a=e.attributes||{};
+    tx('wp-cond', wPl(e.state));
+    tx('wp-temp', fmt1(a.temperature));
+    var feels=a.apparent_temperature;
+    tx('wp-feels', (feels!==undefined&&feels!==null&&!isNaN(parseFloat(feels)))?('Odczuwalna '+fmt1(feels)+'°'):'');
+    var ic=document.getElementById('wp-icon'); if(ic) ic.innerHTML=weatherSvgInner(e.state||'');
+    tx('wp-press', fmtPres(a.pressure));
+    tx('wp-hum', fmt1(a.humidity));
+    tx('wp-wind', fmt1(a.wind_speed));
+    tx('wp-winddir', windDir(a.wind_bearing));
+    tx('wp-cloud', (a.cloud_coverage!==undefined&&a.cloud_coverage!==null)?Math.round(a.cloud_coverage)+'%':'--');
+  }
+  var su=E[SUN]&&E[SUN].attributes?E[SUN].attributes:{};
+  tx('wp-sunrise', hhmm(su.next_rising));
+  tx('wp-sunset', hhmm(su.next_setting));
+  var aqi=st('sensor.parcel_locker_wol02bapp_polish_air_quality_index');
+  tx('wp-aq', aqColor(aqi).label);
+  renderHourly();
+  renderDailyFull();
+}
+
 // tx, ale nie nadpisuje wartości gdy chwilowo brak danych ('--')
 function txKeep(id,val){
   if(val===undefined||val===null||val==='--') return;
@@ -1245,6 +1625,8 @@ function upd(){
   if(ws!=='--'&&ws!=='unavailable'&&ws!=='unknown') drawWeather(ws);
   loadForecast();
   drawForecast();
+  var vp=document.getElementById('view-pogoda');
+  if(vp&&vp.className.indexOf('active')>=0){ loadHourly(); drawWeatherPage(); }
   txKeep('wt', fmt1(at(WID,'temperature')));
   if(ws!=='--'&&ws!=='unavailable'&&ws!=='unknown') tx('wd', wPl(ws));
   txKeep('wh', fmt1(at(WID,'humidity')));
@@ -1253,6 +1635,7 @@ function upd(){
   tx('pm25', fmt1(st('sensor.parcel_locker_wol02bapp_pm_2_5')));
   updAqBars(st('sensor.parcel_locker_wol02bapp_pm_2_5'));
   loadRunToday();
+  loadTrash();
   tx('pm10', fmt1(st('sensor.parcel_locker_wol02bapp_pm_10')));
   tx('pm25n', fmt1(st('sensor.parcel_locker_wol02bapp_norma_pm_2_5')));
   tx('pm10n', fmt1(st('sensor.parcel_locker_wol02bapp_norma_pm_10')));
@@ -1260,6 +1643,12 @@ function upd(){
   var aqr=aqColor(aqi);
   var waqEl=document.getElementById('waq');
   if(waqEl) waqEl.innerHTML='<span class="aqb '+aqr.cls+'">'+aqr.label+'</span>';
+  var wsunEl=document.getElementById('wsun');
+  if(wsunEl){
+    var su2=E[SUN]&&E[SUN].attributes?E[SUN].attributes:{};
+    var sr2=hhmm(su2.next_rising), ss2=hhmm(su2.next_setting);
+    wsunEl.innerHTML=(sr2!=='--'||ss2!=='--')?('<span>'+SR_ICO+sr2+'</span><span>'+SS_ICO+ss2+'</span>'):'';
+  }
   var waq2El=document.getElementById('waq2');
   if(waq2El) waq2El.innerHTML='<span class="aqb '+aqr.cls+'">Indeks PL: '+aqr.label+'</span>';
 
@@ -1284,9 +1673,9 @@ function upd(){
   tx('og-p', fmt1(st('sensor.termometr_ogrod_cisnienie')));
 
   // MEDIA
-  updMedia('media_player.spotify','sp-t','sp-a','sp-p','sp-vb','sp-vv');
-  updMediaS('media_player.samsung_q70aa_85_tv_qe85q70aatxxh','tv-p',null,null);
-  tx('tv-t', at('media_player.samsung_q70aa_85_tv_qe85q70aatxxh','media_title')||st('media_player.samsung_q70aa_85_tv_qe85q70aatxxh'));
+  updMedia(SP_EID,'sp-t','sp-a','sp-p','sp-vb','sp-vv');
+  updMediaS(TV_EID,'tv-p',null,null);
+  tx('tv-t', at(TV_EID,'media_title')||st(TV_EID));
   updSpotifyArt();
 
   // GAUGE jakości powietrza + żarówki pokoi
@@ -1309,8 +1698,8 @@ function upd(){
 
   // SYPIALNIA
   uLC('light.swiatlo_sypialnia_swiatlo','lc-sy1','ls-sy1');
-  uLC('switch.marcin_sypialnia','lc-sym','ls-sym');
-  uLC('switch.marzenka_sypialnia','lc-symz','ls-symz');
+  uLC('switch.bedside_1','lc-sym','ls-sym');
+  uLC('switch.bedside_2','lc-symz','ls-symz');
   tx('ssy-t',fmt1(st('sensor.termometr_sypialnia_temperatura')));
   tx('ssy-h',fmt1(st('sensor.termometr_sypialnia_wilgotnosc')));
   tx('ssy-p',fmt1(st('sensor.termometr_sypialnia_cisnienie')));
@@ -1381,7 +1770,7 @@ function upd(){
   uChip('light.led_kuchnia','ck-l');
   uChip('light.led_kuchnia_i','ck-li');
   tx('ft2', fmt1(st('sensor.lodowka_fridge_temperature')));
-  tx('fzt', fmt1(st('number.lodowka_freezer_temperature')));
+  tx('fzt', fmt1(st('sensor.lodowka_freezer_temperature')));
 
   handleMotion(st(MOTION));
   if(typeof alignCols==='function') alignCols();
@@ -1438,6 +1827,12 @@ function uLC(eid,cid,sid){
   else{c.className='card lc';se.className='lstate off';se.textContent='off';}
 }
 
+var SR_ICO='<svg viewBox="0 0 18 18" fill="none"><g stroke="#e08a00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 15h14"/><path d="M9 2.5v3.5"/><path d="M6.6 4 9 1.6 11.4 4"/></g><path d="M5.3 12a3.7 3.7 0 0 1 7.4 0z" fill="#f5a623"/></svg>';
+var SS_ICO='<svg viewBox="0 0 18 18" fill="none"><g stroke="#c2410c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 15h14"/><path d="M9 1.6v3.5"/><path d="M6.6 3.6 9 6 11.4 3.6"/></g><path d="M5.3 12a3.7 3.7 0 0 1 7.4 0z" fill="#f5a623"/></svg>';
+var ICON_PREV='<svg viewBox="0 0 24 24"><path d="M7 6h2.2v12H7zM20 6.4v11.2L11 12z"/></svg>';
+var ICON_NEXT='<svg viewBox="0 0 24 24"><path d="M14.8 6H17v12h-2.2zM4 6.4v11.2L13 12z"/></svg>';
+var ICON_PLAY='<svg viewBox="0 0 24 24"><path d="M7 5.5v13L18 12z"/></svg>';
+var ICON_PAUSE='<svg viewBox="0 0 24 24"><path d="M6.5 5h3.4v14H6.5zM14.1 5h3.4v14h-3.4z"/></svg>';
 function updMedia(eid,tid,aid,bid,vbid,vvid){
   var e=E[eid]; if(!e)return;
   var a=e.attributes||{};
@@ -1447,10 +1842,10 @@ function updMedia(eid,tid,aid,bid,vbid,vvid){
   var b=document.getElementById(bid);
   if(b){
     if(b.className.indexOf('spk-play')>=0){
-      b.textContent=playing?'⏸':'▶';
+      b.innerHTML=playing?ICON_PAUSE:ICON_PLAY;
       b.className=playing?'spk-play on':'spk-play';
     } else {
-      b.textContent=playing?'⏸':'▶';
+      b.innerHTML=playing?ICON_PAUSE:ICON_PLAY;
     }
   }
   var vol=a.volume_level!==undefined?Math.round(a.volume_level*100):0;
@@ -1461,8 +1856,49 @@ function updMedia(eid,tid,aid,bid,vbid,vvid){
 
 function updMediaS(eid,bid,vbid,vvid){updMedia(eid,'_x',null,bid,vbid,vvid);}
 
+var SPP={pos:0,dur:0,upd:0,playing:false};
+var WAVE_BARS=null,waveStatic=false;
+function setSY(el,v){ var s='scaleY('+(Math.round(v*100)/100)+')'; el.style.webkitTransform=s; el.style.transform=s; }
+function animateWave(){
+  var w=document.getElementById('sp-wave'); if(!w) return;
+  if(!WAVE_BARS||!WAVE_BARS.length) WAVE_BARS=w.getElementsByTagName('span');
+  var bars=WAVE_BARS,i;
+  if(!SPP.playing||dimmed){
+    if(!waveStatic){ for(i=0;i<bars.length;i++){ setSY(bars[i],0.22); } waveStatic=true; }
+    return;
+  }
+  waveStatic=false;
+  for(i=0;i<bars.length;i++){ setSY(bars[i], 0.18+Math.random()*0.8); }
+}
+function spParseUpd(s){ if(!s) return 0; if(typeof s==='number') return s*1000; var d=new Date(String(s).replace(' ','T')); var t=d.getTime(); return isNaN(t)?0:t; }
+function fmtTime(sec){ sec=Math.max(0,Math.round(sec)); var m=Math.floor(sec/60); var s=sec%60; return m+':'+(s<10?'0'+s:s); }
+function readSpotifyProgress(){
+  var e=E[SP_EID];
+  if(!e||!e.attributes){ SPP.dur=0; SPP.playing=false; return; }
+  var a=e.attributes;
+  SPP.dur=parseFloat(a.media_duration)||0;
+  SPP.pos=parseFloat(a.media_position)||0;
+  SPP.upd=spParseUpd(a.media_position_updated_at);
+  SPP.playing=(e.state==='playing');
+}
+function tickSpotifyProgress(){
+  var pf=document.getElementById('sp-pf'); if(!pf) return;
+  var pe=document.getElementById('sp-pos'), de=document.getElementById('sp-dur');
+  if(SPP.dur>0){
+    var pos=SPP.pos;
+    if(SPP.playing&&SPP.upd){ pos+=(Date.now()-SPP.upd)/1000; }
+    if(pos>SPP.dur) pos=SPP.dur;
+    pf.style.width=(pos/SPP.dur*100)+'%';
+    if(pe) pe.textContent=fmtTime(pos);
+    if(de) de.textContent=fmtTime(SPP.dur);
+  } else {
+    pf.style.width='0%';
+    if(pe) pe.textContent='0:00';
+    if(de) de.textContent='0:00';
+  }
+}
 function updSpotifyArt(){
-  var e=E['media_player.spotify'];
+  var e=E[SP_EID];
   var art=document.getElementById('sp-art');
   var wave=document.getElementById('sp-wave');
   var playing=e&&e.state==='playing';
@@ -1475,6 +1911,8 @@ function updSpotifyArt(){
     }
   }
   if(wave) wave.className=playing?'wave playing':'wave';
+  readSpotifyProgress();
+  tickSpotifyProgress();
 }
 
 function updateGauge(){
@@ -1524,28 +1962,52 @@ function uZone(eid,id){
 function toggleBulb(eid,id){
   if(typeof event!=='undefined'&&event&&event.stopPropagation) event.stopPropagation();
   var on=(E[eid]&&E[eid].state==='on');
-  var el=document.getElementById(id); if(el) el.style.opacity='0.5';
-  haPost('light',on?'turn_off':'turn_on',{entity_id:eid},function(){setTimeout(fetch15,700);});
+  if(!E[eid]) E[eid]={attributes:{}};
+  E[eid].state=on?'off':'on';   // optymistycznie: natychmiast pokaż zmianę
+  uBulb(eid,id);
+  haPost('light',on?'turn_off':'turn_on',{entity_id:eid},function(){
+    confirmEntity(eid,function(){ uBulb(eid,id); });
+  });
 }
 
 // CONTROLS
 function tLight(eid,cid,sid){
   var on=(E[eid]&&E[eid].state==='on');
-  var c=document.getElementById(cid); if(c) c.className='card lc loading';
-  haPost('light',on?'turn_off':'turn_on',{entity_id:eid},function(){setTimeout(fetch15,800);});
+  if(!E[eid]) E[eid]={attributes:{}};
+  E[eid].state=on?'off':'on';   // optymistycznie
+  if(sid) uLC(eid,cid,sid);
+  haPost('light',on?'turn_off':'turn_on',{entity_id:eid},function(){
+    confirmEntity(eid,function(){ if(sid) uLC(eid,cid,sid); });
+  });
 }
 
 function tSwitch(eid,cid,pulse){
   var on=(E[eid]&&E[eid].state==='on');
   var svc=pulse?'toggle':(on?'turn_off':'turn_on');
-  if(cid){var c=document.getElementById(cid);if(c)c.className='card lc loading';}
-  haPost('switch',svc,{entity_id:eid},function(){setTimeout(fetch15,800);});
+  if(!pulse){
+    if(!E[eid]) E[eid]={attributes:{}};
+    E[eid].state=on?'off':'on';  // optymistycznie (nie dla przycisków pulse)
+  }
+  haPost('switch',svc,{entity_id:eid},function(){ confirmEntity(eid); });
 }
 
-function mCmd(eid,svc){haPost('media_player',svc,{entity_id:eid},function(){setTimeout(fetch15,600);});}
+function mCmd(eid,svc){haPost('media_player',svc,{entity_id:eid},function(){ confirmEntity(eid); });}
+function mSpPrev(){ mCmd(SP_EID,'media_previous_track'); }
+function mSpNext(){ mCmd(SP_EID,'media_next_track'); }
+function mSpPP(){ mPP(SP_EID,'sp-p'); }
+function mSpVol(ev,el){ setVol(ev,SP_EID,el); }
+function mTvPrev(){ mCmd(TV_EID,'media_previous_track'); }
+function mTvNext(){ mCmd(TV_EID,'media_next_track'); }
+function mTvPP(){ mPP(TV_EID,'tv-p'); }
 function mPP(eid,bid){
-  var svc=(E[eid]&&E[eid].state==='playing')?'media_pause':'media_play';
-  haPost('media_player',svc,{entity_id:eid},function(){setTimeout(fetch15,600);});
+  var playing=(E[eid]&&E[eid].state==='playing');
+  if(!E[eid]) E[eid]={attributes:{}};
+  E[eid].state=playing?'paused':'playing';  // optymistycznie
+  var b=document.getElementById(bid); if(b) b.innerHTML=playing?ICON_PLAY:ICON_PAUSE;
+  SPP.playing=!playing;
+  haPost('media_player',playing?'media_pause':'media_play',{entity_id:eid},function(){
+    confirmEntity(eid,function(){ var bb=document.getElementById(bid); if(bb) bb.innerHTML=(E[eid]&&E[eid].state==='playing')?ICON_PAUSE:ICON_PLAY; });
+  });
 }
 function setVol(ev,eid,el){
   if(ev&&ev.stopPropagation) ev.stopPropagation();
@@ -1558,7 +2020,15 @@ function setVol(ev,eid,el){
   var pct=Math.round(frac*100);
   var fb=document.getElementById('sp-vb'); if(fb) fb.style.width=pct+'%';
   var vv=document.getElementById('sp-vv'); if(vv) vv.textContent=pct+'%';
-  haPost('media_player','volume_set',{entity_id:eid,volume_level:frac},function(){setTimeout(fetch15,500);});
+  haPost('media_player','volume_set',{entity_id:eid,volume_level:frac},function(){ confirmEntity(eid); });
+}
+
+// Szybkie potwierdzenie stanu jednej encji (lekkie zapytanie)
+function confirmEntity(eid,cb){
+  haGet('states/'+encodeURIComponent(eid),function(err,data){
+    if(!err&&data){ E[eid]=data; }
+    if(cb) cb();
+  });
 }
 
 // FETCH
@@ -1605,6 +2075,7 @@ function setCamImg(eid,imgId,offId){
   pre.src=full;
 }
 function refreshCameras(){
+  if(dimmed) return; // ekran przygaszony → nie marnuj zasobów na kamery
   var v=document.getElementById('view-kamery');
   if(v&&v.className.indexOf('active')>=0){
     for(var i=0;i<CAMS.length;i++){ setCamImg(CAMS[i][0],CAMS[i][1],CAMS[i][2]); }
@@ -1613,7 +2084,7 @@ function refreshCameras(){
   if(d&&d.className.indexOf('active')>=0){ setCamImg('camera.front','cam-dash','camoff-dash'); }
 }
 
-// DIM — binary_sensor.hobeian_zg_204z (ZG-204Z, Zigbee)
+// DIM — czujnik ruchu z konfiguracji (MOTION)
 var lastMotionState=null;
 var idleTimer=null;
 var dimmed=false;
@@ -1788,11 +2259,15 @@ function loadTheme(){
 function startApp(){
   tick(); setInterval(tick,30000);
   fetch15(); setInterval(fetch15,15000);
-  pollMotion(); setInterval(pollMotion,2000);
-  setInterval(refreshCameras,2000);
+  pollMotion(); setInterval(pollMotion,2500);
+  setInterval(refreshCameras,5000);
+  setInterval(tickSpotifyProgress,1000);
+  setInterval(animateWave,210);
   fixHeight();
   armDimTimer();
   document.addEventListener('touchstart',function(){wakeScreen(true);},true);
+  checkUpdate();
+  setInterval(checkUpdate,300000);
 }
 
 // Pre-fill defaults jeśli puste
@@ -1800,8 +2275,9 @@ function prefillDefaults(){
   var u=document.getElementById('cu');
   var t=document.getElementById('ct');
   var cm=document.getElementById('cm');
-  if(u&&!u.value) u.value='';
-  if(cm&&!cm.value) cm.value='binary_sensor.hobeian_zg_204z';
+  var csp=document.getElementById('csp');
+  var ctr=document.getElementById('ctr');
+  var ctv=document.getElementById('ctv');
   if(t&&!t.value&&!TOK) t.placeholder='eyJ0eXAi...';
 }
 

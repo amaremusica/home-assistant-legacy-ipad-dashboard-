@@ -1,0 +1,18 @@
+---
+description: Publikacja zmian panelu iPad na GitHub z opisem w CHANGELOG
+globs: ipad.html,CHANGELOG.md,README.md
+alwaysApply: false
+---
+
+# GitHub — legacy iPad dashboard
+
+Po każdej istotnej zmianie panelu iPad:
+
+1. **Remote:** `https://github.com/amaremusica/home-assistant-legacy-ipad-dashboard-.git`
+2. **Pliki:** aktualizuj `ipad.html`, dopisz sekcję w `CHANGELOG.md` (wersja + data), ewentualnie `README.md` jeśli zmienia się instalacja.
+3. **Wersja:** podbij `<!-- build: vX.Y -->` i `#ver` w `ipad.html`.
+4. **Commit:** krótki opis po polsku, co i dlaczego.
+5. **Branch:** `feature/ipad-vX.Y-*` → merge do `main` → `git push origin main` (oraz branch feature).
+6. **Bez commita** tylko gdy użytkownik wyraźnie tego nie chce.
+
+Stabilny backup starszej wersji: `ipad-v10.5.html` — nie nadpisuj bez prośby użytkownika.

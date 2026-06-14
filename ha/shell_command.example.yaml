@@ -1,0 +1,13 @@
+# Fragment do configuration.yaml — auto-aktualizacja panelu z Git co 6 h.
+# Wymaga: git clone repo w /config/www/dashboard (patrz scripts/ha-update-panel.sh)
+
+shell_command:
+  update_ipad_panel: bash /config/www/dashboard/scripts/ha-update-panel.sh
+
+automation:
+  - alias: Aktualizacja panelu iPad z Git
+    trigger:
+      - platform: time_pattern
+        hours: "/6"
+    action:
+      - service: shell_command.update_ipad_panel

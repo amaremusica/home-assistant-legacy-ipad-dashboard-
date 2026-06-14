@@ -1,5 +1,6 @@
-Description
 # Home Assistant Dashboard for iPad 4 (iOS 10.3.3)
+
+**Aktualna wersja:** `v11.6` — plik [`ipad.html`](ipad.html) · [CHANGELOG](CHANGELOG.md)
 
 [Wersja polska](#wersja-polska) | [English Version](#english-version)
 
@@ -22,12 +23,22 @@ Nowoczesne panele Home Assistant (Lovelace) oraz oficjalna aplikacja wymagają n
 * **Bezpieczeństwo danych:** Adres URL oraz token Long-Lived Access Token są przechowywane lokalnie w pamięci przeglądarki urządzenia (`localStorage`) i nie są wpisane na stałe w kodzie źródłowym.
 
 ### Instalacja i Konfiguracja
-1. Skopiuj plik `ipad-v10.5.html` na swój serwer (może to być folder `www/` w Home Assistant, lokalny serwer NAS lub dowolny hosting).
+1. Skopiuj plik **`ipad.html`** (najnowszy) lub `ipad-v10.5.html` (starszy stabilny) na swój serwer (folder `www/` w Home Assistant, NAS lub inny hosting).
 2. Otwórz stronę na iPadzie w przeglądarce Safari.
 3. Kliknij ikonę konfiguracji, wprowadź adres IP swojego Home Assistant oraz wygenerowany w profilu użytkownika **Długoterminowy token dostępu (Long-Lived Access Token)**.
 4. Wybierz encję czujnika ruchu, który ma odpowiadać za wybudzanie ekranu.
 5. Zapisz konfigurację. Dane zostaną bezpiecznie zapisane w pamięci `localStorage` Twojego iPada.
 6. Dodaj stronę do ekranu głównego ("Dodaj do ekranu początkowego"), aby uruchamiać ją w trybie pełnoekranowym bez pasków adresu.
+
+Te wartości zapisują się w `localStorage` iPadu — **nie trafiają do Git**. Szczegóły: [SECURITY.md](SECURITY.md).
+
+### Auto-aktualizacja (Git → HA → iPad)
+
+1. Sklonuj repo do HA: `git clone … /config/www/dashboard`
+2. Skopiuj pliki: `ipad.html` i **`ipad-version.json`** do `/config/www/`
+3. Opcjonalnie: dodaj `shell_command` z pliku [`ha/shell_command.example.yaml`](ha/shell_command.example.yaml) — co 6 h `git pull`
+4. Panel co 5 min sprawdza `/local/ipad-version.json` — gdy wersja nowsza, pokazuje **„Zaktualizuj”**
+5. Skrót na pulpicie iPada: `http://IP:8123/local/ipad.html?v=11.6`
 
 ---
 
@@ -48,7 +59,7 @@ Modern Home Assistant frontend dashboards (Lovelace) and the official app requir
 * **Privacy & Security:** Your Home Assistant URL and Long-Lived Access Token are saved locally on the device via `localStorage` and are never hardcoded into the source file.
 
 ### Installation & Configuration
-1. Host the `ipad-v10.5.html` file on any local server (e.g., the `www/` directory of your Home Assistant instance, a local NAS, or any web server).
+1. Host **`ipad.html`** (latest) or `ipad-v10.5.html` (older stable) on any local server (e.g., the `www/` directory of your Home Assistant instance, a local NAS, or any web server).
 2. Open the page on your legacy iPad using Safari.
 3. Access the configuration modal and enter your Home Assistant URL and a **Long-Lived Access Token** (generated from your Home Assistant user profile).
 4. Specify the motion sensor entity ID to handle screen waking functionality.
