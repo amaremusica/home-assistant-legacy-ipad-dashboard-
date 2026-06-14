@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.8.1 -->
+<!-- build: v11.9.0 -->
 <title>Dom</title>
 <style>
 :root {
@@ -145,31 +145,65 @@ body.light .tb.a{box-shadow:0 2px 12px rgba(15,23,42,0.08);}
 .dash-row>*+*{margin-left:14px;}
 #view-salon,#view-sypialnia,#view-kuchnia,#view-lazienki,#view-ogrod,#view-energia,#view-drukarka,#view-kamery,#view-zero,#view-pogoda,#view-spotify{display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;position:absolute;top:0;left:0;right:0;bottom:0;padding:10px 12px;}
 #view-salon.active,#view-sypialnia.active,#view-kuchnia.active,#view-lazienki.active,#view-ogrod.active,#view-energia.active,#view-drukarka.active,#view-kamery.active,#view-pogoda.active,#view-spotify.active{display:block;}
-/* Spotify — przeglądarka */
-.spv{max-width:900px;margin:0 auto;}
-.spv-now{margin-bottom:10px;}
-.spv-now .spro-body{margin-bottom:8px;}
-.spv-src{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:-4px;}
-.spv-src>*{margin:4px;}
-.spv-pill{padding:8px 14px;border-radius:999px;border:1px solid var(--glass-b);background:var(--glass2);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.spv-pill.on{background:rgba(29,185,84,0.22);border-color:rgba(29,185,84,0.55);color:#1db954;}
-.spv-nav{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;margin:12px 0 8px;}
-.spv-nav>*+*{margin-left:10px;}
-.spv-back{padding:7px 12px;border-radius:var(--rsm);border:1px solid var(--glass-b);background:var(--glass2);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;display:none;}
-.spv-crumb{font-size:13px;font-weight:700;color:var(--bright);-webkit-flex:1;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.spv-list{border-radius:var(--r);border:1px solid var(--glass-b);background:var(--glass);overflow:hidden;box-shadow:var(--shadow);}
-.spv-row{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;padding:11px 12px;border-bottom:1px solid rgba(127,127,127,0.12);cursor:pointer;-webkit-tap-highlight-color:transparent;}
+/* Spotify — wygląd jak aplikacja (ciemny feed + mini player) */
+#view-spotify{padding:0;background:#121212;}
+#view-spotify.active{display:block;}
+.sp-hide{display:none!important;}
+.sp-home{padding:8px 0 96px;}
+.sp-head{padding:6px 16px 4px;}
+.sp-logo{font-size:26px;font-weight:800;color:#fff;letter-spacing:-0.03em;}
+.sp-chips{display:-webkit-flex;display:flex;margin:10px 0 4px;}
+.sp-chips>*+*{margin-left:8px;}
+.sp-chip{padding:7px 14px;border-radius:999px;border:none;background:#282828;color:#fff;font-size:12px;font-weight:700;cursor:pointer;}
+.sp-chip.on{background:#1db954;color:#000;}
+.sp-devices{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:8px 0 0;}
+.sp-devices>*{margin:0 6px 6px 0;}
+.sp-pill{padding:6px 12px;border-radius:999px;border:1px solid #333;background:#282828;color:#b3b3b3;font-size:11px;font-weight:600;cursor:pointer;}
+.sp-pill.on{background:rgba(29,185,84,0.18);border-color:#1db954;color:#1db954;}
+.sp-feed{min-height:120px;}
+.sp-sec{margin:22px 0 0;}
+.sp-sec-h{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;padding:0 16px 10px;}
+.sp-sec-t{font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.02em;}
+.sp-sec-m{font-size:12px;font-weight:700;color:#b3b3b3;cursor:pointer;background:none;border:none;padding:0;}
+.sp-row{display:-webkit-flex;display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:0 16px 4px;}
+.sp-row>*+*{margin-left:12px;}
+.sp-card{-webkit-flex:0 0 132px;flex:0 0 132px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.sp-card:active{opacity:.85;}
+.sp-card-img{width:132px;height:132px;border-radius:8px;background:#282828;object-fit:cover;display:block;}
+.sp-card-ph{width:132px;height:132px;border-radius:8px;background:#282828;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;font-size:28px;color:#535353;}
+.sp-card-t{font-size:13px;font-weight:600;color:#fff;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sp-card-s{font-size:11px;color:#b3b3b3;margin-top:3px;line-height:1.35;max-height:30px;overflow:hidden;}
+.sp-loading{padding:24px 16px;color:#b3b3b3;font-size:13px;}
+.sp-detail{padding:0 0 96px;}
+.sp-detail-top{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;padding:8px 12px 10px;position:-webkit-sticky;position:sticky;top:0;background:#121212;z-index:2;}
+.sp-detail-top>*+*{margin-left:10px;}
+.sp-detail-back{width:40px;height:40px;border-radius:50%;border:none;background:#282828;color:#fff;font-size:18px;cursor:pointer;-webkit-flex-shrink:0;flex-shrink:0;}
+.sp-detail-title{font-size:18px;font-weight:800;color:#fff;-webkit-flex:1;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sp-detail-play{padding:8px 14px;border-radius:999px;border:none;background:#1db954;color:#000;font-size:12px;font-weight:800;cursor:pointer;-webkit-flex-shrink:0;flex-shrink:0;}
+.spv-list{margin:0 8px;border-radius:12px;background:#181818;overflow:hidden;}
+.spv-row{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;padding:11px 12px;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;}
 .spv-row:last-child{border-bottom:none;}
-.spv-row:active{background:var(--accent-dim);}
-.spv-thumb{width:44px;height:44px;border-radius:8px;-webkit-flex-shrink:0;flex-shrink:0;object-fit:cover;background:var(--glass2);}
-.spv-thumb-ph{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;font-size:18px;color:var(--dim);}
+.spv-row:active{background:rgba(255,255,255,0.06);}
+.spv-thumb{width:48px;height:48px;border-radius:6px;-webkit-flex-shrink:0;flex-shrink:0;object-fit:cover;background:#282828;}
+.spv-thumb-ph{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;font-size:18px;color:#535353;}
 .spv-meta{min-width:0;-webkit-flex:1;flex:1;margin:0 10px;}
-.spv-t{font-size:14px;font-weight:600;color:var(--bright);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.spv-s{font-size:11px;color:var(--dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.spv-play{width:36px;height:36px;border-radius:50%;border:1px solid rgba(29,185,84,0.45);background:rgba(29,185,84,0.15);color:#1db954;font-size:13px;-webkit-flex-shrink:0;flex-shrink:0;cursor:pointer;}
-.spv-play:active{-webkit-transform:scale(0.92);transform:scale(0.92);}
-.spv-empty,.spv-hint,.spv-status{padding:16px;text-align:center;font-size:13px;color:var(--dim);}
-.spv-status{min-height:20px;padding:6px 0;}
+.spv-t{font-size:14px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.spv-s{font-size:11px;color:#b3b3b3;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.spv-play{width:36px;height:36px;border-radius:50%;border:none;background:#1db954;color:#000;font-size:13px;-webkit-flex-shrink:0;flex-shrink:0;cursor:pointer;}
+.spv-empty,.spv-hint,.spv-status{padding:16px;text-align:center;font-size:13px;color:#b3b3b3;}
+.spv-status{min-height:16px;padding:4px 16px;color:#888;}
+.sp-mini{position:absolute;left:8px;right:8px;bottom:8px;border-radius:10px;background:#282828;box-shadow:0 6px 24px rgba(0,0,0,0.45);overflow:hidden;z-index:5;}
+.sp-mini-inner{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;padding:10px 12px;}
+.sp-mini-inner>*+*{margin-left:10px;}
+.sp-mini-art{width:44px;height:44px;border-radius:6px;background:#404040 -webkit-radial-gradient(50% 0,circle,rgba(29,185,84,0.35),transparent 70%);background-size:cover;background-position:center;-webkit-flex-shrink:0;flex-shrink:0;}
+.sp-mini-meta{min-width:0;-webkit-flex:1;flex:1;}
+.sp-mini-t{font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sp-mini-a{font-size:11px;color:#b3b3b3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+.sp-mini-dev{font-size:10px;color:#1db954;font-weight:700;margin-top:3px;}
+.sp-mini-btn{width:40px;height:40px;border-radius:50%;border:none;background:#fff;color:#000;-webkit-flex-shrink:0;flex-shrink:0;cursor:pointer;padding:0;}
+.sp-mini-btn svg{width:18px;height:18px;fill:currentColor;display:block;margin:0 auto;}
+.sp-mini-prog{height:3px;background:rgba(255,255,255,0.12);}
+.sp-mini-pf{height:100%;width:0;background:#1db954;border-radius:0 2px 2px 0;}
 .camgrid{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:-5px;}
 .camgrid>*{margin:5px;}
 .camcard{-webkit-flex:1 1 calc(50% - 10px);flex:1 1 calc(50% - 10px);min-width:280px;position:relative;border-radius:var(--r);overflow:hidden;background:#000;border:1px solid var(--glass-b);box-shadow:var(--shadow);}
@@ -619,7 +653,7 @@ body.light nav{background:var(--glass);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.8.1</span>
+      <span id="ver">v11.9.0</span>
       <button class="hbtn" onclick="forceReload()" title="Odśwież">↺</button>
     </div>
   </header>
@@ -839,33 +873,39 @@ body.light nav{background:var(--glass);}
       </div>
     </div>
 
-    <!-- SPOTIFY / MUZYKA -->
+    <!-- SPOTIFY / MUZYKA — układ jak aplikacja Spotify -->
     <div id="view-spotify" class="view">
-      <div class="spv">
-        <div class="card spro spv-now">
-          <div class="spro-top"><span class="spro-lbl">Teraz gra</span><span class="spro-badge"><svg viewBox="0 0 24 24"><path d="M10 5.5V14a3 3 0 1 0 1.8 2.75V8.7l5 1.4V7.5L10 5.5z"/></svg></span></div>
-          <div class="spro-body">
-            <div class="spro-art" id="spt-art"></div>
-            <div class="spro-meta">
-              <div class="spro-track" id="spt-t">--</div>
-              <div class="spro-artist" id="spt-a">--</div>
-            </div>
+      <div id="sp-home" class="sp-home">
+        <div class="sp-head">
+          <div class="sp-logo">Spotify</div>
+          <div class="sp-chips">
+            <button type="button" class="sp-chip on">Muzyka</button>
+            <button type="button" class="sp-chip" onclick="spOpenLibrary()">Biblioteka</button>
           </div>
-          <div class="mctrl">
-            <button class="mbtn" onclick="mSpPrev()"><svg viewBox="0 0 24 24"><path d="M7 6h2.2v12H7zM20 6.4v11.2L11 12z"/></svg></button>
-            <button class="mbtn play" id="spt-p" onclick="mSpPP()"><svg viewBox="0 0 24 24"><path d="M7 5.5v13L18 12z"/></svg></button>
-            <button class="mbtn" onclick="mSpNext()"><svg viewBox="0 0 24 24"><path d="M14.8 6H17v12h-2.2zM4 6.4v11.2L13 12z"/></svg></button>
+          <div class="sp-devices" id="sp-src"></div>
+        </div>
+        <div class="sp-feed" id="sp-feed"><div class="sp-loading">Ładowanie Twojej muzyki…</div></div>
+      </div>
+      <div id="sp-detail" class="sp-detail sp-hide">
+        <div class="sp-detail-top">
+          <button type="button" class="sp-detail-back" onclick="spBack()">←</button>
+          <div class="sp-detail-title" id="sp-detail-title">—</div>
+          <button type="button" class="sp-detail-play sp-hide" id="sp-detail-play" onclick="spPlayDetailAll()">▶ Odtwórz</button>
+        </div>
+        <div class="spv-list" id="sp-list"></div>
+      </div>
+      <div class="spv-status" id="sp-status"></div>
+      <div class="sp-mini" id="sp-mini">
+        <div class="sp-mini-inner">
+          <div class="sp-mini-art" id="sp-mini-art"></div>
+          <div class="sp-mini-meta">
+            <div class="sp-mini-t" id="sp-mini-t">Nic nie gra</div>
+            <div class="sp-mini-a" id="sp-mini-a">Spotify</div>
+            <div class="sp-mini-dev" id="sp-mini-dev">♪ Wzmacniacz</div>
           </div>
-          <div class="volr"><div class="volbw volset" onclick="mSpVol(event,this)"><div class="volb" id="spt-vb" style="width:0%"></div></div><div class="volv" id="spt-vv">0%</div></div>
+          <button type="button" class="sp-mini-btn" id="sp-mini-p" onclick="mSpPP()"><svg viewBox="0 0 24 24"><path d="M7 5.5v13L18 12z"/></svg></button>
         </div>
-        <div class="st">Odtwarzaj na</div>
-        <div class="spv-src" id="sp-src"></div>
-        <div class="spv-nav">
-          <button type="button" class="spv-back" id="sp-back" onclick="spBack()">← Wstecz</button>
-          <div class="spv-crumb" id="sp-crumb">Spotify</div>
-        </div>
-        <div class="spv-list" id="sp-list"><div class="spv-hint">Ładowanie playlist…</div></div>
-        <div class="spv-status" id="sp-status"></div>
+        <div class="sp-mini-prog"><div class="sp-mini-pf" id="sp-mini-pf"></div></div>
       </div>
     </div>
 
@@ -1070,7 +1110,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.8.1';
+var BUILD='11.9.0';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var MOTION='binary_sensor.motion';
@@ -1323,7 +1363,7 @@ function sv(id,btn){
   if(btn) btn.className='tb a';
   if(id==='kamery') refreshCameras();
   if(id==='pogoda'){ loadForecast(); loadHourly(); drawWeatherPage(); }
-  if(id==='spotify'){ spStack=[{title:'Spotify',type:'',id:''}]; spInitTab(); }
+  if(id==='spotify'){ spView='home'; spStack=[]; spItemRegistry=[]; spInitTab(); }
 }
 
 // API
@@ -1868,7 +1908,7 @@ function upd(){
   updMediaS(TV_EID,'tv-p',null,null);
   tx('tv-t', at(TV_EID,'media_title')||st(TV_EID));
   updSpotifyArt();
-  updSpotifyTabNow();
+  updSpMiniPlayer();
 
   // GAUGE jakości powietrza + żarówki pokoi
   updateGauge();
@@ -2073,15 +2113,19 @@ function readSpotifyProgress(){
 function tickSpotifyProgress(){
   var pf=document.getElementById('sp-pf'); if(!pf) return;
   var pe=document.getElementById('sp-pos'), de=document.getElementById('sp-dur');
+  var mpf=document.getElementById('sp-mini-pf');
   if(SPP.dur>0){
     var pos=SPP.pos;
     if(SPP.playing&&SPP.upd){ pos+=(Date.now()-SPP.upd)/1000; }
     if(pos>SPP.dur) pos=SPP.dur;
-    pf.style.width=(pos/SPP.dur*100)+'%';
+    var pct=(pos/SPP.dur*100)+'%';
+    pf.style.width=pct;
+    if(mpf) mpf.style.width=pct;
     if(pe) pe.textContent=fmtTime(pos);
     if(de) de.textContent=fmtTime(SPP.dur);
   } else {
     pf.style.width='0%';
+    if(mpf) mpf.style.width='0%';
     if(pe) pe.textContent='0:00';
     if(de) de.textContent='0:00';
   }
@@ -2187,27 +2231,37 @@ function mSpPrev(){ mCmd(SP_EID,'media_previous_track'); }
 function mSpNext(){ mCmd(SP_EID,'media_next_track'); }
 function mSpPP(){ mPP(SP_EID,'sp-p'); }
 function mSpVol(ev,el){ setVol(ev,SP_EID,el); }
-function updSpotifyTabNow(){
+function updSpMiniPlayer(){
   var e=E[SP_EID];
-  if(!e) return;
-  tx('spt-t', at(SP_EID,'media_title')||'--');
-  tx('spt-a', at(SP_EID,'media_artist')||'');
-  var art=document.getElementById('spt-art');
-  if(art&&e.attributes&&e.attributes.entity_picture){
-    var pic=e.attributes.entity_picture;
+  var art=document.getElementById('sp-mini-art');
+  var dev=document.getElementById('sp-mini-dev');
+  var btn=document.getElementById('sp-mini-p');
+  if(!e){
+    tx('sp-mini-t','Nic nie gra');
+    tx('sp-mini-a','Spotify');
+    if(dev) dev.textContent='♪ '+SP_SOURCE;
+    return;
+  }
+  var a=e.attributes||{};
+  tx('sp-mini-t', a.media_title||'—');
+  tx('sp-mini-a', a.media_artist||'');
+  if(dev){
+    var src=a.source||SP_SOURCE;
+    dev.textContent='♪ '+src;
+  }
+  if(art&&a.entity_picture){
+    var pic=a.entity_picture;
     var u=(pic.indexOf('http')===0)?pic:(HA+pic);
     art.style.backgroundImage='url("'+u+'")';
   }
-  var b=document.getElementById('spt-p');
-  if(b) b.innerHTML=(e.state==='playing')?ICON_PAUSE:ICON_PLAY;
-  var a=e.attributes||{};
-  var vol=a.volume_level!==undefined?Math.round(a.volume_level*100):0;
-  var vb=document.getElementById('spt-vb'); if(vb) vb.style.width=vol+'%';
-  var vv=document.getElementById('spt-vv'); if(vv) vv.textContent=vol+'%';
+  if(btn) btn.innerHTML=(e.state==='playing')?ICON_PAUSE:ICON_PLAY;
 }
+function updSpotifyTabNow(){ updSpMiniPlayer(); }
 
-// SPOTIFY — przeglądarka playlist (browse_media)
-var spStack=[], spItems=[], spBusy=false;
+// SPOTIFY — ekran główny jak aplikacja + biblioteka
+var spStack=[], spItems=[], spItemRegistry=[], spBusy=false, spView='home', spDetailPlayable=null;
+var SP_HOME_ORDER={'current_user_recently_played':1,'current_user_playlists':2,'current_user_saved_tracks':3,'current_user_saved_albums':4,'new_releases':5,'current_user_top_tracks':6,'current_user_top_artists':7};
+var SP_TITLE_PL={'Playlists':'Twoje playlisty','Recently played':'Ostatnie','Saved tracks':'Polubione utwory','Saved albums':'Zapisane albumy','New releases':'Nowości','Top tracks':'Top utwory','Top artists':'Top artyści','Followed artists':'Obserwowani artyści','Podcasts':'Podcasty','Spotify':'Biblioteka'};
 function spHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function spEscJs(s){ return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
 function spThumbUrl(u){ if(!u) return ''; return (u.indexOf('http')===0)?u:(HA+u); }
@@ -2314,12 +2368,126 @@ function haBrowseMedia(contentType,contentId,cb){
     haBrowseRest(contentType,contentId,cb);
   });
 }
+function spCatKey(item){
+  var id=String(item.media_content_id||'').toLowerCase();
+  var t=String(item.media_content_type||'').toLowerCase();
+  var k;
+  for(k in SP_HOME_ORDER){
+    if(SP_HOME_ORDER.hasOwnProperty(k)&&(id.indexOf(k)>=0||t.indexOf(k)>=0)) return k;
+  }
+  return id||t||'';
+}
+function spCatSort(a,b){
+  var oa=SP_HOME_ORDER[spCatKey(a)]||99, ob=SP_HOME_ORDER[spCatKey(b)]||99;
+  if(oa!==ob) return oa-ob;
+  return String(a.title||'').localeCompare(String(b.title||''));
+}
+function spTitlePl(title){
+  if(!title) return 'Muzyka';
+  return SP_TITLE_PL[title]||title;
+}
+function spShowHome(){
+  spView='home';
+  spStack=[];
+  spDetailPlayable=null;
+  var h=document.getElementById('sp-home'), d=document.getElementById('sp-detail');
+  if(h) h.className='sp-home';
+  if(d) d.className='sp-detail sp-hide';
+  spSetStatus('');
+}
+function spShowDetail(title,showPlay){
+  spView='detail';
+  var h=document.getElementById('sp-home'), d=document.getElementById('sp-detail');
+  if(h) h.className='sp-home sp-hide';
+  if(d) d.className='sp-detail';
+  tx('sp-detail-title', title||'—');
+  var pb=document.getElementById('sp-detail-play');
+  if(pb) pb.className=showPlay?'sp-detail-play':'sp-detail-play sp-hide';
+}
 function spInitTab(){
   confirmEntity(SP_EID,function(){
     spRenderSources();
-    updSpotifyTabNow();
-    spBrowse('','');
+    updSpMiniPlayer();
+    spHomeLoad();
   });
+}
+function spHomeLoad(){
+  spShowHome();
+  spItemRegistry=[];
+  var feed=document.getElementById('sp-feed');
+  if(feed) feed.innerHTML='<div class="sp-loading">Ładowanie Twojej muzyki…</div>';
+  haBrowseMedia('','',function(err,root){
+    if(err||!root||!root.children||!root.children.length){
+      if(feed) feed.innerHTML='<div class="spv-empty">Nie udało się wczytać Spotify.</div>';
+      return;
+    }
+    var cats=root.children.slice(0);
+    cats.sort(spCatSort);
+    if(feed) feed.innerHTML='';
+    spLoadHomeRows(cats,0,0);
+  });
+}
+function spLoadHomeRows(cats,idx,loaded){
+  if(idx>=cats.length||loaded>=5){
+    if(!loaded){
+      var feed=document.getElementById('sp-feed');
+      if(feed&&!feed.innerHTML) feed.innerHTML='<div class="spv-empty">Brak sekcji do wyświetlenia.</div>';
+    }
+    return;
+  }
+  var cat=cats[idx];
+  haBrowseMedia(cat.media_content_type,cat.media_content_id,function(err,data){
+    if(!err&&data&&data.children&&data.children.length){
+      spAppendHomeRow(spTitlePl(data.title||cat.title),data.children);
+      loaded++;
+    }
+    spLoadHomeRows(cats,idx+1,loaded);
+  });
+}
+function spCardSub(item){
+  var mc=(item.media_class||'').toLowerCase();
+  if(mc==='playlist') return 'Playlista';
+  if(mc==='album') return 'Album';
+  if(mc==='track'||mc==='music') return (item.subtitle||item.artist||'Utwór');
+  return spSub(item);
+}
+function spAppendHomeRow(title,items){
+  var feed=document.getElementById('sp-feed');
+  if(!feed) return;
+  var max=Math.min(items.length,12), h='', i, item, idx, img;
+  h+='<div class="sp-sec"><div class="sp-sec-h"><div class="sp-sec-t">'+spHtml(title)+'</div></div><div class="sp-row">';
+  for(i=0;i<max;i++){
+    item=items[i];
+    idx=spItemRegistry.length;
+    spItemRegistry.push(item);
+    if(item.thumbnail) img='<img class="sp-card-img" src="'+spThumbUrl(item.thumbnail)+'" alt="">';
+    else img='<div class="sp-card-ph">♪</div>';
+    h+='<div class="sp-card" onclick="spCardTap('+idx+')">'+img+'<div class="sp-card-t">'+spHtml(item.title)+'</div><div class="sp-card-s">'+spHtml(spCardSub(item))+'</div></div>';
+  }
+  h+='</div></div>';
+  feed.innerHTML+=h;
+}
+function spOpenLibrary(){
+  spStack=[{title:'Biblioteka',type:'',id:''}];
+  spShowDetail('Biblioteka',false);
+  spBrowse('','');
+}
+function spOpenDetail(item){
+  if(!item) return;
+  spDetailPlayable=spCanPlay(item)?item:null;
+  spStack=[{title:item.title||'…',type:item.media_content_type,id:item.media_content_id}];
+  spShowDetail(item.title,spCanPlay(item));
+  spBrowse(item.media_content_type,item.media_content_id);
+}
+function spCardTap(idx){
+  var item=spItemRegistry[idx];
+  if(!item) return;
+  var mc=(item.media_class||'').toLowerCase();
+  if(mc==='track'||mc==='music'||mc==='episode') spPlayItem(item);
+  else spOpenDetail(item);
+}
+function spPlayDetailAll(){
+  if(spDetailPlayable) spPlayItem(spDetailPlayable);
 }
 function spRenderSources(){
   var el=document.getElementById('sp-src');
@@ -2327,12 +2495,12 @@ function spRenderSources(){
   var e=E[SP_EID], list=[], i;
   if(e&&e.attributes&&e.attributes.source_list) list=e.attributes.source_list;
   if(!list.length){
-    el.innerHTML='<div class="spv-hint">Brak urządzeń — sprawdź encję Spotify w HA</div>';
+    el.innerHTML='<span class="spv-hint">Brak urządzeń</span>';
     return;
   }
   var h='';
   for(i=0;i<list.length;i++){
-    h+='<button type="button" class="spv-pill'+(list[i]===SP_SOURCE?' on':'')+'" onclick="spPickSource(\''+spEscJs(list[i])+'\')">'+spHtml(list[i])+'</button>';
+    h+='<button type="button" class="sp-pill'+(list[i]===SP_SOURCE?' on':'')+'" onclick="spPickSource(\''+spEscJs(list[i])+'\')">'+spHtml(list[i])+'</button>';
   }
   el.innerHTML=h;
 }
@@ -2354,18 +2522,17 @@ function spEnsureSource(cb){
 function spBrowse(type,id){
   if(spBusy) return;
   spBusy=true;
-  spSetStatus('Ładowanie biblioteki…');
+  spSetStatus('Ładowanie…');
   haBrowseMedia(type||'',id||'',function(err,resp){
     spBusy=false;
     if(err||!resp){
-      spSetStatus('Błąd: '+((err&&err.message)?err.message:'brak danych'));
+      spSetStatus('Błąd wczytywania');
       var el=document.getElementById('sp-list');
-      if(el) el.innerHTML='<div class="spv-empty">Nie udało się wczytać biblioteki Spotify.<br><span style="font-size:11px;opacity:.7">Sprawdź token i połączenie z HA.</span></div>';
+      if(el) el.innerHTML='<div class="spv-empty">Nie udało się wczytać.</div>';
       return;
     }
     spSetStatus('');
     spRenderBrowse(resp);
-    spUpdateCrumb();
   });
 }
 function spRenderBrowse(data){
@@ -2396,12 +2563,8 @@ function spIsBrowsable(item){
 function spTapItem(idx){
   var item=spItems[idx];
   if(!item) return;
-  if(spIsBrowsable(item)){
-    spStack.push({title:item.title||'…',type:item.media_content_type,id:item.media_content_id});
-    spBrowse(item.media_content_type,item.media_content_id);
-  } else {
-    spPlayNow(idx);
-  }
+  if(spIsBrowsable(item)) spOpenDetail(item);
+  else spPlayItem(item);
 }
 function spPlayType(item){
   var mc=(item.media_class||'').toLowerCase();
@@ -2411,10 +2574,9 @@ function spPlayType(item){
   if(mc==='episode') return 'episode';
   return 'music';
 }
-function spPlayNow(idx){
-  var item=spItems[idx];
+function spPlayItem(item){
   if(!item||!item.media_content_id) return;
-  spSetStatus('Odtwarzam na '+SP_SOURCE+'…');
+  spSetStatus('Odtwarzam…');
   spEnsureSource(function(){
     haPost('media_player','play_media',{
       entity_id:SP_EID,
@@ -2422,7 +2584,7 @@ function spPlayNow(idx){
       media_content_id:item.media_content_id
     },function(){
       confirmEntity(SP_EID,function(){
-        updSpotifyTabNow();
+        updSpMiniPlayer();
         updMedia(SP_EID,'sp-t','sp-a','sp-p','sp-vb','sp-vv');
         updSpotifyArt();
         spSetStatus('');
@@ -2430,18 +2592,17 @@ function spPlayNow(idx){
     });
   });
 }
+function spPlayNow(idx){ spPlayItem(spItems[idx]); }
 function spBack(){
-  if(spStack.length<=1) return;
-  spStack.pop();
-  var top=spStack[spStack.length-1];
-  spBrowse(top.type,top.id);
-}
-function spUpdateCrumb(){
-  var el=document.getElementById('sp-crumb');
-  var back=document.getElementById('sp-back');
-  var top=spStack.length?spStack[spStack.length-1]:null;
-  if(el) el.textContent=top?top.title:'Spotify';
-  if(back) back.style.display=spStack.length>1?'inline-block':'none';
+  if(spView!=='detail') return;
+  if(spStack.length>1){
+    spStack.pop();
+    var top=spStack[spStack.length-1];
+    tx('sp-detail-title', top.title);
+    spBrowse(top.type,top.id);
+    return;
+  }
+  spHomeLoad();
 }
 
 function mTvPrev(){ mCmd(TV_EID,'media_previous_track'); }
@@ -2453,14 +2614,14 @@ function mPP(eid,bid){
   E[eid].state=playing?'paused':'playing';  // optymistycznie
   var icon=playing?ICON_PLAY:ICON_PAUSE;
   var b=document.getElementById(bid); if(b) b.innerHTML=icon;
-  if(eid===SP_EID){ var b2=document.getElementById('spt-p'); if(b2) b2.innerHTML=icon; }
+  if(eid===SP_EID){ var b2=document.getElementById('sp-mini-p'); if(b2) b2.innerHTML=icon; }
   SPP.playing=!playing;
   haPost('media_player',playing?'media_pause':'media_play',{entity_id:eid},function(){
     confirmEntity(eid,function(){
       var bb=document.getElementById(bid);
       var ic=(E[eid]&&E[eid].state==='playing')?ICON_PAUSE:ICON_PLAY;
       if(bb) bb.innerHTML=ic;
-      if(eid===SP_EID){ var b3=document.getElementById('spt-p'); if(b3) b3.innerHTML=ic; }
+      if(eid===SP_EID){ var b3=document.getElementById('sp-mini-p'); if(b3) b3.innerHTML=ic; }
     });
   });
 }
@@ -2474,10 +2635,8 @@ function setVol(ev,eid,el){
   if(frac<0)frac=0; if(frac>1)frac=1;
   var pct=Math.round(frac*100);
   if(eid===SP_EID){
-    var fb=document.getElementById('sp-vb'); if(fb) fb.style.width=pct+'%';
-    var vv=document.getElementById('sp-vv'); if(vv) vv.textContent=pct+'%';
-    fb=document.getElementById('spt-vb'); if(fb) fb.style.width=pct+'%';
-    vv=document.getElementById('spt-vv'); if(vv) vv.textContent=pct+'%';
+    fb=document.getElementById('sp-vb'); if(fb) fb.style.width=pct+'%';
+    vv=document.getElementById('sp-vv'); if(vv) vv.textContent=pct+'%';
   }
   haPost('media_player','volume_set',{entity_id:eid,volume_level:frac},function(){ confirmEntity(eid); });
 }

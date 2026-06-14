@@ -2,6 +2,14 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.9.0] — 2026-06-14
+
+### Zmienione — zakładka ♪ Muzyka
+- **Wygląd jak główna strona Spotify** — ciemne tło, poziome rzędy z okładkami (Ostatnie, Playlisty, Polubione…).
+- **Mini‑odtwarzacz** na dole (utwór, wzmacniacz, play/pause, pasek postępu).
+- **Biblioteka** — pełna lista folderów Spotify (jak ikona folderu w HA).
+- Klik w playlistę → lista utworów + **▶ Odtwórz**.
+
 ## [11.8.1] — 2026-06-14
 
 ### Naprawione
