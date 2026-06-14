@@ -2,6 +2,14 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.7.6] — 2026-06-14
+
+### Naprawione
+- **Kamera po wybudzeniu** — najpierw migawka (~1 s), potem strumień; iPad 4 startuje MJPEG zamiast wolnego HLS.
+- **Przygaszenie** — ostatnia klatka zostaje (nie czarny prostokąt); strumień tylko pauzowany.
+- Timeout HLS/MJPEG — szybszy fallback; `camera_proxy` gdy brak `entity_picture`.
+- Po wybudzeniu ruchem: od razu odświeżenie kamery + ponowne próby po 0,4 s i 2 s.
+
 ## [11.7.5] — 2026-06-14
 
 ### Dodane

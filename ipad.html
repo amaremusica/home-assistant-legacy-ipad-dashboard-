@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.7.5 -->
+<!-- build: v11.7.6 -->
 <title>Dom</title>
 <style>
 :root {
@@ -593,7 +593,7 @@ body.light nav{background:var(--glass);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.7.5</span>
+      <span id="ver">v11.7.6</span>
       <button class="hbtn" onclick="forceReload()" title="Odśwież">↺</button>
     </div>
   </header>
@@ -1013,7 +1013,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.7.5';
+var BUILD='11.7.6';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var MOTION='binary_sensor.motion';
@@ -2166,6 +2166,7 @@ function fetch15(){
     E={};
     for(var i=0;i<data.length;i++) E[data[i].entity_id]=data[i];
     upd();
+    if(!dimmed) refreshCameras();
   });
 }
 
@@ -2175,12 +2176,18 @@ function setC(ok){
   el.className=ok?'ok':'err';
 }
 
-// CAMERY — EZVIZ: HLS (Safari/iPad) → MJPEG → migawka
+// CAMERY — migawka od razu, potem strumień (HLS/MJPEG); przy dim zamrożona klatka
 var CAMS=[['camera.front','cam-front','cam-front-v','camoff-front'],['camera.tyl','cam-tyl','cam-tyl-v','camoff-tyl']];
 var CAM_DASH=['camera.front','cam-dash','cam-dash-v','camoff-dash'];
 var CAM_STREAM=true;
 var camLive={};
+var camTimers={};
+var HLS_TIMEOUT=7000;
+var MJPEG_TIMEOUT=6000;
 
+function camClearTimer(imgId){
+  if(camTimers[imgId]){ clearTimeout(camTimers[imgId]); camTimers[imgId]=null; }
+}
 function camHlsUrl(eid,pl){
   if(!HA||!TOK) return '';
   pl=pl||'playlist.m3u8';
@@ -2190,66 +2197,80 @@ function camStreamUrl(eid){
   if(!HA||!TOK) return '';
   return HA.replace(/\/$/,'')+'/api/camera_proxy_stream/'+eid+'?token='+encodeURIComponent(TOK);
 }
+function camProxySnapUrl(eid){
+  if(!HA||!TOK) return '';
+  return HA.replace(/\/$/,'')+'/api/camera_proxy/'+eid+'?token='+encodeURIComponent(TOK)+'&_='+(new Date()).getTime();
+}
 function camSnapUrl(eid){
   var e=E[eid];
-  if(!e||!e.attributes||!e.attributes.entity_picture) return '';
+  if(!e||!e.attributes||!e.attributes.entity_picture) return camProxySnapUrl(eid);
   var p=e.attributes.entity_picture;
-  return (p.indexOf('http')===0)?p:(HA+p);
+  var base=(p.indexOf('http')===0)?p:(HA+p);
+  return base+(base.indexOf('?')>=0?'&':'?')+'_='+(new Date()).getTime();
 }
 function camShowOff(offId,on){
   var off=document.getElementById(offId);
   if(off) off.style.display=on?'flex':'none';
 }
-function camHideAll(img,vid){
-  if(vid){
-    try{ vid.pause(); }catch(e){}
-    vid.onerror=null;
-    vid.oncanplay=null;
-    vid.removeAttribute('src');
-    try{ vid.load(); }catch(e2){}
-    vid.style.display='none';
-  }
-  if(img){
-    img.onload=null;
-    img.onerror=null;
-    if(img.getAttribute('src')) img.removeAttribute('src');
-    img.style.display='none';
-  }
+function camHideVideo(vid){
+  if(!vid) return;
+  try{ vid.pause(); }catch(e){}
+  vid.onerror=null;
+  vid.oncanplay=null;
+  vid.removeAttribute('src');
+  try{ vid.load(); }catch(e2){}
+  vid.style.display='none';
 }
 function camStop(imgId,vidId,offId){
+  camClearTimer(imgId);
   camLive[imgId]=null;
-  camHideAll(document.getElementById(imgId),vidId?document.getElementById(vidId):null);
-  camShowOff(offId,true);
-}
-function camSnapOnce(eid,imgId,vidId,offId){
   var img=document.getElementById(imgId);
   var vid=vidId?document.getElementById(vidId):null;
-  if(!img) return;
-  camHideAll(img,vid);
-  var base=camSnapUrl(eid);
-  if(!base){ camStop(imgId,vidId,offId); return; }
-  var full=base+(base.indexOf('?')>=0?'&':'?')+'_='+(new Date()).getTime();
+  if(img){ img.onload=null; img.onerror=null; if(img.getAttribute('src')) img.removeAttribute('src'); img.style.display='none'; }
+  camHideVideo(vid);
+  camShowOff(offId,true);
+}
+function camSnapRefresh(eid,imgId,offId){
+  var img=document.getElementById(imgId);
+  if(!img||dimmed) return;
+  var full=camSnapUrl(eid);
+  if(!full) return;
   var pre=new Image();
   pre.onload=function(){
+    if(dimmed) return;
     img.src=full;
     img.style.display='block';
     camShowOff(offId,false);
-    camLive[imgId]='snap';
+    if(camLive[imgId]!=='hls'&&camLive[imgId]!=='mjpeg') camLive[imgId]='snap';
   };
-  pre.onerror=function(){ camStop(imgId,vidId,offId); };
+  pre.onerror=function(){};
   pre.src=full;
+}
+function camShowStreamVid(vid,img,offId,mode,imgId){
+  if(vid){ vid.style.display='block'; try{ vid.play(); }catch(e){} }
+  if(img) img.style.display='none';
+  camShowOff(offId,false);
+  camLive[imgId]=mode;
 }
 function camStartMjpeg(eid,imgId,vidId,offId){
   var img=document.getElementById(imgId);
-  if(!img||!HA||!TOK){ camSnapOnce(eid,imgId,vidId,offId); return; }
-  camHideAll(img,vidId?document.getElementById(vidId):null);
+  var vid=vidId?document.getElementById(vidId):null;
+  if(!img||!HA||!TOK) return;
+  camClearTimer(imgId);
+  camHideVideo(vid);
   var u=camStreamUrl(eid);
+  camTimers[imgId]=setTimeout(function(){
+    camTimers[imgId]=null;
+    if(camLive[imgId]==='mjpeg') return;
+    camSnapRefresh(eid,imgId,offId);
+  },MJPEG_TIMEOUT);
   img.onerror=function(){
+    camClearTimer(imgId);
     img.onerror=null;
-    camLive[imgId]=null;
-    camSnapOnce(eid,imgId,vidId,offId);
+    if(camLive[imgId]!=='snap') camSnapRefresh(eid,imgId,offId);
   };
   img.onload=function(){
+    camClearTimer(imgId);
     img.style.display='block';
     camShowOff(offId,false);
     camLive[imgId]='mjpeg';
@@ -2262,28 +2283,54 @@ function camStartHls(eid,imgId,vidId,offId,pl){
   var vid=document.getElementById(vidId);
   var img=document.getElementById(imgId);
   if(!vid||!HA||!TOK){ camStartMjpeg(eid,imgId,vidId,offId); return; }
-  if(camLive[imgId]==='hls'&&vid.getAttribute('src')) return;
-  camHideAll(img,vid);
+  if(camLive[imgId]==='hls'&&vid.getAttribute('src')&&vid.videoWidth>0) return;
   pl=pl||'playlist.m3u8';
+  camClearTimer(imgId);
+  camTimers[imgId]=setTimeout(function(){
+    camTimers[imgId]=null;
+    if(camLive[imgId]==='hls') return;
+    if(pl==='playlist.m3u8') camStartHls(eid,imgId,vidId,offId,'master.m3u8');
+    else camStartMjpeg(eid,imgId,vidId,offId);
+  },HLS_TIMEOUT);
   vid.oncanplay=function(){
-    vid.style.display='block';
-    camShowOff(offId,false);
-    camLive[imgId]='hls';
+    camClearTimer(imgId);
+    camShowStreamVid(vid,img,offId,'hls',imgId);
   };
   vid.onerror=function(){
+    camClearTimer(imgId);
     vid.onerror=null;
     if(pl==='playlist.m3u8') camStartHls(eid,imgId,vidId,offId,'master.m3u8');
     else camStartMjpeg(eid,imgId,vidId,offId);
   };
   vid.src=camHlsUrl(eid,pl);
   vid.style.display='block';
-  camShowOff(offId,false);
   try{ vid.play(); }catch(e){}
 }
+function camTryStream(eid,imgId,vidId,offId){
+  if(isLegacySafari()) camStartMjpeg(eid,imgId,vidId,offId);
+  else camStartHls(eid,imgId,vidId,offId,'playlist.m3u8');
+}
 function camStart(eid,imgId,vidId,offId){
-  if(dimmed){ camStop(imgId,vidId,offId); return; }
-  if(CAM_STREAM) camStartHls(eid,imgId,vidId,offId,'playlist.m3u8');
-  else camSnapOnce(eid,imgId,vidId,offId);
+  if(dimmed) return;
+  camSnapRefresh(eid,imgId,offId);
+  if(CAM_STREAM) camTryStream(eid,imgId,vidId,offId);
+}
+function camPauseAll(){
+  var i, slot, vid, img, offId;
+  for(i=0;i<CAMS.length;i++){
+    camClearTimer(CAMS[i][1]);
+    vid=document.getElementById(CAMS[i][2]);
+    camHideVideo(vid);
+    if(camLive[CAMS[i][1]]) camLive[CAMS[i][1]]='paused';
+  }
+  camClearTimer(CAM_DASH[1]);
+  vid=document.getElementById(CAM_DASH[2]);
+  camHideVideo(vid);
+  img=document.getElementById(CAM_DASH[1]);
+  offId=CAM_DASH[3];
+  if(img&&img.getAttribute('src')){ img.style.display='block'; camShowOff(offId,false); }
+  else camShowOff(offId,true);
+  if(camLive[CAM_DASH[1]]) camLive[CAM_DASH[1]]='paused';
 }
 function camStopAll(){
   var i;
@@ -2291,7 +2338,7 @@ function camStopAll(){
   camStop(CAM_DASH[1],CAM_DASH[2],CAM_DASH[3]);
 }
 function refreshCameras(){
-  if(dimmed){ camStopAll(); return; }
+  if(dimmed){ camPauseAll(); return; }
   var v=document.getElementById('view-kamery');
   var d=document.getElementById('view-dom');
   var vk=v&&v.className.indexOf('active')>=0;
@@ -2306,7 +2353,7 @@ function refreshCameras(){
   else camStop(CAM_DASH[1],CAM_DASH[2],CAM_DASH[3]);
 }
 function camSlotByIds(imgId){
-  if(imgId==='cam-dash') return CAM_DASH;
+  if(imgId===CAM_DASH[1]) return CAM_DASH;
   var i;
   for(i=0;i<CAMS.length;i++){ if(CAMS[i][1]===imgId) return CAMS[i]; }
   return null;
@@ -2320,8 +2367,10 @@ function camHealthCheck(){
     mode=camLive[ids[i]];
     img=document.getElementById(slot[1]);
     vid=document.getElementById(slot[2]);
-    if(mode==='hls'&&vid&&(!vid.videoWidth||vid.readyState<2)) camStartHls(slot[0],slot[1],slot[2],slot[3],'playlist.m3u8');
-    else if(mode==='mjpeg'&&img&&img.naturalWidth===0) camStartMjpeg(slot[0],slot[1],slot[2],slot[3]);
+    if(!img||!img.getAttribute('src')) camSnapRefresh(slot[0],slot[1],slot[3]);
+    if(mode==='hls'&&vid&&(!vid.videoWidth||vid.readyState<2)) camTryStream(slot[0],slot[1],slot[2],slot[3]);
+    else if(mode==='mjpeg'&&img&&img.naturalWidth===0) camTryStream(slot[0],slot[1],slot[2],slot[3]);
+    else if(!mode||mode==='snap'||mode==='paused') camTryStream(slot[0],slot[1],slot[2],slot[3]);
   }
 }
 
@@ -2362,17 +2411,22 @@ function armDimTimer(){
 }
 
 function wakeCams(){
+  if(!dimmed){
+    camSnapRefresh(CAM_DASH[0],CAM_DASH[1],CAM_DASH[3]);
+    refreshCameras();
+  }
   try{
     haGet('states/camera.front',function(err,data){
-      if(!err&&data){ E['camera.front']=data; refreshCameras(); }
+      if(!err&&data){ E['camera.front']=data; if(!dimmed) refreshCameras(); }
     });
-  }catch(e){ refreshCameras(); }
+  }catch(e){}
 }
 function wakeScreen(manual){
   if(idleTimer){clearTimeout(idleTimer);idleTimer=null;}
   setDim(false);
   wakeCams();
-  setTimeout(wakeCams,900);
+  setTimeout(wakeCams,400);
+  setTimeout(wakeCams,2000);
   if(manual||!isMotionActive(lastMotionState)) armDimTimer();
 }
 
@@ -2395,7 +2449,7 @@ function setDim(on){
     d.className=night?'on night':'on';
     if(app) app.className='scr-dim';
     dimmed=true;
-    camStopAll();
+    camPauseAll();
   } else if(!on&&dimmed){
     d.className='';
     if(app) app.className='';
@@ -2506,7 +2560,7 @@ function startApp(){
     if(dimmed) return;
     if(CAM_STREAM) camHealthCheck();
     else refreshCameras();
-  },CAM_STREAM?12000:2500);
+  },CAM_STREAM?8000:2500);
   setInterval(tickSpotifyProgress,1000);
   setInterval(animateWave,210);
   fixHeight();
