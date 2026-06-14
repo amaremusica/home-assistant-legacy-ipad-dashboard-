@@ -2,6 +2,11 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.7.3] — 2026-06-14
+
+### Naprawione
+- **Środkowa kolumna Dom** znów mieści się na jednym ekranie: sceny w siatce pokoi, energia elastyczna, bieganie + lodówka obok siebie.
+
 ## [11.7.2] — 2026-06-14
 
 ### Zmienione — auto-aktualizacja

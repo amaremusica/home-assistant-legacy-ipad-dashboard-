@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.7.2 -->
+<!-- build: v11.7.3 -->
 <title>Dom</title>
 <style>
 :root {
@@ -204,9 +204,9 @@ body.light .tb.a{box-shadow:0 2px 12px rgba(15,23,42,0.08);}
 .g3>*{-webkit-flex:1 1 calc(33.33% - 8px);flex:1 1 calc(33.33% - 8px);margin:4px;}
 .g4{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:-4px -4px 4px;}
 .g4>*{-webkit-flex:1 1 calc(25% - 8px);flex:1 1 calc(25% - 8px);margin:4px;}
-.scenerow{display:-webkit-flex;display:flex;-webkit-flex:0 0 auto;flex:0 0 auto;margin-top:10px;}
-.scenerow>*+*{margin-left:8px;}
-.scenebtn{-webkit-flex:1;flex:1;padding:12px 6px;border-radius:var(--r-lg);border:1px solid var(--glass-b);background:var(--glass2);color:var(--text);font-size:11px;font-weight:600;cursor:pointer;text-align:center;-webkit-user-select:none;user-select:none;-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--shadow);}
+.scenerow{display:-webkit-flex;display:flex;-webkit-flex:1 1 100%;flex:1 1 100%;margin:3px 5px 2px;width:calc(100% - 10px);}
+.scenerow>*+*{margin-left:6px;}
+.scenebtn{-webkit-flex:1;flex:1;padding:7px 4px;border-radius:12px;border:1px solid var(--glass-b);background:var(--glass2);color:var(--text);font-size:10px;font-weight:600;cursor:pointer;text-align:center;-webkit-user-select:none;user-select:none;-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--shadow);line-height:1.2;}
 .scenebtn:active{-webkit-transform:scale(0.98);transform:scale(0.98);}
 .scenebtn.off{opacity:0.35;pointer-events:none;}
 .card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);}
@@ -301,10 +301,14 @@ body.light .wst b{color:#0b1220;}
 .d3-left,.d3-mid{margin-right:14px;}
 .d3-col{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
 .d3-col>*+*{margin-top:14px;}
-.d3-mid>*+*{margin-top:9px;}
+.d3-mid>*+*{margin-top:6px;}
+.d3-mid{overflow:hidden;-webkit-flex:1 1 auto;flex:1 1 auto;}
+.mid-grow{-webkit-flex:1 1 auto;flex:1 1 auto;min-height:0;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;}
+.mid-split{display:-webkit-flex;display:flex;-webkit-flex:0 0 auto;flex:0 0 auto;min-height:0;}
+.mid-split>*{-webkit-flex:1;flex:1;min-width:0;}
+.mid-split>*+*{margin-left:8px;}
 .d3-col::-webkit-scrollbar{display:none;}
 .d3-left{-webkit-flex:0 0 27%;flex:0 0 27%;}
-.d3-mid{-webkit-flex:1 1 auto;flex:1 1 auto;}
 .d3-right{-webkit-flex:0 0 25%;flex:0 0 25%;}
 
 /* AQ ring gauge */
@@ -350,7 +354,7 @@ body.light .wst b{color:#0b1220;}
 .d3-right .scstate{font-size:13px;}
 
 /* Karta kuchni — przełączniki + lodówka (kompakt, bez przewijania) */
-.kcard{-webkit-flex:0 0 auto;flex:0 0 auto;padding:9px 12px;}
+.kcard{-webkit-flex:1 1 auto;flex:1 1 auto;padding:7px 10px;min-height:0;}
 .kc-h{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;margin-bottom:7px;}
 .kc-t{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:700;}
 .kc-fridge{font-size:13px;color:var(--text);font-weight:600;}
@@ -361,22 +365,22 @@ body.light .wst b{color:#0b1220;}
 .ktemp-i{font-size:15px;margin-right:7px;}
 .ktemp-m{min-width:0;}
 .ktemp-l{display:block;font-size:8px;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);font-weight:700;}
-.ktemp-v{font-size:16px;font-weight:400;color:var(--bright);letter-spacing:-0.02em;line-height:1.1;}
+.ktemp-v{font-size:14px;font-weight:400;color:var(--bright);letter-spacing:-0.02em;line-height:1.1;}
 
 /* Kamera na pulpicie (pod Spotify) */
 .camcard-dash{-webkit-flex:0 0 auto;flex:0 0 auto;min-width:0;}
 .camcard-dash img{min-height:120px;}
 .camcard-dash .camoff{min-height:120px;}
 /* Karta biegania */
-.runcard{-webkit-flex:0 0 auto;flex:0 0 auto;padding:10px 12px;}
-.run-h{display:-webkit-flex;display:flex;-webkit-align-items:baseline;align-items:baseline;-webkit-justify-content:space-between;justify-content:space-between;margin-bottom:6px;}
-.run-t{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:700;}
-.run-date{font-size:11px;color:var(--dim);font-weight:600;}
-.run-ev{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;padding:7px 10px;border-radius:10px;background:var(--glass2);border:1px solid var(--glass-b);}
-.run-ev+.run-ev{margin-top:8px;}
-.run-time{font-size:13px;font-weight:700;color:var(--accent);width:46px;-webkit-flex-shrink:0;flex-shrink:0;}
-.run-sum{font-size:13px;font-weight:600;color:var(--bright);line-height:1.35;}
-.run-empty{font-size:12px;color:var(--dim);font-weight:600;padding:4px 0;}
+.runcard{-webkit-flex:1 1 auto;flex:1 1 auto;padding:7px 10px;min-height:0;}
+.run-h{display:-webkit-flex;display:flex;-webkit-align-items:baseline;align-items:baseline;-webkit-justify-content:space-between;justify-content:space-between;margin-bottom:4px;}
+.run-t{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:700;}
+.run-date{font-size:10px;color:var(--dim);font-weight:600;}
+.run-ev{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;padding:5px 8px;border-radius:10px;background:var(--glass2);border:1px solid var(--glass-b);}
+.run-ev+.run-ev{margin-top:4px;}
+.run-time{font-size:12px;font-weight:700;color:var(--accent);width:42px;-webkit-flex-shrink:0;flex-shrink:0;}
+.run-sum{font-size:12px;font-weight:600;color:var(--bright);line-height:1.25;}
+.run-empty{font-size:11px;color:var(--dim);font-weight:600;padding:2px 0;}
 .chiprow{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:-4px;}
 .ktog{-webkit-flex:1 1 calc(50% - 8px);flex:1 1 calc(50% - 8px);margin:4px;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;padding:9px 12px;border-radius:14px;border:1px solid var(--glass-b);background:var(--glass2);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;-webkit-user-select:none;user-select:none;}
 .ktog:active{-webkit-transform:scale(0.98);transform:scale(0.98);}
@@ -388,23 +392,23 @@ body.light .wst b{color:#0b1220;}
 .ktog.on .ktsw i{left:18px;}
 
 /* Karta energii — aktualny pobór */
-.ecard{-webkit-flex:0 0 auto;flex:0 0 auto;padding:12px 16px;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;-webkit-justify-content:center;justify-content:center;position:relative;overflow:hidden;background:-webkit-linear-gradient(135deg,rgba(251,191,36,0.28),var(--glass2) 58%);background:linear-gradient(135deg,rgba(251,191,36,0.28),var(--glass2) 58%);}
+.ecard{-webkit-flex:1 1 auto;flex:1 1 auto;min-height:0;padding:8px 12px;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;-webkit-justify-content:center;justify-content:space-between;position:relative;overflow:hidden;background:-webkit-linear-gradient(135deg,rgba(251,191,36,0.28),var(--glass2) 58%);background:linear-gradient(135deg,rgba(251,191,36,0.28),var(--glass2) 58%);}
 body.light .ecard{background:-webkit-linear-gradient(135deg,rgba(251,191,36,0.12),rgba(255,255,255,0.96) 55%);background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(255,255,255,0.96) 55%);}
 .ecard:before{content:'';position:absolute;top:-25%;right:-8%;width:58%;height:150%;border-radius:50%;background:-webkit-radial-gradient(32% 38%,circle,rgba(168,85,247,0.5),transparent 60%),-webkit-radial-gradient(72% 60%,circle,rgba(56,189,248,0.45),transparent 60%),-webkit-radial-gradient(52% 82%,circle,rgba(244,114,182,0.45),transparent 60%);background:radial-gradient(circle at 32% 38%,rgba(168,85,247,0.5),transparent 60%),radial-gradient(circle at 72% 60%,rgba(56,189,248,0.45),transparent 60%),radial-gradient(circle at 52% 82%,rgba(244,114,182,0.45),transparent 60%);-webkit-filter:blur(20px);filter:blur(20px);opacity:0.7;pointer-events:none;z-index:0;}
 .ecard>*{position:relative;z-index:1;}
-.ecard-h{display:-webkit-flex;display:flex;-webkit-align-items:baseline;align-items:baseline;-webkit-justify-content:space-between;justify-content:space-between;margin-bottom:8px;}
-.ecard-t{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:700;}
-.ecard-now{font-size:30px;font-weight:300;color:var(--bright);letter-spacing:-0.03em;line-height:1;}
-.ecard-now .eu{font-size:15px;color:var(--dim);font-weight:400;margin-left:3px;}
+.ecard-h{display:-webkit-flex;display:flex;-webkit-align-items:baseline;align-items:baseline;-webkit-justify-content:space-between;justify-content:space-between;margin-bottom:4px;}
+.ecard-t{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:700;}
+.ecard-now{font-size:24px;font-weight:300;color:var(--bright);letter-spacing:-0.03em;line-height:1;}
+.ecard-now .eu{font-size:13px;color:var(--dim);font-weight:400;margin-left:3px;}
 .ephases{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;}
-.ephases>*+*{margin-top:8px;}
+.ephases>*+*{margin-top:4px;}
 .eph{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;}
-.eph>*+*{margin-left:10px;}
-.eph-l{font-size:10px;font-weight:700;color:var(--dim);width:22px;-webkit-flex-shrink:0;flex-shrink:0;}
-.eph-bar{-webkit-flex:1;flex:1;height:9px;border-radius:9px;background:rgba(127,127,127,0.16);position:relative;}
-.eph-bar>i{position:absolute;top:0;left:0;height:100%;width:0;border-radius:9px;background:-webkit-linear-gradient(left,#fbbf24,#fb923c);background:linear-gradient(90deg,#fbbf24,#fb923c);-webkit-box-shadow:0 0 12px rgba(251,191,36,0.6);box-shadow:0 0 12px rgba(251,191,36,0.6);-webkit-transition:width .6s;transition:width .6s;}
-.eph-bar>i b{position:absolute;right:-7px;top:50%;margin-top:-9px;font-size:13px;line-height:1;filter:drop-shadow(0 0 5px rgba(251,191,36,0.9));}
-.eph-v{font-size:12px;font-weight:600;color:var(--text);width:54px;text-align:right;-webkit-flex-shrink:0;flex-shrink:0;}
+.eph>*+*{margin-left:8px;}
+.eph-l{font-size:9px;font-weight:700;color:var(--dim);width:20px;-webkit-flex-shrink:0;flex-shrink:0;}
+.eph-bar{-webkit-flex:1;flex:1;height:7px;border-radius:7px;background:rgba(127,127,127,0.16);position:relative;}
+.eph-bar>i{position:absolute;top:0;left:0;height:100%;width:0;border-radius:7px;background:-webkit-linear-gradient(left,#fbbf24,#fb923c);background:linear-gradient(90deg,#fbbf24,#fb923c);-webkit-box-shadow:0 0 12px rgba(251,191,36,0.6);box-shadow:0 0 12px rgba(251,191,36,0.6);-webkit-transition:width .6s;transition:width .6s;}
+.eph-bar>i b{position:absolute;right:-7px;top:50%;margin-top:-8px;font-size:12px;line-height:1;filter:drop-shadow(0 0 5px rgba(251,191,36,0.9));}
+.eph-v{font-size:11px;font-weight:600;color:var(--text);width:48px;text-align:right;-webkit-flex-shrink:0;flex-shrink:0;}
 
 /* Spotify PRO */
 .spro{-webkit-flex:0 0 auto;flex:0 0 auto;padding:14px;}
@@ -589,7 +593,7 @@ body.light nav{background:var(--glass);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.7.2</span>
+      <span id="ver">v11.7.3</span>
       <button class="hbtn" onclick="forceReload()" title="Odśwież">↺</button>
     </div>
   </header>
@@ -697,13 +701,13 @@ body.light nav{background:var(--glass);}
                 <div class="rtval"><span id="rt-o">--</span>°</div>
                 <div class="rthum"><span id="rh-o">--</span>%</div>
               </div>
+              <div class="scenerow">
+                <button class="scenebtn" id="sc-ev" onclick="runScene(SCENE_EVE)">🌙 Wieczór</button>
+                <button class="scenebtn" id="sc-lv" onclick="runScene(SCENE_LEAVE)">🚪 Wyjdź</button>
+                <button class="scenebtn" id="sc-of" onclick="runScene(SCENE_OFF)">⭕ Wszystko off</button>
+              </div>
             </div>
-            <div class="scenerow">
-              <button class="scenebtn" id="sc-ev" onclick="runScene(SCENE_EVE)">🌙 Wieczór</button>
-              <button class="scenebtn" id="sc-lv" onclick="runScene(SCENE_LEAVE)">🚪 Wyjdź</button>
-              <button class="scenebtn" id="sc-of" onclick="runScene(SCENE_OFF)">⭕ Wszystko off</button>
-            </div>
-            <div class="card ecard">
+            <div class="card ecard mid-grow">
               <div class="ecard-h">
                 <span class="ecard-t">⚡ Pobór mocy</span>
                 <span class="ecard-now"><span id="e-now">--</span><span class="eu">W</span></span>
@@ -714,6 +718,7 @@ body.light nav{background:var(--glass);}
                 <div class="eph"><div class="eph-l">L3</div><div class="eph-bar"><i id="e-b3"><b>⚡</b></i></div><div class="eph-v"><span id="e-pp3">--</span> W</div></div>
               </div>
             </div>
+            <div class="mid-split">
             <div class="card runcard" id="runcard">
               <div class="run-h"><span class="run-t">🏃 Bieganie dziś</span><span class="run-date" id="run-date">--</span></div>
               <div class="run-body" id="run-body"><div class="run-empty">Sprawdzam plan…</div></div>
@@ -726,6 +731,7 @@ body.light nav{background:var(--glass);}
                 <div class="ktemp"><span class="ktemp-i">🧊</span><div class="ktemp-m"><span class="ktemp-l">Lodówka</span><span class="ktemp-v"><span id="ft2">--</span>°</span></div></div>
                 <div class="ktemp"><span class="ktemp-i">❄️</span><div class="ktemp-m"><span class="ktemp-l">Zamrażarka</span><span class="ktemp-v"><span id="fzt">--</span>°</span></div></div>
               </div>
+            </div>
             </div>
           </div>
 
@@ -1006,7 +1012,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.7.2';
+var BUILD='11.7.3';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var MOTION='binary_sensor.motion';
@@ -1343,7 +1349,7 @@ function loadRunToday(){
     if(err){ body.innerHTML='<div class="run-empty">Brak połączenia z kalendarzem</div>'; return; }
     if(!data||!data.length){ body.innerHTML='<div class="run-empty">Dziś brak treningu 💤</div>'; return; }
     var h='',i,ev,sum;
-    for(i=0;i<data.length;i++){
+    for(i=0;i<data.length&&i<1;i++){
       ev=data[i]; sum=ev.summary||ev.message||'Trening';
       h+='<div class="run-ev"><span class="run-sum">'+sum+'</span></div>';
     }
@@ -2415,7 +2421,7 @@ function fixHeight(){
 // Pogoda równa siatce pokoi (gauge wypełnia resztę => równy z energią+kuchnią)
 function alignCols(){
   var w=document.getElementById('wcard');
-  var g=document.querySelector('.rgrid');
+  var g=document.querySelector('.d3-mid .rgrid');
   if(w&&g){
     var hh=g.offsetHeight;
     if(hh>0) w.style.height=hh+'px';
