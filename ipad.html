@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.9.0 -->
+<!-- build: v11.10.0 -->
 <title>Dom</title>
 <style>
 :root {
@@ -145,65 +145,85 @@ body.light .tb.a{box-shadow:0 2px 12px rgba(15,23,42,0.08);}
 .dash-row>*+*{margin-left:14px;}
 #view-salon,#view-sypialnia,#view-kuchnia,#view-lazienki,#view-ogrod,#view-energia,#view-drukarka,#view-kamery,#view-zero,#view-pogoda,#view-spotify{display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;position:absolute;top:0;left:0;right:0;bottom:0;padding:10px 12px;}
 #view-salon.active,#view-sypialnia.active,#view-kuchnia.active,#view-lazienki.active,#view-ogrod.active,#view-energia.active,#view-drukarka.active,#view-kamery.active,#view-pogoda.active,#view-spotify.active{display:block;}
-/* Spotify — wygląd jak aplikacja (ciemny feed + mini player) */
-#view-spotify{padding:0;background:#121212;}
+/* Spotify — układ jak aplikacja, kolory z motywu panelu (--accent, --glass…) */
+#view-spotify{padding:0;background:transparent;}
 #view-spotify.active{display:block;}
 .sp-hide{display:none!important;}
 .sp-home{padding:8px 0 96px;}
 .sp-head{padding:6px 16px 4px;}
-.sp-logo{font-size:26px;font-weight:800;color:#fff;letter-spacing:-0.03em;}
+.sp-logo{font-size:26px;font-weight:800;color:var(--bright);letter-spacing:-0.03em;}
+.sp-greet{font-size:13px;color:var(--dim);margin-top:2px;font-weight:600;}
 .sp-chips{display:-webkit-flex;display:flex;margin:10px 0 4px;}
 .sp-chips>*+*{margin-left:8px;}
-.sp-chip{padding:7px 14px;border-radius:999px;border:none;background:#282828;color:#fff;font-size:12px;font-weight:700;cursor:pointer;}
-.sp-chip.on{background:#1db954;color:#000;}
+.sp-chip{padding:7px 14px;border-radius:999px;border:1px solid var(--glass-b);background:var(--glass2);color:var(--text);font-size:12px;font-weight:700;cursor:pointer;}
+.sp-chip.on{background:var(--accent);border-color:var(--accent);color:#0a0c12;}
+body.light .sp-chip.on{color:#fff;}
 .sp-devices{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:8px 0 0;}
 .sp-devices>*{margin:0 6px 6px 0;}
-.sp-pill{padding:6px 12px;border-radius:999px;border:1px solid #333;background:#282828;color:#b3b3b3;font-size:11px;font-weight:600;cursor:pointer;}
-.sp-pill.on{background:rgba(29,185,84,0.18);border-color:#1db954;color:#1db954;}
+.sp-pill{padding:6px 12px;border-radius:999px;border:1px solid var(--glass-b);background:var(--glass2);color:var(--dim);font-size:11px;font-weight:600;cursor:pointer;}
+.sp-pill.on{background:var(--accent-dim);border-color:rgba(var(--accent-rgb),0.45);color:var(--accent);}
 .sp-feed{min-height:120px;}
 .sp-sec{margin:22px 0 0;}
 .sp-sec-h{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;padding:0 16px 10px;}
-.sp-sec-t{font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.02em;}
-.sp-sec-m{font-size:12px;font-weight:700;color:#b3b3b3;cursor:pointer;background:none;border:none;padding:0;}
+.sp-sec-t{font-size:20px;font-weight:800;color:var(--bright);letter-spacing:-0.02em;line-height:1.2;}
+.sp-sec-m{font-size:12px;font-weight:700;color:var(--accent);cursor:pointer;background:none;border:none;padding:0;}
 .sp-row{display:-webkit-flex;display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:0 16px 4px;}
 .sp-row>*+*{margin-left:12px;}
 .sp-card{-webkit-flex:0 0 132px;flex:0 0 132px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.sp-card:active{opacity:.85;}
-.sp-card-img{width:132px;height:132px;border-radius:8px;background:#282828;object-fit:cover;display:block;}
-.sp-card-ph{width:132px;height:132px;border-radius:8px;background:#282828;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;font-size:28px;color:#535353;}
-.sp-card-t{font-size:13px;font-weight:600;color:#fff;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.sp-card-s{font-size:11px;color:#b3b3b3;margin-top:3px;line-height:1.35;max-height:30px;overflow:hidden;}
-.sp-loading{padding:24px 16px;color:#b3b3b3;font-size:13px;}
+.sp-card:active{opacity:.88;}
+.sp-card-img{width:132px;height:132px;border-radius:10px;background:var(--glass2);object-fit:cover;display:block;box-shadow:var(--shadow);}
+.sp-card-ph{width:132px;height:132px;border-radius:10px;background:var(--glass2);display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;font-size:28px;color:var(--dim);box-shadow:var(--shadow);}
+.sp-card-t{font-size:13px;font-weight:600;color:var(--bright);margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sp-card-s{font-size:11px;color:var(--dim);margin-top:3px;line-height:1.35;max-height:30px;overflow:hidden;}
+.sp-mix-row{display:-webkit-flex;display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:0 16px 4px;}
+.sp-mix-row>*+*{margin-left:12px;}
+.sp-mix{-webkit-flex:0 0 156px;flex:0 0 156px;height:156px;border-radius:12px;position:relative;overflow:hidden;cursor:pointer;box-shadow:var(--shadow);}
+.sp-mix-bg{position:absolute;top:0;left:0;right:0;bottom:0;background-size:cover;background-position:center;}
+.sp-mix-grad{position:absolute;top:0;left:0;right:0;bottom:0;background:-webkit-linear-gradient(145deg,rgba(var(--accent-rgb),0.92) 0%,rgba(0,0,0,0.55) 100%);background:linear-gradient(145deg,rgba(var(--accent-rgb),0.92) 0%,rgba(0,0,0,0.55) 100%);}
+.sp-mix-ph{position:absolute;top:0;left:0;right:0;bottom:0;background:-webkit-linear-gradient(145deg,var(--accent2) 0%,var(--accent) 55%,rgba(0,0,0,0.4) 100%);background:linear-gradient(145deg,var(--accent2) 0%,var(--accent) 55%,rgba(0,0,0,0.4) 100%);}
+.sp-mix-lbl{position:absolute;left:12px;right:12px;bottom:12px;font-size:17px;font-weight:800;color:#fff;line-height:1.15;letter-spacing:-0.02em;text-shadow:0 2px 8px rgba(0,0,0,0.35);}
+.sp-mix-sub{position:absolute;left:12px;top:12px;font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.85);}
+.sp-radio-row{display:-webkit-flex;display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:0 16px 4px;}
+.sp-radio-row>*+*{margin-left:12px;}
+.sp-radio{-webkit-flex:0 0 156px;flex:0 0 156px;height:156px;border-radius:12px;position:relative;overflow:hidden;cursor:pointer;box-shadow:var(--shadow);}
+.sp-radio-bg{position:absolute;top:0;left:0;right:0;bottom:0;background-size:cover;background-position:center;}
+.sp-radio-tint{position:absolute;top:0;left:0;right:0;bottom:0;}
+.sp-radio-badge{position:absolute;left:10px;top:10px;font-size:9px;font-weight:800;letter-spacing:.14em;color:#fff;background:rgba(0,0,0,0.35);padding:3px 7px;border-radius:4px;}
+.sp-radio-name{position:absolute;left:10px;right:10px;bottom:10px;font-size:15px;font-weight:800;color:#fff;line-height:1.15;text-shadow:0 2px 8px rgba(0,0,0,0.4);}
+.sp-loading{padding:24px 16px;color:var(--dim);font-size:13px;}
 .sp-detail{padding:0 0 96px;}
-.sp-detail-top{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;padding:8px 12px 10px;position:-webkit-sticky;position:sticky;top:0;background:#121212;z-index:2;}
+.sp-detail-top{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;padding:8px 12px 10px;position:-webkit-sticky;position:sticky;top:0;background:var(--glass);border-bottom:1px solid var(--glass-b);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);z-index:2;}
 .sp-detail-top>*+*{margin-left:10px;}
-.sp-detail-back{width:40px;height:40px;border-radius:50%;border:none;background:#282828;color:#fff;font-size:18px;cursor:pointer;-webkit-flex-shrink:0;flex-shrink:0;}
-.sp-detail-title{font-size:18px;font-weight:800;color:#fff;-webkit-flex:1;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.sp-detail-play{padding:8px 14px;border-radius:999px;border:none;background:#1db954;color:#000;font-size:12px;font-weight:800;cursor:pointer;-webkit-flex-shrink:0;flex-shrink:0;}
-.spv-list{margin:0 8px;border-radius:12px;background:#181818;overflow:hidden;}
-.spv-row{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;padding:11px 12px;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;}
+.sp-detail-back{width:40px;height:40px;border-radius:50%;border:1px solid var(--glass-b);background:var(--glass2);color:var(--bright);font-size:18px;cursor:pointer;-webkit-flex-shrink:0;flex-shrink:0;}
+.sp-detail-title{font-size:18px;font-weight:800;color:var(--bright);-webkit-flex:1;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sp-detail-play{padding:8px 14px;border-radius:999px;border:none;background:var(--accent);color:#0a0c12;font-size:12px;font-weight:800;cursor:pointer;-webkit-flex-shrink:0;flex-shrink:0;}
+body.light .sp-detail-play{color:#fff;}
+.spv-list{margin:0 8px;border-radius:var(--r);background:var(--glass);border:1px solid var(--glass-b);overflow:hidden;box-shadow:var(--shadow);}
+.spv-row{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;padding:11px 12px;border-bottom:1px solid var(--border);cursor:pointer;}
 .spv-row:last-child{border-bottom:none;}
-.spv-row:active{background:rgba(255,255,255,0.06);}
-.spv-thumb{width:48px;height:48px;border-radius:6px;-webkit-flex-shrink:0;flex-shrink:0;object-fit:cover;background:#282828;}
-.spv-thumb-ph{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;font-size:18px;color:#535353;}
+.spv-row:active{background:var(--accent-dim);}
+.spv-thumb{width:48px;height:48px;border-radius:8px;-webkit-flex-shrink:0;flex-shrink:0;object-fit:cover;background:var(--glass2);}
+.spv-thumb-ph{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;font-size:18px;color:var(--dim);}
 .spv-meta{min-width:0;-webkit-flex:1;flex:1;margin:0 10px;}
-.spv-t{font-size:14px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.spv-s{font-size:11px;color:#b3b3b3;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.spv-play{width:36px;height:36px;border-radius:50%;border:none;background:#1db954;color:#000;font-size:13px;-webkit-flex-shrink:0;flex-shrink:0;cursor:pointer;}
-.spv-empty,.spv-hint,.spv-status{padding:16px;text-align:center;font-size:13px;color:#b3b3b3;}
-.spv-status{min-height:16px;padding:4px 16px;color:#888;}
-.sp-mini{position:absolute;left:8px;right:8px;bottom:8px;border-radius:10px;background:#282828;box-shadow:0 6px 24px rgba(0,0,0,0.45);overflow:hidden;z-index:5;}
+.spv-t{font-size:14px;font-weight:600;color:var(--bright);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.spv-s{font-size:11px;color:var(--dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.spv-play{width:36px;height:36px;border-radius:50%;border:none;background:var(--accent);color:#0a0c12;font-size:13px;-webkit-flex-shrink:0;flex-shrink:0;cursor:pointer;}
+body.light .spv-play{color:#fff;}
+.spv-empty,.spv-hint,.spv-status{padding:16px;text-align:center;font-size:13px;color:var(--dim);}
+.spv-status{min-height:16px;padding:4px 16px;}
+.sp-mini{position:absolute;left:8px;right:8px;bottom:8px;border-radius:var(--rsm);background:var(--glass);border:1px solid var(--glass-b);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--shadow);overflow:hidden;z-index:5;}
 .sp-mini-inner{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;padding:10px 12px;}
 .sp-mini-inner>*+*{margin-left:10px;}
-.sp-mini-art{width:44px;height:44px;border-radius:6px;background:#404040 -webkit-radial-gradient(50% 0,circle,rgba(29,185,84,0.35),transparent 70%);background-size:cover;background-position:center;-webkit-flex-shrink:0;flex-shrink:0;}
+.sp-mini-art{width:44px;height:44px;border-radius:8px;background:var(--glass2) -webkit-radial-gradient(50% 0,circle,rgba(var(--accent-rgb),0.35),transparent 70%);background-size:cover;background-position:center;-webkit-flex-shrink:0;flex-shrink:0;}
 .sp-mini-meta{min-width:0;-webkit-flex:1;flex:1;}
-.sp-mini-t{font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.sp-mini-a{font-size:11px;color:#b3b3b3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
-.sp-mini-dev{font-size:10px;color:#1db954;font-weight:700;margin-top:3px;}
-.sp-mini-btn{width:40px;height:40px;border-radius:50%;border:none;background:#fff;color:#000;-webkit-flex-shrink:0;flex-shrink:0;cursor:pointer;padding:0;}
+.sp-mini-t{font-size:13px;font-weight:700;color:var(--bright);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sp-mini-a{font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+.sp-mini-dev{font-size:10px;color:var(--accent);font-weight:700;margin-top:3px;}
+.sp-mini-btn{width:40px;height:40px;border-radius:50%;border:none;background:var(--accent);color:#0a0c12;-webkit-flex-shrink:0;flex-shrink:0;cursor:pointer;padding:0;}
+body.light .sp-mini-btn{color:#fff;}
 .sp-mini-btn svg{width:18px;height:18px;fill:currentColor;display:block;margin:0 auto;}
-.sp-mini-prog{height:3px;background:rgba(255,255,255,0.12);}
-.sp-mini-pf{height:100%;width:0;background:#1db954;border-radius:0 2px 2px 0;}
+.sp-mini-prog{height:3px;background:rgba(127,127,127,0.2);}
+.sp-mini-pf{height:100%;width:0;background:-webkit-linear-gradient(left,var(--accent2),var(--accent));background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:0 2px 2px 0;}
 .camgrid{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:-5px;}
 .camgrid>*{margin:5px;}
 .camcard{-webkit-flex:1 1 calc(50% - 10px);flex:1 1 calc(50% - 10px);min-width:280px;position:relative;border-radius:var(--r);overflow:hidden;background:#000;border:1px solid var(--glass-b);box-shadow:var(--shadow);}
@@ -653,7 +673,7 @@ body.light nav{background:var(--glass);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.9.0</span>
+      <span id="ver">v11.10.0</span>
       <button class="hbtn" onclick="forceReload()" title="Odśwież">↺</button>
     </div>
   </header>
@@ -877,9 +897,10 @@ body.light nav{background:var(--glass);}
     <div id="view-spotify" class="view">
       <div id="sp-home" class="sp-home">
         <div class="sp-head">
-          <div class="sp-logo">Spotify</div>
+          <div class="sp-logo">Muzyka</div>
+          <div class="sp-greet" id="sp-greet">Propozycje z Twojego Spotify</div>
           <div class="sp-chips">
-            <button type="button" class="sp-chip on">Muzyka</button>
+            <button type="button" class="sp-chip on">Propozycje</button>
             <button type="button" class="sp-chip" onclick="spOpenLibrary()">Biblioteka</button>
           </div>
           <div class="sp-devices" id="sp-src"></div>
@@ -1110,7 +1131,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.9.0';
+var BUILD='11.10.0';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var MOTION='binary_sensor.motion';
@@ -2260,8 +2281,11 @@ function updSpotifyTabNow(){ updSpMiniPlayer(); }
 
 // SPOTIFY — ekran główny jak aplikacja + biblioteka
 var spStack=[], spItems=[], spItemRegistry=[], spBusy=false, spView='home', spDetailPlayable=null;
-var SP_HOME_ORDER={'current_user_recently_played':1,'current_user_playlists':2,'current_user_saved_tracks':3,'current_user_saved_albums':4,'new_releases':5,'current_user_top_tracks':6,'current_user_top_artists':7};
+var SP_HOME_MAX=9;
+var SP_HOME_ORDER={'current_user_recently_played':1,'current_user_playlists':2,'new_releases':3,'current_user_saved_tracks':4,'current_user_top_artists':5,'current_user_top_tracks':6,'current_user_saved_albums':7,'current_user_followed_artists':8};
+var SP_SECTION_TITLES={'current_user_recently_played':'Ostatnie','current_user_saved_tracks':'Polubione utwory','current_user_saved_albums':'Zapisane albumy','new_releases':'Więcej tego, co lubisz','current_user_top_tracks':'Twoje hity','current_user_top_artists':'Polecane stacje','current_user_followed_artists':'Obserwujesz'};
 var SP_TITLE_PL={'Playlists':'Twoje playlisty','Recently played':'Ostatnie','Saved tracks':'Polubione utwory','Saved albums':'Zapisane albumy','New releases':'Nowości','Top tracks':'Top utwory','Top artists':'Top artyści','Followed artists':'Obserwowani artyści','Podcasts':'Podcasty','Spotify':'Biblioteka'};
+var SP_RADIO_TINTS=['rgba(var(--accent-rgb),0.72)','rgba(0,0,0,0.45)','rgba(var(--accent-rgb),0.55)','rgba(0,0,0,0.55)'];
 function spHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function spEscJs(s){ return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
 function spThumbUrl(u){ if(!u) return ''; return (u.indexOf('http')===0)?u:(HA+u); }
@@ -2382,9 +2406,31 @@ function spCatSort(a,b){
   if(oa!==ob) return oa-ob;
   return String(a.title||'').localeCompare(String(b.title||''));
 }
-function spTitlePl(title){
-  if(!title) return 'Muzyka';
-  return SP_TITLE_PL[title]||title;
+function spUserName(){
+  var e=E[SP_EID], fn;
+  if(e&&e.attributes&&e.attributes.friendly_name) fn=e.attributes.friendly_name;
+  else if(e&&e.attributes&&e.attributes.entity_id) fn=e.attributes.entity_id;
+  if(!fn) return '';
+  fn=String(fn).replace(/^Spotify[\s_]*/i,'').replace(/_/g,' ').trim();
+  return fn;
+}
+function spUpdateGreet(){
+  var el=document.getElementById('sp-greet'), nm=spUserName();
+  if(el) el.textContent=nm?('Propozycje dla '+nm):'Propozycje z Twojego Spotify';
+}
+function spSectionTitle(cat,data){
+  var key=spCatKey(cat);
+  if(key==='current_user_playlists'){
+    var nm=spUserName();
+    return nm?('Przygotowano dla '+nm):'Twoje ulubione składanki';
+  }
+  if(SP_SECTION_TITLES[key]) return SP_SECTION_TITLES[key];
+  return spTitlePl((data&&data.title)||cat.title);
+}
+function spRowLayout(key){
+  if(key==='current_user_playlists') return 'mix';
+  if(key==='current_user_top_artists'||key==='current_user_followed_artists') return 'radio';
+  return 'card';
 }
 function spShowHome(){
   spView='home';
@@ -2406,6 +2452,7 @@ function spShowDetail(title,showPlay){
 }
 function spInitTab(){
   confirmEntity(SP_EID,function(){
+    spUpdateGreet();
     spRenderSources();
     updSpMiniPlayer();
     spHomeLoad();
@@ -2415,7 +2462,7 @@ function spHomeLoad(){
   spShowHome();
   spItemRegistry=[];
   var feed=document.getElementById('sp-feed');
-  if(feed) feed.innerHTML='<div class="sp-loading">Ładowanie Twojej muzyki…</div>';
+  if(feed) feed.innerHTML='<div class="sp-loading">Ładowanie propozycji…</div>';
   haBrowseMedia('','',function(err,root){
     if(err||!root||!root.children||!root.children.length){
       if(feed) feed.innerHTML='<div class="spv-empty">Nie udało się wczytać Spotify.</div>';
@@ -2428,21 +2475,65 @@ function spHomeLoad(){
   });
 }
 function spLoadHomeRows(cats,idx,loaded){
-  if(idx>=cats.length||loaded>=5){
-    if(!loaded){
-      var feed=document.getElementById('sp-feed');
-      if(feed&&!feed.innerHTML) feed.innerHTML='<div class="spv-empty">Brak sekcji do wyświetlenia.</div>';
-    }
-    return;
-  }
+  if(idx>=cats.length||loaded>=SP_HOME_MAX) return;
   var cat=cats[idx];
   haBrowseMedia(cat.media_content_type,cat.media_content_id,function(err,data){
     if(!err&&data&&data.children&&data.children.length){
-      spAppendHomeRow(spTitlePl(data.title||cat.title),data.children);
+      spAppendSection(cat,data);
       loaded++;
     }
     spLoadHomeRows(cats,idx+1,loaded);
+    if(idx+1>=cats.length&&loaded===0){
+      var feed=document.getElementById('sp-feed');
+      if(feed&&!feed.innerHTML) feed.innerHTML='<div class="spv-empty">Brak propozycji.</div>';
+    }
   });
+}
+function spAppendSection(cat,data){
+  var key=spCatKey(cat);
+  var title=spSectionTitle(cat,data);
+  var layout=spRowLayout(key);
+  if(layout==='mix') spAppendMixRow(title,data.children);
+  else if(layout==='radio') spAppendRadioRow(title,data.children);
+  else spAppendHomeRow(title,data.children);
+}
+function spAppendMixRow(title,items){
+  var feed=document.getElementById('sp-feed');
+  if(!feed) return;
+  var max=Math.min(items.length,8), h='', i, item, idx, inner, bg;
+  h+='<div class="sp-sec"><div class="sp-sec-h"><div class="sp-sec-t">'+spHtml(title)+'</div></div><div class="sp-mix-row">';
+  for(i=0;i<max;i++){
+    item=items[i];
+    idx=spItemRegistry.length;
+    spItemRegistry.push(item);
+    if(item.thumbnail) bg='<div class="sp-mix-bg" style="background-image:url(\''+spThumbUrl(item.thumbnail).replace(/'/g,'%27')+'\')"></div><div class="sp-mix-grad"></div>';
+    else bg='<div class="sp-mix-ph"></div>';
+    inner='<span class="sp-mix-sub">Playlista</span><div class="sp-mix-lbl">'+spHtml(item.title)+'</div>';
+    h+='<div class="sp-mix" onclick="spCardTap('+idx+')">'+bg+inner+'</div>';
+  }
+  h+='</div></div>';
+  feed.innerHTML+=h;
+}
+function spAppendRadioRow(title,items){
+  var feed=document.getElementById('sp-feed');
+  if(!feed) return;
+  var max=Math.min(items.length,8), h='', i, item, idx, bg, tint;
+  h+='<div class="sp-sec"><div class="sp-sec-h"><div class="sp-sec-t">'+spHtml(title)+'</div></div><div class="sp-radio-row">';
+  for(i=0;i<max;i++){
+    item=items[i];
+    idx=spItemRegistry.length;
+    spItemRegistry.push(item);
+    tint=SP_RADIO_TINTS[i%SP_RADIO_TINTS.length];
+    if(item.thumbnail) bg='<div class="sp-radio-bg" style="background-image:url(\''+spThumbUrl(item.thumbnail).replace(/'/g,'%27')+'\')"></div>';
+    else bg='<div class="sp-radio-bg" style="background:-webkit-linear-gradient(145deg,var(--accent2),var(--accent));background:linear-gradient(145deg,var(--accent2),var(--accent));"></div>';
+    h+='<div class="sp-radio" onclick="spCardTap('+idx+')">'+bg+'<div class="sp-radio-tint" style="background:'+tint+'"></div><span class="sp-radio-badge">Radio</span><div class="sp-radio-name">'+spHtml(item.title)+'</div></div>';
+  }
+  h+='</div></div>';
+  feed.innerHTML+=h;
+}
+function spTitlePl(title){
+  if(!title) return 'Muzyka';
+  return SP_TITLE_PL[title]||title;
 }
 function spCardSub(item){
   var mc=(item.media_class||'').toLowerCase();

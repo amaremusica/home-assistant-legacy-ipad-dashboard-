@@ -2,6 +2,13 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.10.0] — 2026-06-14
+
+### Zmienione — ♪ Muzyka
+- **Kolorystyka jak reszta panelu** — akcent z ☰ (emerald, indigo…), szkło, jasny/ciemny motyw.
+- **Sekcje jak w Spotify** — „Przygotowano dla [imię]”, mixy playlist, „Polecane stacje” (artyści), „Ostatnie”, „Więcej tego, co lubisz”, polubione, hity.
+- Więcej rzędów propozycji (do 9 sekcji z biblioteki HA).
+
 ## [11.9.0] — 2026-06-14
 
 ### Zmienione — zakładka ♪ Muzyka
