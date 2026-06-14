@@ -2,6 +2,12 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.8.1] — 2026-06-14
+
+### Naprawione
+- **Biblioteka Spotify** — przeglądanie przez WebSocket HA (`media_player/browse_media`), bo REST często nie zwraca listy playlist.
+- Zapasowo: REST z `?return_response` (nowsze HA).
+
 ## [11.8.0] — 2026-06-14
 
 ### Dodane

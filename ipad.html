@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.8.0 -->
+<!-- build: v11.8.1 -->
 <title>Dom</title>
 <style>
 :root {
@@ -619,7 +619,7 @@ body.light nav{background:var(--glass);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.8.0</span>
+      <span id="ver">v11.8.1</span>
       <button class="hbtn" onclick="forceReload()" title="Odśwież">↺</button>
     </div>
   </header>
@@ -1070,7 +1070,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.8.0';
+var BUILD='11.8.1';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var MOTION='binary_sensor.motion';
@@ -2223,30 +2223,96 @@ function spSub(item){
 function spSetStatus(msg){ var el=document.getElementById('sp-status'); if(el) el.textContent=msg||''; }
 function spExtractBrowse(parsed){
   if(!parsed) return null;
+  if(parsed.title!==undefined&&parsed.children) return parsed;
   if(parsed.service_response){
     var sr=parsed.service_response;
     if(sr[SP_EID]) return sr[SP_EID];
     for(var k in sr){ if(sr.hasOwnProperty(k)) return sr[k]; }
   }
+  if(parsed.response){
+    var r=parsed.response;
+    if(r[SP_EID]) return r[SP_EID];
+    for(var k2 in r){ if(r.hasOwnProperty(k2)) return r[k2]; }
+  }
   return null;
 }
-function haService(domain,svc,data,cb){
-  var payload=data||{};
-  payload.return_response=true;
+function haWsUrl(){
+  var u=HA.replace(/\/$/,'');
+  if(u.indexOf('https://')===0) return u.replace('https://','wss://')+'/api/websocket';
+  if(u.indexOf('http://')===0) return u.replace('http://','ws://')+'/api/websocket';
+  return 'ws://'+u+'/api/websocket';
+}
+function haBrowseWs(contentType,contentId,cb){
+  var ws, msgId=1, done=false;
+  var tmr=setTimeout(function(){
+    if(done) return;
+    done=true;
+    try{ if(ws) ws.close(); }catch(e){}
+    cb(new Error('timeout'));
+  },16000);
+  try{ ws=new WebSocket(haWsUrl()); }catch(e){ clearTimeout(tmr); cb(e); return; }
+  ws.onmessage=function(ev){
+    var msg;
+    try{ msg=JSON.parse(ev.data); }catch(e){ return; }
+    if(msg.type==='auth_required'){
+      ws.send(JSON.stringify({type:'auth',access_token:TOK}));
+    } else if(msg.type==='auth_ok'){
+      var req={id:msgId,type:'media_player/browse_media',entity_id:SP_EID};
+      if(contentType&&contentId){
+        req.media_content_type=contentType;
+        req.media_content_id=contentId;
+      }
+      ws.send(JSON.stringify(req));
+    } else if(msg.type==='auth_invalid'){
+      if(done) return;
+      done=true; clearTimeout(tmr);
+      try{ ws.close(); }catch(e2){}
+      cb(new Error('auth'));
+    } else if(msg.type==='result'&&msg.id===msgId){
+      if(done) return;
+      done=true; clearTimeout(tmr);
+      try{ ws.close(); }catch(e3){}
+      if(msg.success) cb(null, msg.result);
+      else cb(new Error((msg.error&&msg.error.message)||'browse'));
+    }
+  };
+  ws.onerror=function(){
+    if(done) return;
+    done=true; clearTimeout(tmr);
+    cb(new Error('ws'));
+  };
+  ws.onclose=function(){
+    if(!done){ done=true; clearTimeout(tmr); cb(new Error('ws_close')); }
+  };
+}
+function haBrowseRest(contentType,contentId,cb){
+  var payload={entity_id:SP_EID,return_response:true};
+  if(contentType&&contentId){
+    payload.media_content_type=contentType;
+    payload.media_content_id=contentId;
+  }
   var x=new XMLHttpRequest();
-  x.open('POST',HA+'/api/services/'+domain+'/'+svc,true);
+  x.open('POST',HA.replace(/\/$/,'')+'/api/services/media_player/browse_media?return_response',true);
   x.setRequestHeader('Authorization','Bearer '+TOK);
   x.setRequestHeader('Content-Type','application/json');
   x.timeout=15000;
   x.onload=function(){
-    if(x.status<200||x.status>=300){ if(cb)cb(new Error(x.status)); return; }
+    if(x.status<200||x.status>=300){ cb(new Error('http_'+x.status)); return; }
     var parsed=null;
-    try{ parsed=JSON.parse(x.responseText); }catch(e){ if(cb)cb(e); return; }
-    if(cb) cb(null, spExtractBrowse(parsed));
+    try{ parsed=JSON.parse(x.responseText); }catch(e){ cb(e); return; }
+    var resp=spExtractBrowse(parsed);
+    if(resp) cb(null,resp);
+    else cb(new Error('empty'));
   };
-  x.onerror=function(){ if(cb)cb(new Error('net')); };
-  x.ontimeout=function(){ if(cb)cb(new Error('timeout')); };
+  x.onerror=function(){ cb(new Error('net')); };
+  x.ontimeout=function(){ cb(new Error('timeout')); };
   x.send(JSON.stringify(payload));
+}
+function haBrowseMedia(contentType,contentId,cb){
+  haBrowseWs(contentType,contentId,function(err,resp){
+    if(!err&&resp){ cb(null,resp); return; }
+    haBrowseRest(contentType,contentId,cb);
+  });
 }
 function spInitTab(){
   confirmEntity(SP_EID,function(){
@@ -2288,16 +2354,13 @@ function spEnsureSource(cb){
 function spBrowse(type,id){
   if(spBusy) return;
   spBusy=true;
-  spSetStatus('Ładowanie…');
-  var data={entity_id:SP_EID};
-  if(type) data.media_content_type=type;
-  if(id) data.media_content_id=id;
-  haService('media_player','browse_media',data,function(err,resp){
+  spSetStatus('Ładowanie biblioteki…');
+  haBrowseMedia(type||'',id||'',function(err,resp){
     spBusy=false;
     if(err||!resp){
-      spSetStatus('Nie udało się wczytać — sprawdź wersję HA (2023.7+)');
+      spSetStatus('Błąd: '+((err&&err.message)?err.message:'brak danych'));
       var el=document.getElementById('sp-list');
-      if(el) el.innerHTML='<div class="spv-empty">Błąd połączenia z biblioteką Spotify</div>';
+      if(el) el.innerHTML='<div class="spv-empty">Nie udało się wczytać biblioteki Spotify.<br><span style="font-size:11px;opacity:.7">Sprawdź token i połączenie z HA.</span></div>';
       return;
     }
     spSetStatus('');
