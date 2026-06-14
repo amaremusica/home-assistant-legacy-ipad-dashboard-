@@ -2,6 +2,15 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.11.0] — 2026-06-14
+
+### Naprawione — kamera EZVIZ
+- **Koniec migania / czarnego ekranu** — brak pełnego restartu co 15 s (`fetch15`) i co 8 s (health check).
+- Tylko **MJPEG + migawka** (bez HLS — stabilniejsze na iPadzie 4).
+- Działający strumień **nie jest restartowany**; naprawa dopiero po 2 nieudanych próbach (~44 s).
+- Przy wybudzeniu: jedno odświeżenie (bez 3× pod rząd).
+- **Ostatnia klatka** zostaje — nie wraca „brak obrazu” po krótkiej przerwie.
+
 ## [11.10.0] — 2026-06-14
 
 ### Zmienione — ♪ Muzyka

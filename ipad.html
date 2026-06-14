@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.10.0 -->
+<!-- build: v11.11.0 -->
 <title>Dom</title>
 <style>
 :root {
@@ -677,7 +677,7 @@ body.light nav{background:var(--glass);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.10.0</span>
+      <span id="ver">v11.11.0</span>
       <button class="hbtn" onclick="forceReload()" title="Odśwież">↺</button>
     </div>
   </header>
@@ -1076,7 +1076,7 @@ body.light nav{background:var(--glass);}
         <div class="camcard"><video id="cam-front-v" autoplay muted playsinline webkit-playsinline></video><img id="cam-front" alt="Front" style="display:none"><div class="camoff" id="camoff-front">brak obrazu</div><div class="camlbl">Front</div></div>
         <div class="camcard"><video id="cam-tyl-v" autoplay muted playsinline webkit-playsinline></video><img id="cam-tyl" alt="Tył" style="display:none"><div class="camoff" id="camoff-tyl">brak obrazu</div><div class="camlbl">Tył</div></div>
       </div>
-      <p id="cam-note" style="font-size:11px;color:var(--dim);margin-top:10px;text-align:center;">EZVIZ — strumień HLS (Safari) lub MJPEG.</p>
+      <p id="cam-note" style="font-size:11px;color:var(--dim);margin-top:10px;text-align:center;">EZVIZ — strumień MJPEG + migawka (stabilny na iPad).</p>
     </div>
 
     <!-- ZERO MIEKISZON — pełna strona (iframe blokuje logowanie na iOS 10) -->
@@ -1135,7 +1135,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.10.0';
+var BUILD='11.11.0';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var MOTION='binary_sensor.motion';
@@ -1386,7 +1386,7 @@ function sv(id,btn){
   var bs=document.querySelectorAll('.tb');
   for(var j=0;j<bs.length;j++) bs[j].className='tb';
   if(btn) btn.className='tb a';
-  if(id==='kamery') refreshCameras();
+  if(id==='kamery') refreshCameras(true);
   if(id==='pogoda'){ loadForecast(); loadHourly(); drawWeatherPage(); }
   if(id==='spotify'){ spView='home'; spStack=[]; spItemRegistry=[]; spInitTab(); }
 }
@@ -2752,7 +2752,7 @@ function fetch15(){
     E={};
     for(var i=0;i<data.length;i++) E[data[i].entity_id]=data[i];
     upd();
-    if(!dimmed) refreshCameras();
+    if(!dimmed) camEnsureViews();
   });
 }
 
@@ -2762,22 +2762,19 @@ function setC(ok){
   el.className=ok?'ok':'err';
 }
 
-// CAMERY — migawka od razu, potem strumień (HLS/MJPEG); przy dim zamrożona klatka
+// CAMERY — stabilny MJPEG + migawka; bez restartu co 15 s
 var CAMS=[['camera.front','cam-front','cam-front-v','camoff-front'],['camera.tyl','cam-tyl','cam-tyl-v','camoff-tyl']];
 var CAM_DASH=['camera.front','cam-dash','cam-dash-v','camoff-dash'];
 var CAM_STREAM=true;
 var camLive={};
 var camTimers={};
-var HLS_TIMEOUT=7000;
-var MJPEG_TIMEOUT=6000;
+var camHadFrame={};
+var camHealthMiss={};
+var camWakeTmr=null;
+var MJPEG_TIMEOUT=18000;
 
 function camClearTimer(imgId){
   if(camTimers[imgId]){ clearTimeout(camTimers[imgId]); camTimers[imgId]=null; }
-}
-function camHlsUrl(eid,pl){
-  if(!HA||!TOK) return '';
-  pl=pl||'playlist.m3u8';
-  return HA.replace(/\/$/,'')+'/api/hls/'+eid+'/'+pl+'?token='+encodeURIComponent(TOK);
 }
 function camStreamUrl(eid){
   if(!HA||!TOK) return '';
@@ -2794,7 +2791,8 @@ function camSnapUrl(eid){
   var base=(p.indexOf('http')===0)?p:(HA+p);
   return base+(base.indexOf('?')>=0?'&':'?')+'_='+(new Date()).getTime();
 }
-function camShowOff(offId,on){
+function camShowOff(offId,on,imgId){
+  if(on&&imgId&&camHadFrame[imgId]) return;
   var off=document.getElementById(offId);
   if(off) off.style.display=on?'flex':'none';
 }
@@ -2807,106 +2805,99 @@ function camHideVideo(vid){
   try{ vid.load(); }catch(e2){}
   vid.style.display='none';
 }
+function camIsLive(imgId,vidId){
+  var img=document.getElementById(imgId);
+  var vid=vidId?document.getElementById(vidId):null;
+  var mode=camLive[imgId];
+  if(mode==='mjpeg'&&img&&img.naturalWidth>0) return true;
+  if(mode==='snap'&&img&&img.naturalWidth>0) return true;
+  if(vid&&vid.style.display!=='none'&&vid.videoWidth>0) return true;
+  if(img&&img.style.display!=='none'&&img.naturalWidth>0) return true;
+  return false;
+}
+function camMarkFrame(imgId,offId){
+  camHadFrame[imgId]=true;
+  camShowOff(offId,false,imgId);
+}
 function camStop(imgId,vidId,offId){
   camClearTimer(imgId);
   camLive[imgId]=null;
+  camHadFrame[imgId]=false;
+  camHealthMiss[imgId]=0;
   var img=document.getElementById(imgId);
   var vid=vidId?document.getElementById(vidId):null;
   if(img){ img.onload=null; img.onerror=null; if(img.getAttribute('src')) img.removeAttribute('src'); img.style.display='none'; }
   camHideVideo(vid);
-  camShowOff(offId,true);
+  camShowOff(offId,true,imgId);
 }
-function camSnapRefresh(eid,imgId,offId){
+function camSnapRefresh(eid,imgId,offId,force){
   var img=document.getElementById(imgId);
   if(!img||dimmed) return;
+  if(!force&&camLive[imgId]==='mjpeg'&&img.naturalWidth>0) return;
   var full=camSnapUrl(eid);
   if(!full) return;
   var pre=new Image();
   pre.onload=function(){
     if(dimmed) return;
+    if(!force&&camLive[imgId]==='mjpeg'&&img.naturalWidth>0) return;
     img.src=full;
     img.style.display='block';
-    camShowOff(offId,false);
-    if(camLive[imgId]!=='hls'&&camLive[imgId]!=='mjpeg') camLive[imgId]='snap';
+    camMarkFrame(imgId,offId);
+    if(camLive[imgId]!=='mjpeg') camLive[imgId]='snap';
   };
   pre.onerror=function(){};
   pre.src=full;
-}
-function camShowStreamVid(vid,img,offId,mode,imgId){
-  if(vid){ vid.style.display='block'; try{ vid.play(); }catch(e){} }
-  if(img) img.style.display='none';
-  camShowOff(offId,false);
-  camLive[imgId]=mode;
 }
 function camStartMjpeg(eid,imgId,vidId,offId){
   var img=document.getElementById(imgId);
   var vid=vidId?document.getElementById(vidId):null;
   if(!img||!HA||!TOK) return;
+  if(camLive[imgId]==='mjpeg'&&img.naturalWidth>0) return;
+  var u=camStreamUrl(eid);
+  if(camLive[imgId]==='mjpeg'&&img.getAttribute('src')===u&&img.naturalWidth>0) return;
   camClearTimer(imgId);
   camHideVideo(vid);
-  var u=camStreamUrl(eid);
   camTimers[imgId]=setTimeout(function(){
     camTimers[imgId]=null;
-    if(camLive[imgId]==='mjpeg') return;
-    camSnapRefresh(eid,imgId,offId);
+    if(camLive[imgId]==='mjpeg'&&img.naturalWidth>0) return;
+    camSnapRefresh(eid,imgId,offId,true);
   },MJPEG_TIMEOUT);
   img.onerror=function(){
     camClearTimer(imgId);
     img.onerror=null;
-    if(camLive[imgId]!=='snap') camSnapRefresh(eid,imgId,offId);
+    if(camLive[imgId]!=='mjpeg') camSnapRefresh(eid,imgId,offId,true);
   };
   img.onload=function(){
     camClearTimer(imgId);
     img.style.display='block';
-    camShowOff(offId,false);
+    camMarkFrame(imgId,offId);
     camLive[imgId]='mjpeg';
+    camHealthMiss[imgId]=0;
   };
   img.src=u;
   img.style.display='block';
-  camShowOff(offId,false);
-}
-function camStartHls(eid,imgId,vidId,offId,pl){
-  var vid=document.getElementById(vidId);
-  var img=document.getElementById(imgId);
-  if(!vid||!HA||!TOK){ camStartMjpeg(eid,imgId,vidId,offId); return; }
-  if(camLive[imgId]==='hls'&&vid.getAttribute('src')&&vid.videoWidth>0) return;
-  pl=pl||'playlist.m3u8';
-  camClearTimer(imgId);
-  camTimers[imgId]=setTimeout(function(){
-    camTimers[imgId]=null;
-    if(camLive[imgId]==='hls') return;
-    if(pl==='playlist.m3u8') camStartHls(eid,imgId,vidId,offId,'master.m3u8');
-    else camStartMjpeg(eid,imgId,vidId,offId);
-  },HLS_TIMEOUT);
-  vid.oncanplay=function(){
-    camClearTimer(imgId);
-    camShowStreamVid(vid,img,offId,'hls',imgId);
-  };
-  vid.onerror=function(){
-    camClearTimer(imgId);
-    vid.onerror=null;
-    if(pl==='playlist.m3u8') camStartHls(eid,imgId,vidId,offId,'master.m3u8');
-    else camStartMjpeg(eid,imgId,vidId,offId);
-  };
-  vid.src=camHlsUrl(eid,pl);
-  vid.style.display='block';
-  try{ vid.play(); }catch(e){}
-}
-function camTryStream(eid,imgId,vidId,offId){
-  if(isLegacySafari()) camStartMjpeg(eid,imgId,vidId,offId);
-  else camStartHls(eid,imgId,vidId,offId,'playlist.m3u8');
+  camMarkFrame(imgId,offId);
 }
 function camStart(eid,imgId,vidId,offId){
   if(dimmed) return;
-  camSnapRefresh(eid,imgId,offId);
-  if(CAM_STREAM) camTryStream(eid,imgId,vidId,offId);
+  if(camIsLive(imgId,vidId)) return;
+  camSnapRefresh(eid,imgId,offId,false);
+  if(CAM_STREAM){
+    setTimeout(function(){
+      if(dimmed||camIsLive(imgId,vidId)) return;
+      camStartMjpeg(eid,imgId,vidId,offId);
+    },350);
+  }
 }
 function camPauseAll(){
-  var i, slot, vid, img, offId;
+  var i, vid, img, offId;
   for(i=0;i<CAMS.length;i++){
     camClearTimer(CAMS[i][1]);
     vid=document.getElementById(CAMS[i][2]);
     camHideVideo(vid);
+    img=document.getElementById(CAMS[i][1]);
+    offId=CAMS[i][3];
+    if(img&&img.getAttribute('src')){ img.style.display='block'; camShowOff(offId,false,CAMS[i][1]); }
     if(camLive[CAMS[i][1]]) camLive[CAMS[i][1]]='paused';
   }
   camClearTimer(CAM_DASH[1]);
@@ -2914,8 +2905,8 @@ function camPauseAll(){
   camHideVideo(vid);
   img=document.getElementById(CAM_DASH[1]);
   offId=CAM_DASH[3];
-  if(img&&img.getAttribute('src')){ img.style.display='block'; camShowOff(offId,false); }
-  else camShowOff(offId,true);
+  if(img&&img.getAttribute('src')){ img.style.display='block'; camShowOff(offId,false,CAM_DASH[1]); }
+  else camShowOff(offId,true,CAM_DASH[1]);
   if(camLive[CAM_DASH[1]]) camLive[CAM_DASH[1]]='paused';
 }
 function camStopAll(){
@@ -2923,20 +2914,33 @@ function camStopAll(){
   for(i=0;i<CAMS.length;i++) camStop(CAMS[i][1],CAMS[i][2],CAMS[i][3]);
   camStop(CAM_DASH[1],CAM_DASH[2],CAM_DASH[3]);
 }
-function refreshCameras(){
-  if(dimmed){ camPauseAll(); return; }
+function camViewActive(){
   var v=document.getElementById('view-kamery');
   var d=document.getElementById('view-dom');
-  var vk=v&&v.className.indexOf('active')>=0;
-  var vd=d&&d.className.indexOf('active')>=0;
-  if(vk){
-    for(var i=0;i<CAMS.length;i++) camStart(CAMS[i][0],CAMS[i][1],CAMS[i][2],CAMS[i][3]);
+  return{
+    kamery:v&&v.className.indexOf('active')>=0,
+    dom:d&&d.className.indexOf('active')>=0
+  };
+}
+function refreshCameras(force){
+  if(dimmed){ camPauseAll(); return; }
+  var va=camViewActive();
+  if(va.kamery){
+    for(var i=0;i<CAMS.length;i++){
+      if(force||!camIsLive(CAMS[i][1],CAMS[i][2])) camStart(CAMS[i][0],CAMS[i][1],CAMS[i][2],CAMS[i][3]);
+    }
   } else {
     camStop(CAMS[0][1],CAMS[0][2],CAMS[0][3]);
     camStop(CAMS[1][1],CAMS[1][2],CAMS[1][3]);
   }
-  if(vd) camStart(CAM_DASH[0],CAM_DASH[1],CAM_DASH[2],CAM_DASH[3]);
-  else camStop(CAM_DASH[1],CAM_DASH[2],CAM_DASH[3]);
+  if(va.dom){
+    if(force||!camIsLive(CAM_DASH[1],CAM_DASH[2])) camStart(CAM_DASH[0],CAM_DASH[1],CAM_DASH[2],CAM_DASH[3]);
+  } else {
+    camStop(CAM_DASH[1],CAM_DASH[2],CAM_DASH[3]);
+  }
+}
+function camEnsureViews(){
+  refreshCameras(false);
 }
 function camSlotByIds(imgId){
   if(imgId===CAM_DASH[1]) return CAM_DASH;
@@ -2944,19 +2948,24 @@ function camSlotByIds(imgId){
   for(i=0;i<CAMS.length;i++){ if(CAMS[i][1]===imgId) return CAMS[i]; }
   return null;
 }
+function camSlotVisible(slot){
+  var va=camViewActive();
+  if(slot[1]===CAM_DASH[1]) return va.dom;
+  return va.kamery;
+}
 function camHealthCheck(){
   if(dimmed||!CAM_STREAM) return;
-  var ids=['cam-dash','cam-front','cam-tyl'], i, slot, img, vid, mode;
+  var ids=['cam-dash','cam-front','cam-tyl'], i, slot;
   for(i=0;i<ids.length;i++){
     slot=camSlotByIds(ids[i]);
-    if(!slot) continue;
-    mode=camLive[ids[i]];
-    img=document.getElementById(slot[1]);
-    vid=document.getElementById(slot[2]);
-    if(!img||!img.getAttribute('src')) camSnapRefresh(slot[0],slot[1],slot[3]);
-    if(mode==='hls'&&vid&&(!vid.videoWidth||vid.readyState<2)) camTryStream(slot[0],slot[1],slot[2],slot[3]);
-    else if(mode==='mjpeg'&&img&&img.naturalWidth===0) camTryStream(slot[0],slot[1],slot[2],slot[3]);
-    else if(!mode||mode==='snap'||mode==='paused') camTryStream(slot[0],slot[1],slot[2],slot[3]);
+    if(!slot||!camSlotVisible(slot)) continue;
+    if(camIsLive(slot[1],slot[2])){ camHealthMiss[slot[1]]=0; continue; }
+    camHealthMiss[slot[1]]=(camHealthMiss[slot[1]]||0)+1;
+    if(camHealthMiss[slot[1]]>=2){
+      camHealthMiss[slot[1]]=0;
+      camLive[slot[1]]=null;
+      camStart(slot[0],slot[1],slot[2],slot[3]);
+    }
   }
 }
 
@@ -2997,22 +3006,18 @@ function armDimTimer(){
 }
 
 function wakeCams(){
-  if(!dimmed){
-    camSnapRefresh(CAM_DASH[0],CAM_DASH[1],CAM_DASH[3]);
-    refreshCameras();
-  }
-  try{
-    haGet('states/camera.front',function(err,data){
-      if(!err&&data){ E['camera.front']=data; if(!dimmed) refreshCameras(); }
-    });
-  }catch(e){}
+  if(dimmed) return;
+  if(camWakeTmr) clearTimeout(camWakeTmr);
+  camSnapRefresh(CAM_DASH[0],CAM_DASH[1],CAM_DASH[3],false);
+  camWakeTmr=setTimeout(function(){
+    camWakeTmr=null;
+    if(!dimmed) refreshCameras(true);
+  },600);
 }
 function wakeScreen(manual){
   if(idleTimer){clearTimeout(idleTimer);idleTimer=null;}
   setDim(false);
   wakeCams();
-  setTimeout(wakeCams,400);
-  setTimeout(wakeCams,2000);
   if(manual||!isMotionActive(lastMotionState)) armDimTimer();
 }
 
@@ -3040,7 +3045,7 @@ function setDim(on){
     d.className='';
     if(app) app.className='';
     dimmed=false;
-    refreshCameras();
+    refreshCameras(true);
   }
 }
 
@@ -3145,8 +3150,7 @@ function startApp(){
   setInterval(function(){
     if(dimmed) return;
     if(CAM_STREAM) camHealthCheck();
-    else refreshCameras();
-  },CAM_STREAM?8000:2500);
+  },22000);
   setInterval(tickSpotifyProgress,1000);
   setInterval(animateWave,210);
   fixHeight();
