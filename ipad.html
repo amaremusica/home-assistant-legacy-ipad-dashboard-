@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.6.3 -->
+<!-- build: v11.7.2 -->
 <title>Dom</title>
 <style>
 :root {
@@ -204,6 +204,11 @@ body.light .tb.a{box-shadow:0 2px 12px rgba(15,23,42,0.08);}
 .g3>*{-webkit-flex:1 1 calc(33.33% - 8px);flex:1 1 calc(33.33% - 8px);margin:4px;}
 .g4{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:-4px -4px 4px;}
 .g4>*{-webkit-flex:1 1 calc(25% - 8px);flex:1 1 calc(25% - 8px);margin:4px;}
+.scenerow{display:-webkit-flex;display:flex;-webkit-flex:0 0 auto;flex:0 0 auto;margin-top:10px;}
+.scenerow>*+*{margin-left:8px;}
+.scenebtn{-webkit-flex:1;flex:1;padding:12px 6px;border-radius:var(--r-lg);border:1px solid var(--glass-b);background:var(--glass2);color:var(--text);font-size:11px;font-weight:600;cursor:pointer;text-align:center;-webkit-user-select:none;user-select:none;-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--shadow);}
+.scenebtn:active{-webkit-transform:scale(0.98);transform:scale(0.98);}
+.scenebtn.off{opacity:0.35;pointer-events:none;}
 .card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);}
 
 /* WEATHER */
@@ -537,6 +542,13 @@ body.light nav{background:var(--glass);}
     <div class="cf"><label>Spotify (entity_id)</label><input type="text" id="csp" placeholder="media_player.spotify" autocorrect="off" autocapitalize="off"></div>
     <div class="cf"><label>Kalendarz śmieci</label><input type="text" id="ctr" placeholder="calendar.trash" autocorrect="off" autocapitalize="off"></div>
     <div class="cf"><label>Telewizor (entity_id)</label><input type="text" id="ctv" placeholder="media_player.living_room_tv" autocorrect="off" autocapitalize="off"></div>
+    <div class="cf"><label>Łóżko 1 — encja</label><input type="text" id="cb1" placeholder="switch.marcin_sypialnia" autocorrect="off" autocapitalize="off"></div>
+    <div class="cf"><label>Łóżko 1 — nazwa</label><input type="text" id="cb1l" placeholder="Marcin" autocorrect="off" autocapitalize="off"></div>
+    <div class="cf"><label>Łóżko 2 — encja</label><input type="text" id="cb2" placeholder="switch.marzenka_sypialnia" autocorrect="off" autocapitalize="off"></div>
+    <div class="cf"><label>Łóżko 2 — nazwa</label><input type="text" id="cb2l" placeholder="Marzenka" autocorrect="off" autocapitalize="off"></div>
+    <div class="cf"><label>Scena — Wieczór</label><input type="text" id="cse" placeholder="scene.nazwa (opcjonalnie)" autocorrect="off" autocapitalize="off"></div>
+    <div class="cf"><label>Scena — Wyjdź</label><input type="text" id="csl" placeholder="scene.nazwa (opcjonalnie)" autocorrect="off" autocapitalize="off"></div>
+    <div class="cf"><label>Scena — Wszystko off</label><input type="text" id="cso" placeholder="scene.nazwa (opcjonalnie)" autocorrect="off" autocapitalize="off"></div>
     <div class="cf">
       <label>Motyw</label>
       <div style="display:-webkit-flex;display:flex;">
@@ -577,19 +589,19 @@ body.light nav{background:var(--glass);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.6.3</span>
+      <span id="ver">v11.7.2</span>
       <button class="hbtn" onclick="forceReload()" title="Odśwież">↺</button>
     </div>
   </header>
 
   <div id="upd-bar">
     <div>
-      <div class="upd-txt">Dostępna nowa wersja panelu</div>
-      <div class="upd-sub" id="upd-sub">tapnij Zaktualizuj</div>
+      <div class="upd-txt">Nowa wersja panelu</div>
+      <div class="upd-sub" id="upd-sub">aktualizuję…</div>
     </div>
     <div class="upd-btns">
-      <button class="upd-btn upd-no" onclick="dismissUpdate()">Później</button>
-      <button class="upd-btn upd-yes" onclick="applyUpdate()">Zaktualizuj</button>
+      <button class="upd-btn upd-no" onclick="dismissUpdate()">Za 1 h</button>
+      <button class="upd-btn upd-yes" onclick="applyUpdate()">Teraz</button>
     </div>
   </div>
 
@@ -685,6 +697,11 @@ body.light nav{background:var(--glass);}
                 <div class="rtval"><span id="rt-o">--</span>°</div>
                 <div class="rthum"><span id="rh-o">--</span>%</div>
               </div>
+            </div>
+            <div class="scenerow">
+              <button class="scenebtn" id="sc-ev" onclick="runScene(SCENE_EVE)">🌙 Wieczór</button>
+              <button class="scenebtn" id="sc-lv" onclick="runScene(SCENE_LEAVE)">🚪 Wyjdź</button>
+              <button class="scenebtn" id="sc-of" onclick="runScene(SCENE_OFF)">⭕ Wszystko off</button>
             </div>
             <div class="card ecard">
               <div class="ecard-h">
@@ -816,8 +833,8 @@ body.light nav{background:var(--glass);}
       <div class="st">Oświetlenie</div>
       <div class="g3">
         <div class="card lc" id="lc-sy1" onclick="tLight('light.swiatlo_sypialnia_swiatlo','lc-sy1','ls-sy1')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Sypialnia</div><div class="lstate off" id="ls-sy1">off</div></div>
-        <div class="card lc" id="lc-sym" onclick="tSwitch('switch.bedside_1','lc-sym','ls-sym')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><div class="lname">Łóżko 1</div><div class="lstate off" id="ls-sym">off</div></div>
-        <div class="card lc" id="lc-symz" onclick="tSwitch('switch.bedside_2','lc-symz','ls-symz')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><div class="lname">Łóżko 2</div><div class="lstate off" id="ls-symz">off</div></div>
+        <div class="card lc" id="lc-sym" onclick="tSwitch(BED1_EID,'lc-sym','ls-sym')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><div class="lname" id="lbl-sym">Marcin</div><div class="lstate off" id="ls-sym">off</div></div>
+        <div class="card lc" id="lc-symz" onclick="tSwitch(BED2_EID,'lc-symz','ls-symz')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><div class="lname" id="lbl-symz">Marzenka</div><div class="lstate off" id="ls-symz">off</div></div>
       </div>
       <div class="st">Czujniki</div>
       <div class="card"><div class="sr"><div class="srl">Temperatura</div><div class="srv"><span id="ssy-t">--</span> °C</div></div><div class="sr"><div class="srl">Wilgotność</div><div class="srv"><span id="ssy-h">--</span> %</div></div><div class="sr"><div class="srl">Ciśnienie</div><div class="srv"><span id="ssy-p">--</span> hPa</div></div></div>
@@ -827,18 +844,15 @@ body.light nav{background:var(--glass);}
     <div id="view-kuchnia" class="view">
       <div class="st">Oświetlenie</div>
       <div class="g4">
-        <div class="card lc" id="lc-k2" onclick="tLight('light.swiatlo_kuchnia_swiatlo_2','lc-k2','ls-k2')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Kuchnia 2</div><div class="lstate off" id="ls-k2">off</div></div>
-        <div class="card lc" id="lc-k3" onclick="tLight('light.swiatlo_kuchnia_swiatlo_3','lc-k3','ls-k3')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Kuchnia 3</div><div class="lstate off" id="ls-k3">off</div></div>
+        <div class="card lc" id="lc-k2" onclick="tLight('light.swiatlo_kuchnia_swiatlo_2','lc-k2','ls-k2')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Blat</div><div class="lstate off" id="ls-k2">off</div></div>
+        <div class="card lc" id="lc-k3" onclick="tLight('light.swiatlo_kuchnia_swiatlo_3','lc-k3','ls-k3')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Sufit</div><div class="lstate off" id="ls-k3">off</div></div>
         <div class="card lc" id="lc-kl" onclick="tLight('light.led_kuchnia','lc-kl','ls-kl')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 3h14M5 21h14M3 7h18M3 17h18"/></svg></div><div class="lname">LED</div><div class="lstate off" id="ls-kl">off</div></div>
         <div class="card lc" id="lc-kli" onclick="tLight('light.led_kuchnia_i','lc-kli','ls-kli')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 3h14M5 21h14M3 7h18M3 17h18"/></svg></div><div class="lname">LED i</div><div class="lstate off" id="ls-kli">off</div></div>
       </div>
+      <div class="st">Czujniki</div>
+      <div class="card"><div class="sr"><div class="srl">Temperatura</div><div class="srv"><span id="sk-t">--</span> °C</div></div></div>
       <div class="st">Lodówka</div>
       <div class="card"><div class="sr"><div class="srl">Drzwi lodówka</div><div class="srv" id="fd">--</div></div><div class="sr"><div class="srl">Drzwi zamrażarka</div><div class="srv" id="fzd">--</div></div><div class="sr"><div class="srl">Temperatura</div><div class="srv"><span id="ft">--</span> °C</div></div><div class="sr"><div class="srl">Moc</div><div class="srv"><span id="fp">--</span> W</div></div></div>
-      <div class="st">AGD</div>
-      <div class="g2">
-        <div class="card"><div class="slabel">Pralka LG</div><div class="sval" style="font-size:13px;margin-top:4px;" id="pralka">--</div></div>
-        <div class="card"><div class="slabel">Suszarka LG</div><div class="sval" style="font-size:13px;margin-top:4px;" id="suszarka">--</div></div>
-      </div>
     </div>
 
     <!-- ŁAZIENKI -->
@@ -857,6 +871,11 @@ body.light nav{background:var(--glass);}
       </div>
       <div class="st">Czujniki</div>
       <div class="card"><div class="sr"><div class="srl">Temperatura</div><div class="srv"><span id="sl-t">--</span> °C</div></div><div class="sr"><div class="srl">Wilgotność</div><div class="srv"><span id="sl-h">--</span> %</div></div><div class="sr"><div class="srl">Bateria</div><div class="srv"><span id="sl-b">--</span> %</div></div></div>
+      <div class="st">Pralnia</div>
+      <div class="g2">
+        <div class="card"><div class="slabel">Pralka LG</div><div class="sval" style="font-size:13px;margin-top:4px;" id="pralka">--</div></div>
+        <div class="card"><div class="slabel">Suszarka LG</div><div class="sval" style="font-size:13px;margin-top:4px;" id="suszarka">--</div></div>
+      </div>
       <div class="st">Garderoba</div>
       <div class="g3">
         <div class="card lc" id="lc-gd1" onclick="tLight('light.swiatlo_garderoba_swiatlo','lc-gd1','ls-gd1')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Gard 1</div><div class="lstate off" id="ls-gd1">off</div></div>
@@ -987,13 +1006,20 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.6.3';
+var BUILD='11.7.2';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var MOTION='binary_sensor.motion';
 var SP_EID='media_player.spotify';
 var TV_EID='media_player.living_room_tv';
 var TRASH_ENT='calendar.trash';
+var BED1_EID='switch.marcin_sypialnia';
+var BED2_EID='switch.marzenka_sypialnia';
+var BED1_LBL='Marcin';
+var BED2_LBL='Marzenka';
+var SCENE_EVE='';
+var SCENE_LEAVE='';
+var SCENE_OFF='';
 var SUN='sun.sun';
 
 function loadEntConfig(){
@@ -1001,7 +1027,27 @@ function loadEntConfig(){
   var sp=sGet('ha_spotify'); if(sp) SP_EID=sp;
   var tv=sGet('ha_tv'); if(tv) TV_EID=tv;
   var tr=sGet('ha_trash'); if(tr) TRASH_ENT=tr;
+  var b1=sGet('ha_bed1'); if(b1) BED1_EID=b1;
+  var b2=sGet('ha_bed2'); if(b2) BED2_EID=b2;
+  var b1l=sGet('ha_bed1_lbl'); if(b1l) BED1_LBL=b1l;
+  var b2l=sGet('ha_bed2_lbl'); if(b2l) BED2_LBL=b2l;
+  var se=sGet('ha_scene_eve'); if(se) SCENE_EVE=se;
+  var sl=sGet('ha_scene_leave'); if(sl) SCENE_LEAVE=sl;
+  var so=sGet('ha_scene_off'); if(so) SCENE_OFF=so;
   var mot=document.getElementById('mot'); if(mot) mot.title=MOTION;
+  applyEntLabels();
+  syncSceneBtns();
+}
+
+function applyEntLabels(){
+  var l1=document.getElementById('lbl-sym'); if(l1) l1.textContent=BED1_LBL;
+  var l2=document.getElementById('lbl-symz'); if(l2) l2.textContent=BED2_LBL;
+}
+
+function syncSceneBtns(){
+  var e=document.getElementById('sc-ev'); if(e) e.className=SCENE_EVE?'scenebtn':'scenebtn off';
+  var l=document.getElementById('sc-lv'); if(l) l.className=SCENE_LEAVE?'scenebtn':'scenebtn off';
+  var o=document.getElementById('sc-of'); if(o) o.className=SCENE_OFF?'scenebtn':'scenebtn off';
 }
 
 function loadConfig(){
@@ -1025,6 +1071,13 @@ function saveConfig(){
   var sp=document.getElementById('csp').value.trim();
   var tr=document.getElementById('ctr').value.trim();
   var tv=document.getElementById('ctv').value.trim();
+  var b1=document.getElementById('cb1').value.trim();
+  var b2=document.getElementById('cb2').value.trim();
+  var b1l=document.getElementById('cb1l').value.trim();
+  var b2l=document.getElementById('cb2l').value.trim();
+  var se=document.getElementById('cse').value.trim();
+  var sl=document.getElementById('csl').value.trim();
+  var so=document.getElementById('cso').value.trim();
   if(!u){alert('Podaj adres HA.');return;}
   var tok=t||TOK; if(!tok){alert('Podaj token.');return;}
   sSet('ha_url',u); sSet('ha_token',tok); sSet('ha_dim',d);
@@ -1032,6 +1085,15 @@ function saveConfig(){
   if(sp){ sSet('ha_spotify',sp); SP_EID=sp; }
   if(tr){ sSet('ha_trash',tr); TRASH_ENT=tr; }
   if(tv){ sSet('ha_tv',tv); TV_EID=tv; }
+  if(b1){ sSet('ha_bed1',b1); BED1_EID=b1; }
+  if(b2){ sSet('ha_bed2',b2); BED2_EID=b2; }
+  if(b1l){ sSet('ha_bed1_lbl',b1l); BED1_LBL=b1l; }
+  if(b2l){ sSet('ha_bed2_lbl',b2l); BED2_LBL=b2l; }
+  if(se){ sSet('ha_scene_eve',se); SCENE_EVE=se; }
+  if(sl){ sSet('ha_scene_leave',sl); SCENE_LEAVE=sl; }
+  if(so){ sSet('ha_scene_off',so); SCENE_OFF=so; }
+  applyEntLabels();
+  syncSceneBtns();
   HA=u; TOK=tok; DIM=d*1000;
   document.getElementById('cfg').className='h';
   document.getElementById('app').className='';
@@ -1046,6 +1108,13 @@ function showConfig(){
   var csp=document.getElementById('csp'); if(csp) csp.value=SP_EID;
   var ctr=document.getElementById('ctr'); if(ctr) ctr.value=TRASH_ENT;
   var ctv=document.getElementById('ctv'); if(ctv) ctv.value=TV_EID;
+  var cb1=document.getElementById('cb1'); if(cb1) cb1.value=BED1_EID;
+  var cb2=document.getElementById('cb2'); if(cb2) cb2.value=BED2_EID;
+  var cb1l=document.getElementById('cb1l'); if(cb1l) cb1l.value=BED1_LBL;
+  var cb2l=document.getElementById('cb2l'); if(cb2l) cb2l.value=BED2_LBL;
+  var cse=document.getElementById('cse'); if(cse) cse.value=SCENE_EVE;
+  var csl=document.getElementById('csl'); if(csl) csl.value=SCENE_LEAVE;
+  var cso=document.getElementById('cso'); if(cso) cso.value=SCENE_OFF;
   var s=document.getElementById('cts'); if(s) s.style.display=TOK?'block':'none';
   var sl=document.getElementById('cbg'); if(sl) sl.value=BGLVL;
   document.getElementById('cfg').className='';
@@ -1096,7 +1165,28 @@ function verCmp(a,b){
   return 0;
 }
 
-function checkUpdate(){
+var GIT_PULL_MS=1800000;
+var UPD_SNOOZE_MS=3600000;
+
+function triggerHaGitPull(cb){
+  var last=parseInt(sGet('ha_git_pull_ts')||'0',10);
+  var now=Date.now();
+  if(now-last<GIT_PULL_MS){ if(cb) cb(false); return; }
+  sSet('ha_git_pull_ts',String(now));
+  haPost('shell_command','update_ipad_panel',{},function(){ if(cb) cb(true); });
+}
+
+function checkUpdate(skipGit){
+  if(!HA) return;
+  var snooze=parseInt(sGet('upd_snooze')||'0',10);
+  if(snooze>Date.now()) return;
+  if(skipGit){ doVersionCheck(); return; }
+  triggerHaGitPull(function(pulled){
+    setTimeout(doVersionCheck, pulled?5000:0);
+  });
+}
+
+function doVersionCheck(){
   if(!HA) return;
   var url=HA.replace(/\/$/,'')+'/local/ipad-version.json?nocache='+Date.now();
   var x=new XMLHttpRequest();
@@ -1114,11 +1204,11 @@ function checkUpdate(){
       if(bar) bar.className='';
       return;
     }
-    if(sGet('upd_dismiss')===remote) return;
     updRemote=remote;
     var sub=document.getElementById('upd-sub');
-    if(sub) sub.textContent='v'+BUILD+' → v'+remote;
+    if(sub) sub.textContent='v'+BUILD+' → v'+remote+' — za chwilę…';
     if(bar) bar.className='show';
+    setTimeout(applyUpdate,2500);
   };
   x.send(null);
 }
@@ -1130,7 +1220,7 @@ function applyUpdate(){
 }
 
 function dismissUpdate(){
-  if(updRemote) sSet('upd_dismiss',updRemote);
+  sSet('upd_snooze',String(Date.now()+UPD_SNOOZE_MS));
   var bar=document.getElementById('upd-bar');
   if(bar) bar.className='';
 }
@@ -1729,8 +1819,8 @@ function upd(){
 
   // SYPIALNIA
   uLC('light.swiatlo_sypialnia_swiatlo','lc-sy1','ls-sy1');
-  uLC('switch.bedside_1','lc-sym','ls-sym');
-  uLC('switch.bedside_2','lc-symz','ls-symz');
+  uLC(BED1_EID,'lc-sym','ls-sym');
+  uLC(BED2_EID,'lc-symz','ls-symz');
   tx('ssy-t',fmt1(st('sensor.termometr_sypialnia_temperatura')));
   tx('ssy-h',fmt1(st('sensor.termometr_sypialnia_wilgotnosc')));
   tx('ssy-p',fmt1(st('sensor.termometr_sypialnia_cisnienie')));
@@ -1740,14 +1830,13 @@ function upd(){
   uLC('light.swiatlo_kuchnia_swiatlo_3','lc-k3','ls-k3');
   uLC('light.led_kuchnia','lc-kl','ls-kl');
   uLC('light.led_kuchnia_i','lc-kli','ls-kli');
+  tx('sk-t',fmt1(st('sensor.swiatlo_kuchnia_temperatura_urzadzenia')));
   var fd2=st('binary_sensor.lodowka_fridge_door');
   var fzd2=st('binary_sensor.lodowka_freezer_door');
   tx('fd',fd2==='on'?'● Otwarte':fd2==='off'?'○ Zamknięte':'--');
   tx('fzd',fzd2==='on'?'● Otwarte':fzd2==='off'?'○ Zamknięte':'--');
   tx('ft',fmt1(st('sensor.lodowka_fridge_temperature')));
   tx('fp',fmt1(st('sensor.lodowka_moc')));
-  tx('pralka',st('sensor.pralka_current_status'));
-  tx('suszarka',st('sensor.szuszarka_current_status'));
 
   // ŁAZIENKI
   uLC('light.swiatlo_lazienka_swiatlo','lc-ld1','ls-ld1');
@@ -1759,6 +1848,8 @@ function upd(){
   tx('sl-t',fmt1(st('sensor.termometr_lazienka_temperatura')));
   tx('sl-h',fmt1(st('sensor.termometr_lazienka_wilgotnosc')));
   tx('sl-b',fmt1(st('sensor.termometr_lazienka_bateria')));
+  tx('pralka',st('sensor.pralka_current_status'));
+  tx('suszarka',st('sensor.szuszarka_current_status'));
   uLC('light.swiatlo_garderoba_swiatlo','lc-gd1','ls-gd1');
   uLC('light.swiatlo_garderoba_swiatlo_2','lc-gd2','ls-gd2');
   uLC('light.swiatlo_garderoba_swiatlo_3','lc-gd3','ls-gd3');
@@ -1796,10 +1887,6 @@ function upd(){
   uStateCard('switch.smart_switch_b78c','sc-brama','ss-brama','Otwarta','Zamknięta');
   uStateCard('switch.furtka','sc-furtka','ss-furtka','Otwarta','Zamknięta');
   updEnergyCard();
-  uChip('light.swiatlo_kuchnia_swiatlo_2','ck-2');
-  uChip('light.swiatlo_kuchnia_swiatlo_3','ck-3');
-  uChip('light.led_kuchnia','ck-l');
-  uChip('light.led_kuchnia_i','ck-li');
   tx('ft2', fmt1(st('sensor.lodowka_fridge_temperature')));
   tx('fzt', fmt1(st('sensor.lodowka_freezer_temperature')));
 
@@ -2013,6 +2100,7 @@ function tLight(eid,cid,sid){
 }
 
 function tSwitch(eid,cid,pulse){
+  if(!eid) return;
   var on=(E[eid]&&E[eid].state==='on');
   var svc=pulse?'toggle':(on?'turn_off':'turn_on');
   if(!pulse){
@@ -2023,6 +2111,7 @@ function tSwitch(eid,cid,pulse){
 }
 
 function mCmd(eid,svc){haPost('media_player',svc,{entity_id:eid},function(){ confirmEntity(eid); });}
+function runScene(eid){ if(!eid) return; haPost('scene','turn_on',{entity_id:eid}); }
 function mSpPrev(){ mCmd(SP_EID,'media_previous_track'); }
 function mSpNext(){ mCmd(SP_EID,'media_next_track'); }
 function mSpPP(){ mPP(SP_EID,'sp-p'); }
@@ -2297,8 +2386,8 @@ function startApp(){
   fixHeight();
   armDimTimer();
   document.addEventListener('touchstart',function(){wakeScreen(true);},true);
-  checkUpdate();
-  setInterval(checkUpdate,300000);
+  checkUpdate(true);
+  setInterval(function(){ checkUpdate(false); },120000);
 }
 
 // Pre-fill defaults jeśli puste

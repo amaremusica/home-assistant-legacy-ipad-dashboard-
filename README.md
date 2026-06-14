@@ -1,6 +1,6 @@
 # Home Assistant Dashboard for iPad 4 (iOS 10.3.3)
 
-**Aktualna wersja:** `v11.6` — plik [`ipad.html`](ipad.html) · [CHANGELOG](CHANGELOG.md)
+**Aktualna wersja:** `v11.7.2` — plik [`ipad.html`](ipad.html) · [CHANGELOG](CHANGELOG.md)
 
 [Wersja polska](#wersja-polska) | [English Version](#english-version)
 
@@ -34,11 +34,28 @@ Te wartości zapisują się w `localStorage` iPadu — **nie trafiają do Git**.
 
 ### Auto-aktualizacja (Git → HA → iPad)
 
-1. Sklonuj repo do HA: `git clone … /config/www/dashboard`
-2. Skopiuj pliki: `ipad.html` i **`ipad-version.json`** do `/config/www/`
-3. Opcjonalnie: dodaj `shell_command` z pliku [`ha/shell_command.example.yaml`](ha/shell_command.example.yaml) — co 6 h `git pull`
-4. Panel co 5 min sprawdza `/local/ipad-version.json` — gdy wersja nowsza, pokazuje **„Zaktualizuj”**
-5. Skrót na pulpicie iPada: `http://IP:8123/local/ipad.html?v=11.6`
+**Jednorazowo na HA** (Terminal & SSH):
+
+```bash
+cd /config/www
+git clone https://github.com/amaremusica/home-assistant-legacy-ipad-dashboard-.git dashboard
+bash /config/www/dashboard/scripts/ha-first-time-setup.sh
+```
+
+**Krok 2** — wklej do `configuration.yaml` ([`ha/configuration.fragment.yaml`](ha/configuration.fragment.yaml)):
+
+```yaml
+shell_command:
+  update_ipad_panel: bash /config/www/dashboard/scripts/ha-update-panel.sh
+```
+
+Restart HA.
+
+**Potem:** `git push` → iPad co ~30 min sam robi `git pull` na HA i przeładowuje się gdy wersja nowsza.
+
+Skrót: `http://IP:8123/local/ipad.html?v=11.7.2`
+
+**Encje w ☰ (localStorage):** Spotify, TV, śmieci, ruch, łóżka, sceny.
 
 ---
 

@@ -2,6 +2,34 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.7.2] — 2026-06-14
+
+### Zmienione — auto-aktualizacja
+- iPad **sam się przeładowuje** gdy na HA jest nowszy `ipad-version.json` (po ~2,5 s).
+- Co **30 min** panel prosi HA o `shell_command.update_ipad_panel` (`git pull` + kopia plików).
+- Sprawdzanie wersji co **2 min** (wcześniej 5 min).
+- „Później” → wstrzymanie na 1 h (zamiast ukrywania na stałe).
+
+**Wymaga jednorazowej konfiguracji HA** (patrz README): `git clone` + `shell_command` w `configuration.yaml`.
+
+## [11.7.1] — 2026-06-14
+
+### Naprawione
+- **Kuchnia** — usunięte nieistniejące `light.swiatlo_kuchnia_swiatlo`; zostają Blat (`_2`) i Sufit (`_3`) wg rzeczywistych encji HA.
+- **Sceny** — domyślnie puste (brak `scene.*` w HA); przyciski wyszarzone do czasu konfiguracji w ☰.
+
+## [11.7] — 2026-06-14
+
+### Dodane
+- **Sceny na ekranie Dom** — Wieczór, Wyjdź, Wszystko off (entity_id konfigurowalne w ☰).
+- **Ustawienia ☰** — Łóżko 1/2 (encja + nazwa), trzy sceny.
+
+### Naprawione
+- **Kuchnia** — dodane `light.swiatlo_kuchnia_swiatlo` (Sufit), poprawione nazwy (Blat, Sufit 3), czujnik temperatury.
+- **Pralka / suszarka** przeniesione z Kuchni do **Łazienki → Pralnia**.
+- **Sypialnia** — przywrócone `switch.marcin_sypialnia` / `switch.marzenka_sypialnia` (Marcin / Marzenka).
+- Usunięte martwe odwołania do chipów kuchni (`ck-*`).
+
 ## [11.6.3] — 2026-06-15
 
 ### Naprawione
