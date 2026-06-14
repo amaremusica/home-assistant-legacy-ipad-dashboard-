@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.7.3 -->
+<!-- build: v11.7.4 -->
 <title>Dom</title>
 <style>
 :root {
@@ -148,7 +148,7 @@ body.light .tb.a{box-shadow:0 2px 12px rgba(15,23,42,0.08);}
 .camgrid{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:-5px;}
 .camgrid>*{margin:5px;}
 .camcard{-webkit-flex:1 1 calc(50% - 10px);flex:1 1 calc(50% - 10px);min-width:280px;position:relative;border-radius:var(--r);overflow:hidden;background:#000;border:1px solid var(--glass-b);box-shadow:var(--shadow);}
-.camcard img{display:block;width:100%;height:auto;background:#000;}
+.camcard img,.camcard video{display:block;width:100%;height:auto;background:#000;object-fit:cover;}
 .camcard .camlbl{position:absolute;left:10px;bottom:10px;padding:4px 10px;border-radius:999px;background:rgba(0,0,0,0.5);color:#fff;font-size:12px;font-weight:600;letter-spacing:.02em;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
 .camcard .camoff{position:absolute;top:0;left:0;right:0;bottom:0;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;color:rgba(255,255,255,0.5);font-size:13px;}
 #view-zero{padding:10px 12px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
@@ -369,7 +369,7 @@ body.light .wst b{color:#0b1220;}
 
 /* Kamera na pulpicie (pod Spotify) */
 .camcard-dash{-webkit-flex:0 0 auto;flex:0 0 auto;min-width:0;}
-.camcard-dash img{min-height:120px;}
+.camcard-dash img,.camcard-dash video{min-height:120px;max-height:160px;object-fit:cover;}
 .camcard-dash .camoff{min-height:120px;}
 /* Karta biegania */
 .runcard{-webkit-flex:1 1 auto;flex:1 1 auto;padding:7px 10px;min-height:0;}
@@ -593,7 +593,7 @@ body.light nav{background:var(--glass);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.7.3</span>
+      <span id="ver">v11.7.4</span>
       <button class="hbtn" onclick="forceReload()" title="Odśwież">↺</button>
     </div>
   </header>
@@ -953,7 +953,7 @@ body.light nav{background:var(--glass);}
         <div class="camcard"><img id="cam-front" alt="Front"><div class="camoff" id="camoff-front">brak obrazu</div><div class="camlbl">Front</div></div>
         <div class="camcard"><img id="cam-tyl" alt="Tył"><div class="camoff" id="camoff-tyl">brak obrazu</div><div class="camlbl">Tył</div></div>
       </div>
-      <p style="font-size:11px;color:var(--dim);margin-top:10px;text-align:center;">Migawka odświeżana co ~2 s (camera_proxy).</p>
+      <p id="cam-note" style="font-size:11px;color:var(--dim);margin-top:10px;text-align:center;">Strumień na żywo (MJPEG).</p>
     </div>
 
     <!-- ZERO MIEKISZON — pełna strona (iframe blokuje logowanie na iOS 10) -->
@@ -1012,7 +1012,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.7.3';
+var BUILD='11.7.4';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var MOTION='binary_sensor.motion';
@@ -2174,40 +2174,110 @@ function setC(ok){
   el.className=ok?'ok':'err';
 }
 
-// CAMERY — migawka przez /api/camera_proxy (entity_picture jest podpisane tokenem)
+// CAMERY — strumień MJPEG (camera_proxy_stream) + migawka jako fallback
 var CAMS=[['camera.front','cam-front','camoff-front'],['camera.tyl','cam-tyl','camoff-tyl']];
-function camUrl(eid){
+var CAM_STREAM=true;
+var camLive={};
+
+function camStreamUrl(eid){
+  if(!HA||!TOK) return '';
+  return HA.replace(/\/$/,'')+'/api/camera_proxy_stream/'+eid+'?token='+encodeURIComponent(TOK);
+}
+function camSnapUrl(eid){
   var e=E[eid];
   if(!e||!e.attributes||!e.attributes.entity_picture) return '';
   var p=e.attributes.entity_picture;
   return (p.indexOf('http')===0)?p:(HA+p);
 }
-function setCamImg(eid,imgId,offId){
-  var img=document.getElementById(imgId);
+function camShowOff(offId,on){
   var off=document.getElementById(offId);
+  if(off) off.style.display=on?'flex':'none';
+}
+function camStop(imgId,offId){
+  var img=document.getElementById(imgId);
   if(!img) return;
-  var u=camUrl(eid);
-  if(!u){ if(!img.getAttribute('src')){img.style.display='none';if(off)off.style.display='flex';} return; }
-  var full=u+(u.indexOf('?')>=0?'&':'?')+'_='+(new Date()).getTime();
+  camLive[imgId]=null;
+  img.onload=null;
+  img.onerror=null;
+  if(img.getAttribute('src')) img.removeAttribute('src');
+  img.style.display='none';
+  camShowOff(offId,true);
+}
+function camSnapOnce(eid,imgId,offId){
+  var img=document.getElementById(imgId);
+  if(!img) return;
+  var base=camSnapUrl(eid);
+  if(!base){ if(!img.getAttribute('src')) camStop(imgId,offId); return; }
+  var full=base+(base.indexOf('?')>=0?'&':'?')+'_='+(new Date()).getTime();
   var pre=new Image();
   pre.onload=function(){
     img.src=full;
     img.style.display='block';
-    if(off)off.style.display='none';
+    camShowOff(offId,false);
+    camLive[imgId]='snap';
   };
   pre.onerror=function(){
-    if(!img.getAttribute('src')){ img.style.display='none'; if(off)off.style.display='flex'; }
+    if(!img.getAttribute('src')) camStop(imgId,offId);
   };
   pre.src=full;
 }
+function camStartStream(eid,imgId,offId){
+  var img=document.getElementById(imgId);
+  if(!img||!HA||!TOK) return;
+  if(camLive[imgId]==='stream'&&img.getAttribute('src')) return;
+  var u=camStreamUrl(eid);
+  camLive[imgId]='stream';
+  img.onload=function(){
+    img.style.display='block';
+    camShowOff(offId,false);
+  };
+  img.onerror=function(){
+    camLive[imgId]=null;
+    camSnapOnce(eid,imgId,offId);
+  };
+  img.src=u;
+  img.style.display='block';
+  camShowOff(offId,false);
+}
+function camStart(eid,imgId,offId){
+  if(dimmed){ camStop(imgId,offId); return; }
+  if(CAM_STREAM) camStartStream(eid,imgId,offId);
+  else camSnapOnce(eid,imgId,offId);
+}
+function camStopAll(){
+  var i;
+  for(i=0;i<CAMS.length;i++) camStop(CAMS[i][1],CAMS[i][2]);
+  camStop('cam-dash','camoff-dash');
+}
 function refreshCameras(){
-  if(dimmed) return; // ekran przygaszony → nie marnuj zasobów na kamery
+  if(dimmed){ camStopAll(); return; }
   var v=document.getElementById('view-kamery');
-  if(v&&v.className.indexOf('active')>=0){
-    for(var i=0;i<CAMS.length;i++){ setCamImg(CAMS[i][0],CAMS[i][1],CAMS[i][2]); }
-  }
   var d=document.getElementById('view-dom');
-  if(d&&d.className.indexOf('active')>=0){ setCamImg('camera.front','cam-dash','camoff-dash'); }
+  var vk=v&&v.className.indexOf('active')>=0;
+  var vd=d&&d.className.indexOf('active')>=0;
+  if(vk){
+    for(var i=0;i<CAMS.length;i++) camStart(CAMS[i][0],CAMS[i][1],CAMS[i][2]);
+  } else {
+    camStop(CAMS[0][1],CAMS[0][2]);
+    camStop(CAMS[1][1],CAMS[1][2]);
+  }
+  if(vd) camStart('camera.front','cam-dash','camoff-dash');
+  else camStop('cam-dash','camoff-dash');
+}
+function camHealthCheck(){
+  if(dimmed||!CAM_STREAM) return;
+  var ids=['cam-dash','cam-front','cam-tyl'], i, img, key;
+  for(i=0;i<ids.length;i++){
+    img=document.getElementById(ids[i]);
+    if(!img||!img.getAttribute('src')) continue;
+    if(camLive[ids[i]]!=='stream') continue;
+    if(img.naturalWidth===0){
+      key=ids[i];
+      if(key==='cam-dash') camStartStream('camera.front','cam-dash','camoff-dash');
+      else if(key==='cam-front') camStartStream('camera.front','cam-front','camoff-front');
+      else if(key==='cam-tyl') camStartStream('camera.tyl','cam-tyl','camoff-tyl');
+    }
+  }
 }
 
 // DIM — czujnik ruchu z konfiguracji (MOTION)
@@ -2247,13 +2317,11 @@ function armDimTimer(){
 }
 
 function wakeCams(){
-  // po wybudzeniu token kamery (entity_picture) bywa nieświeży → pobierz świeży stan i przeładuj
   try{
     haGet('states/camera.front',function(err,data){
-      if(!err&&data){ E['camera.front']=data; setCamImg('camera.front','cam-dash','camoff-dash'); }
+      if(!err&&data){ E['camera.front']=data; refreshCameras(); }
     });
-  }catch(e){}
-  try{ refreshCameras(); }catch(e){}
+  }catch(e){ refreshCameras(); }
 }
 function wakeScreen(manual){
   if(idleTimer){clearTimeout(idleTimer);idleTimer=null;}
@@ -2282,10 +2350,12 @@ function setDim(on){
     d.className=night?'on night':'on';
     if(app) app.className='scr-dim';
     dimmed=true;
+    camStopAll();
   } else if(!on&&dimmed){
     d.className='';
     if(app) app.className='';
     dimmed=false;
+    refreshCameras();
   }
 }
 
@@ -2386,7 +2456,12 @@ function startApp(){
   tick(); setInterval(tick,30000);
   fetch15(); setInterval(fetch15,15000);
   pollMotion(); setInterval(pollMotion,2500);
-  setInterval(refreshCameras,5000);
+  refreshCameras();
+  setInterval(function(){
+    if(dimmed) return;
+    if(CAM_STREAM) camHealthCheck();
+    else refreshCameras();
+  },CAM_STREAM?12000:2500);
   setInterval(tickSpotifyProgress,1000);
   setInterval(animateWave,210);
   fixHeight();

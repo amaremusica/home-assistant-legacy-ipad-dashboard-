@@ -2,6 +2,13 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.7.4] — 2026-06-14
+
+### Dodane
+- **Kamery — strumień na żywo** (MJPEG przez `camera_proxy_stream`), płynny obraz zamiast migawek co 5 s.
+- Przy wygaszeniu ekranu strumień się zatrzymuje (oszczędność sieci/CPU).
+- Automatyczny fallback do migawek, gdy strumień niedostępny.
+
 ## [11.7.3] — 2026-06-14
 
 ### Naprawione
