@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.6 -->
+<!-- build: v11.6.1 -->
 <title>Dom</title>
 <style>
 :root {
@@ -577,7 +577,7 @@ body.light nav{background:var(--glass);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.6</span>
+      <span id="ver">v11.6.1</span>
       <button class="hbtn" onclick="forceReload()" title="Odśwież">↺</button>
     </div>
   </header>
@@ -987,7 +987,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.6';
+var BUILD='11.6.1';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var MOTION='binary_sensor.motion';
@@ -1250,18 +1250,32 @@ function evStart(ev){
   if(typeof s==='string') return s;
   return s.dateTime||s.date||null;
 }
+function sTrashStart(){ var d=new Date(); return new Date(d.getFullYear(),d.getMonth(),d.getDate(),0,0,0); }
+function sTrashEnd(){ var d=new Date(); return new Date(d.getFullYear(),d.getMonth(),d.getDate()+22,0,0,0); }
 function loadTrash(){
   if(typeof HA==='undefined'||!HA||!TOK)return;
-  var now=Date.now(); if(now-TRASHLAST<1800000&&TRASHLAST)return; TRASHLAST=now;
-  var d=new Date();
-  var s=new Date(d.getFullYear(),d.getMonth(),d.getDate(),0,0,0);
-  var e=new Date(d.getFullYear(),d.getMonth(),d.getDate()+22,0,0,0);
-  haGet('calendars/'+TRASH_ENT+'?start='+encodeURIComponent(s.toISOString())+'&end='+encodeURIComponent(e.toISOString()),function(err,data){
-    var wEl=document.getElementById('trash-when'), tEl=document.getElementById('trash-what');
+  var tr=sGet('ha_trash'); if(tr) TRASH_ENT=tr;
+  if(TRASH_ENT==='calendar.trash'&&!tr){
+    var w0=document.getElementById('trash-when'), t0=document.getElementById('trash-what');
+    if(w0&&t0){ w0.textContent='--'; t0.textContent='Ustaw kalendarz w ☰'; }
+    return;
+  }
+  var now=Date.now(); if(now-TRASHLAST<1800000&&TRASHLAST)return;
+  var wEl=document.getElementById('trash-when'), tEl=document.getElementById('trash-what');
+  if(wEl&&tEl&&TRASHLAST===0){ wEl.textContent='--'; tEl.textContent='sprawdzam…'; }
+  haGet('calendars/'+encodeURIComponent(TRASH_ENT)+'?start='+encodeURIComponent(sTrashStart().toISOString())+'&end='+encodeURIComponent(sTrashEnd().toISOString()),function(err,data){
     if(!wEl||!tEl) return;
-    if(err){ wEl.textContent='--'; tEl.textContent='brak połączenia'; return; }
+    if(err){
+      wEl.textContent='--';
+      if(err.message==='404'||err.message===404) tEl.textContent='Zła encja kalendarza (☰)';
+      else if(err.message==='timeout') tEl.textContent='timeout HA';
+      else if(err.message==='net') tEl.textContent='brak połączenia';
+      else tEl.textContent='błąd '+err.message;
+      return;
+    }
+    TRASHLAST=Date.now();
     if(!data||!data.length){ wEl.textContent='Brak'; tEl.textContent='najbliższe 3 tyg.'; return; }
-    var best=null,bestT=null,i,stStr,t;
+    var s=sTrashStart(), best=null, bestT=null, i, stStr, t;
     for(i=0;i<data.length;i++){
       stStr=evStart(data[i]); if(!stStr) continue;
       t=new Date(String(stStr).replace(' ','T')); if(isNaN(t.getTime())) continue;
