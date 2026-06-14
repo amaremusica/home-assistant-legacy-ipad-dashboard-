@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.6.1 -->
+<!-- build: v11.6.2 -->
 <title>Dom</title>
 <style>
 :root {
@@ -577,7 +577,7 @@ body.light nav{background:var(--glass);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.6.1</span>
+      <span id="ver">v11.6.2</span>
       <button class="hbtn" onclick="forceReload()" title="Odśwież">↺</button>
     </div>
   </header>
@@ -585,7 +585,7 @@ body.light nav{background:var(--glass);}
   <div id="upd-bar">
     <div>
       <div class="upd-txt">Dostępna nowa wersja panelu</div>
-      <div class="upd-sub" id="upd-sub">--</div>
+      <div class="upd-sub" id="upd-sub">tapnij Zaktualizuj</div>
     </div>
     <div class="upd-btns">
       <button class="upd-btn upd-no" onclick="dismissUpdate()">Później</button>
@@ -987,7 +987,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.6.1';
+var BUILD='11.6.2';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var MOTION='binary_sensor.motion';

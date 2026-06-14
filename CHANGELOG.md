@@ -2,6 +2,11 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.6.2] — 2026-06-15
+
+### Test
+- Wersja testowa auto-update — po wrzuceniu `ipad-version.json` na HA iPad pokaże baner „Zaktualizuj”.
+
 ## [11.6] — 2026-06-14
 
 ### Dodane
