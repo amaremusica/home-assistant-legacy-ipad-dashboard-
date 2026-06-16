@@ -2,6 +2,12 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.11.1] — 2026-06-14
+
+### Dodane
+- **Dom → ikona pogody** — przejście do zakładki Pogoda.
+- **Dom → kamera (Brama)** — przejście do zakładki Kamery.
+
 ## [11.11.0] — 2026-06-14
 
 ### Naprawione — kamera EZVIZ

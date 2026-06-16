@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.11.0 -->
+<!-- build: v11.11.1 -->
 <title>Dom</title>
 <style>
 :root {
@@ -317,7 +317,10 @@ body.light .wst b{color:#0b1220;}
 .wloc{font-size:11px;color:var(--dim);margin-top:3px;}
 .wtemp{font-size:70px;font-weight:500;color:var(--bright);line-height:1;letter-spacing:-0.04em;text-align:center;margin:10px 0 12px;}
 .wunit{font-size:26px;color:var(--dim);font-weight:300;margin-left:2px;}
-.wsvg{width:78px;height:78px;-webkit-flex-shrink:0;flex-shrink:0;filter:drop-shadow(0 8px 16px rgba(0,0,0,0.28));}
+.wsvg{width:78px;height:78px;-webkit-flex-shrink:0;flex-shrink:0;filter:drop-shadow(0 8px 16px rgba(0,0,0,0.28));cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.wsvg:active{opacity:.85;}
+.camcard-dash-nav{cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.camcard-dash-nav:active{opacity:.92;}
 .wstats{display:-webkit-flex;display:flex;margin-top:2px;}
 .wstats>*+*{margin-left:6px;}
 .wst{-webkit-flex:1;flex:1;text-align:center;font-size:10px;color:var(--dim);line-height:1.35;}
@@ -677,7 +680,7 @@ body.light nav{background:var(--glass);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.11.0</span>
+      <span id="ver">v11.11.1</span>
       <button class="hbtn" onclick="forceReload()" title="Odśwież">↺</button>
     </div>
   </header>
@@ -728,7 +731,7 @@ body.light nav{background:var(--glass);}
                     <div class="wcond" id="wd">ładowanie...</div>
                     <div class="wloc">📍 Dom</div>
                   </div>
-                  <svg class="wsvg" id="wsvg" viewBox="0 0 36 36" fill="none"></svg>
+                  <svg class="wsvg" id="wsvg" viewBox="0 0 36 36" fill="none" onclick="goTab('pogoda')" title="Pogoda — szczegóły"></svg>
                 </div>
                 <div class="wtemp"><span id="wt">--</span><span class="wunit">°C</span></div>
                 <div class="wstats">
@@ -840,7 +843,7 @@ body.light nav{background:var(--glass);}
               </div>
               <div class="volr"><div class="volbw volset" id="sp-vbw" onclick="mSpVol(event,this)"><div class="volb" id="sp-vb" style="width:0%"></div></div><div class="volv" id="sp-vv">0%</div></div>
             </div>
-            <div class="camcard camcard-dash" id="dashcam-card">
+            <div class="camcard camcard-dash camcard-dash-nav" id="dashcam-card" onclick="goTab('kamery')" title="Kamery">
               <video id="cam-dash-v" autoplay muted playsinline webkit-playsinline></video>
               <img id="cam-dash" alt="Brama" style="display:none"><div class="camoff" id="camoff-dash">brak obrazu</div><div class="camlbl">📷 Brama</div>
             </div>
@@ -1135,7 +1138,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.11.0';
+var BUILD='11.11.1';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var MOTION='binary_sensor.motion';
@@ -1389,6 +1392,14 @@ function sv(id,btn){
   if(id==='kamery') refreshCameras(true);
   if(id==='pogoda'){ loadForecast(); loadHourly(); drawWeatherPage(); }
   if(id==='spotify'){ spView='home'; spStack=[]; spItemRegistry=[]; spInitTab(); }
+}
+function goTab(id){
+  var btn=null,i,bs=document.querySelectorAll('nav .tb'),oc;
+  for(i=0;i<bs.length;i++){
+    oc=bs[i].getAttribute('onclick')||'';
+    if(oc.indexOf("'"+id+"'")>=0||oc.indexOf('"'+id+'"')>=0){ btn=bs[i]; break; }
+  }
+  sv(id,btn);
 }
 
 // API
