@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.11.1 -->
+<!-- build: v11.11.2 -->
 <title>Dom</title>
 <style>
 :root {
@@ -317,8 +317,9 @@ body.light .wst b{color:#0b1220;}
 .wloc{font-size:11px;color:var(--dim);margin-top:3px;}
 .wtemp{font-size:70px;font-weight:500;color:var(--bright);line-height:1;letter-spacing:-0.04em;text-align:center;margin:10px 0 12px;}
 .wunit{font-size:26px;color:var(--dim);font-weight:300;margin-left:2px;}
-.wsvg{width:78px;height:78px;-webkit-flex-shrink:0;flex-shrink:0;filter:drop-shadow(0 8px 16px rgba(0,0,0,0.28));cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.wsvg:active{opacity:.85;}
+.wcard-nav{cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.wcard-nav:active{opacity:.94;}
+.wsvg{width:78px;height:78px;-webkit-flex-shrink:0;flex-shrink:0;filter:drop-shadow(0 8px 16px rgba(0,0,0,0.28));pointer-events:none;}
 .camcard-dash-nav{cursor:pointer;-webkit-tap-highlight-color:transparent;}
 .camcard-dash-nav:active{opacity:.92;}
 .wstats{display:-webkit-flex;display:flex;margin-top:2px;}
@@ -680,7 +681,7 @@ body.light nav{background:var(--glass);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.11.1</span>
+      <span id="ver">v11.11.2</span>
       <button class="hbtn" onclick="forceReload()" title="Odśwież">↺</button>
     </div>
   </header>
@@ -722,7 +723,7 @@ body.light nav{background:var(--glass);}
 
           <!-- LEWA: pogoda + jakość powietrza -->
           <div class="d3-col d3-left">
-            <div class="wcard glass" id="wcard">
+            <div class="wcard glass wcard-nav" id="wcard" onclick="goTab('pogoda')" title="Pogoda — szczegóły">
               <div class="wsun"></div>
               <div class="wglow"></div>
               <div class="wc-inner">
@@ -731,7 +732,7 @@ body.light nav{background:var(--glass);}
                     <div class="wcond" id="wd">ładowanie...</div>
                     <div class="wloc">📍 Dom</div>
                   </div>
-                  <svg class="wsvg" id="wsvg" viewBox="0 0 36 36" fill="none" onclick="goTab('pogoda')" title="Pogoda — szczegóły"></svg>
+                  <svg class="wsvg" id="wsvg" viewBox="0 0 36 36" fill="none"></svg>
                 </div>
                 <div class="wtemp"><span id="wt">--</span><span class="wunit">°C</span></div>
                 <div class="wstats">
@@ -1138,7 +1139,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.11.1';
+var BUILD='11.11.2';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var MOTION='binary_sensor.motion';

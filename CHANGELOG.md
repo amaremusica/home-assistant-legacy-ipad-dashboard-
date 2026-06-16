@@ -2,6 +2,11 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.11.2] — 2026-06-14
+
+### Naprawione
+- **Karta pogody na Dom** — cały widget (temperatura, prognoza, ikona) otwiera zakładkę Pogoda, nie tylko słońce.
+
 ## [11.11.1] — 2026-06-14
 
 ### Dodane
