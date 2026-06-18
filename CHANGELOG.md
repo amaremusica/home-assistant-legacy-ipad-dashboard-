@@ -2,6 +2,11 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.12.1] — 2026-06-18
+
+### Naprawione
+- **CSS z powrotem w `ipad.html`** — panel działa jako jeden plik; brak `ipad.css` na HA nie psuje layoutu.
+
 ## [11.12.0] — 2026-06-18
 
 ### Dodane

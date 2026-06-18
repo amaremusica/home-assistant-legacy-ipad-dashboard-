@@ -21,7 +21,7 @@ Checklist po zmianach — na iPadzie 4 lub emulatorze Safari iOS 10.
 - [ ] Dimming po bezruchu + wybudzenie dotykiem / ruchem
 - [ ] Motyw jasny/ciemny — zapis po restarcie
 - [ ] Auto-update: banner „Teraz” / „Za 1 h” (bez auto-reload)
-- [ ] `ipad.css` ładuje się z `/local/`
+- [ ] Style poprawne po aktualizacji (CSS wbudowany w `ipad.html`)
 
 ## Wydajność
 - [ ] Panel responsywny — brak zawieszeń przy pollingu co 15 s

@@ -1,6 +1,6 @@
 # Home Assistant Dashboard for iPad 4 (iOS 10.3.3)
 
-**Aktualna wersja:** `v11.12.0` — [`ipad.html`](ipad.html) + [`ipad.css`](ipad.css) · [CHANGELOG](CHANGELOG.md) · [TESTING](TESTING.md)
+**Aktualna wersja:** `v11.12.1` — [`ipad.html`](ipad.html) (samodzielny, CSS wbudowany) · [CHANGELOG](CHANGELOG.md)
 
 ![Panel — widok Dom](IMG_5484.jpeg)
 
@@ -24,7 +24,7 @@ Lekki pulpit Home Assistant dla **iPad 4 (iOS 10.3.3)** — czysty **HTML5, CSS3
 
 ### Instalacja
 
-1. Skopiuj do `www/` w Home Assistant: **`ipad.html`**, **`ipad.css`**, **`ipad-version.json`**.
+1. Skopiuj do `www/` w Home Assistant: **`ipad.html`** i **`ipad-version.json`** (wystarczy jeden plik HTML — style są w środku).
 2. Opcjonalnie: skopiuj [`entities.json.example`](entities.json.example) → `/config/www/entities.json` i dostosuj encje do pollingu.
 3. Otwórz na iPadzie: `http://IP:8123/local/ipad.html`
 4. ☰ → URL HA + Long-Lived Access Token → **Połącz**.
@@ -47,7 +47,7 @@ shell_command:
 
 Restart HA. Potem: `git push` → iPad co ~30 min pobiera update z HA.
 
-Skrót: `http://IP:8123/local/ipad.html?v=11.12.0`
+Skrót: `http://IP:8123/local/ipad.html?v=11.12.1`
 
 **Encje w ☰ (localStorage):** ruch, Spotify, TV, śmieci, łóżka, sceny.
 
@@ -68,7 +68,7 @@ Lightweight **Home Assistant** wall panel for **iPad 4 (iOS 10.3.3)** — vanill
 * **Optional `entities.json`** — extra entity IDs for polling at `/local/entities.json`.
 
 ### Installation
-1. Copy **`ipad.html`**, **`ipad.css`**, **`ipad-version.json`** to HA `www/`.
+1. Copy **`ipad.html`** and **`ipad-version.json`** to HA `www/` (styles are embedded in HTML).
 2. Optional: `entities.json.example` → `www/entities.json`.
 3. Open on iPad Safari → configure ☰ → **Connect**.
 4. **Add to Home Screen** for fullscreen mode.
