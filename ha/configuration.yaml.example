@@ -1,0 +1,5 @@
+# Przykład — fragment do configuration.yaml (bez danych osobowych).
+# Pełna instalacja panelu: README.md
+
+shell_command:
+  update_ipad_panel: bash /config/www/dashboard/scripts/ha-update-panel.sh

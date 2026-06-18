@@ -1,0 +1,10 @@
+{
+  "_comment": "Skopiuj do /config/www/entities.json i dostosuj encje. Opcjonalne — panel działa też bez tego pliku.",
+  "poll": [
+    "weather.forecast_home",
+    "sensor.air_quality_pm_2_5",
+    "sensor.living_room_temperature",
+    "light.living_room",
+    "camera.front_door"
+  ]
+}

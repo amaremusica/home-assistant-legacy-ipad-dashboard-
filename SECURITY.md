@@ -9,9 +9,10 @@ To repozytorium jest **publiczne**. Nie commituj:
 
 ## Co jest bezpieczne w repo
 
-- `ipad.html` — token i URL HA trzymane tylko w `localStorage` na iPadzie (ustawienia panelu)
+- `ipad.html` + `ipad.css` — token i URL HA trzymane tylko w `localStorage` na iPadzie (ustawienia panelu)
 - encje przykładowe (`media_player.spotify`, `calendar.trash`, `binary_sensor.motion`)
 - placeholdery w formularzu konfiguracji
+- `entities.json.example` — szablon bez danych osobowych (opcjonalny `/local/entities.json` na HA)
 
 ## Po sklonowaniu / aktualizacji
 

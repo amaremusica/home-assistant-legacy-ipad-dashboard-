@@ -30,7 +30,12 @@ fi
 
 echo "Kopiuję panel do $WWW ..."
 cp "$REPO/ipad.html" "$WWW/ipad.html"
+cp "$REPO/ipad.css" "$WWW/ipad.css"
 cp "$REPO/ipad-version.json" "$WWW/ipad-version.json"
+if [ ! -f "$WWW/entities.json" ] && [ -f "$REPO/entities.json.example" ]; then
+  cp "$REPO/entities.json.example" "$WWW/entities.json"
+  echo "Utworzono $WWW/entities.json z przykładu — dostosuj encje."
+fi
 
 echo ""
 echo "OK — wersja na HA: $(cat "$WWW/ipad-version.json")"

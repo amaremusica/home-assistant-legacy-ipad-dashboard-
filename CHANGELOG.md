@@ -2,6 +2,26 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.12.0] — 2026-06-18
+
+### Dodane
+- **Polling z `filter_entity_id`** — tylko potrzebne encje zamiast pełnego `/api/states`.
+- **`fetchBusy`** — brak nakładających się requestów przy wolnej sieci.
+- **`ipad.css`** — wydzielony arkusz stylów + fallback bez `backdrop-filter` na iOS 10.
+- **Banner błędu HA** — czytelny komunikat (URL, token, timeout).
+- **Eksport / import konfiguracji ☰** — JSON z `localStorage`.
+- **`entities.json`** — opcjonalna lista encji do pollingu (`/local/entities.json`).
+- **`TESTING.md`** — checklist regresji.
+- **`scripts/sync-github-desktop-git-path.ps1`** — aktualizacja PATH po update GitHub Desktop.
+
+### Zmienione
+- Generyczne placeholdery w ☰ (bez danych osobowych).
+- README EN uzupełniony; screenshoty w dokumentacji.
+- Skrypty HA kopiują też `ipad.css`.
+
+### Usunięte
+- `ha/configuration.yaml.full` (dane osobowe) — zastąpiony przez `configuration.yaml.example`.
+
 ## [11.11.4] — 2026-06-18
 
 ### Zmienione
