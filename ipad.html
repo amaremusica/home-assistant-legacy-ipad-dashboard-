@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.12.2 -->
+<!-- build: v11.12.3 -->
 <title>Dom</title>
 <style>
 :root {
@@ -73,9 +73,9 @@ body.light #amb{background:transparent;}
 .glass,.card,.wcard,.rtcard,.qtile,.mcol,.aqcard,.gcard{border-radius:var(--r);box-shadow:var(--shadow);}
 
 /* CONFIG */
-#cfg{position:fixed;inset:0;z-index:999;background:var(--bg);display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;}
+#cfg{position:fixed;top:0;left:0;right:0;bottom:0;z-index:999;background:#262119;background:var(--bg);display:-webkit-flex;display:flex;-webkit-align-items:flex-start;align-items:flex-start;-webkit-justify-content:center;justify-content:center;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 0;}
 #cfg.h{display:none;}
-.cbox{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);padding:28px;width:88%;max-width:400px;box-shadow:var(--shadow);}
+.cbox{background:var(--glass2);border:1px solid var(--glass-b);border-radius:var(--r);padding:28px;width:88%;max-width:400px;box-shadow:var(--shadow);margin:0 auto;-webkit-flex-shrink:0;flex-shrink:0;box-sizing:border-box;}
 .cbox h2{font-size:26px;font-weight:600;color:var(--bright);margin-bottom:4px;letter-spacing:-0.02em;}
 .cbox h2 span{color:var(--accent);}
 .cbox p{color:var(--dim);font-size:13px;margin-bottom:18px;}
@@ -83,7 +83,7 @@ body.light #amb{background:transparent;}
 .cf label{display:block;font-size:10px;color:var(--dim);margin-bottom:5px;text-transform:uppercase;letter-spacing:.1em;}
 .cf input{width:100%;padding:11px 14px;background:rgba(0,0,0,0.25);border:1px solid var(--glass-b);border-radius:var(--rsm);color:var(--bright);font-size:15px;outline:none;-webkit-appearance:none;}
 .cf input:focus{border-color:var(--accent);}
-.cbtn{width:100%;padding:13px;background:var(--accent);border:none;border-radius:var(--rsm);color:#0a0c12;font-size:15px;font-weight:600;cursor:pointer;margin-top:4px;}
+.cbtn{width:100%;padding:13px;background:var(--accent);border:none;border-radius:var(--rsm);color:#0a0c12;font-size:15px;font-weight:600;cursor:pointer;margin-top:4px;-webkit-appearance:none;box-sizing:border-box;}
 .cnote{font-size:11px;color:var(--dim);margin-top:10px;text-align:center;line-height:1.5;}
 .csaved{font-size:11px;color:var(--accent);margin-top:4px;display:none;}
 .swatches{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:-5px;}
@@ -617,18 +617,20 @@ body.light header,body.light nav{background:transparent;}
 body.light nav{background:var(--glass);}
 
 /* iOS 10 — bez backdrop-filter (wydajność) */
-body.legacy-safari .glass,body.legacy-safari .card,body.legacy-safari .wcard,body.legacy-safari .menu-btn,body.legacy-safari .hbtn,body.legacy-safari #upd-bar,body.legacy-safari #err-bar,body.legacy-safari nav,body.legacy-safari .scenebtn,body.legacy-safari .statecard,body.legacy-safari .aqbars,body.legacy-safari #cs,body.legacy-safari #mot,body.legacy-safari .sp-detail-top,body.legacy-safari .sp-mini,body.legacy-safari .camcard .camlbl{
+body.legacy-safari .glass,body.legacy-safari .card,body.legacy-safari .wcard,body.legacy-safari .menu-btn,body.legacy-safari .hbtn,body.legacy-safari #upd-bar,body.legacy-safari #err-bar,body.legacy-safari nav,body.legacy-safari .scenebtn,body.legacy-safari .statecard,body.legacy-safari .aqbars,body.legacy-safari #cs,body.legacy-safari #mot,body.legacy-safari .sp-detail-top,body.legacy-safari .sp-mini,body.legacy-safari .camcard .camlbl,body.legacy-safari #cfg .cbox{
   -webkit-backdrop-filter:none !important;
   backdrop-filter:none !important;
 }
-body.legacy-safari .glass,body.legacy-safari .card,body.legacy-safari .wcard{background:var(--glass2);}
+body.legacy-safari .glass,body.legacy-safari .card,body.legacy-safari .wcard,body.legacy-safari #cfg .cbox{background:var(--glass2);}
+body.legacy-safari #cfg{background:#262119;background:var(--bg);}
 body.legacy-safari nav{background:var(--glass2);}
 #err-bar{display:none;position:fixed;left:14px;right:14px;top:62px;z-index:850;padding:12px 16px;border-radius:var(--r);background:var(--glass2);border:1px solid rgba(248,113,113,0.35);box-shadow:var(--shadow);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);}
 #err-bar.show{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;}
 .cfg-row{display:-webkit-flex;display:flex;margin-top:10px;}
 .cfg-row>*{-webkit-flex:1;flex:1;}
 .cfg-row>*+*{margin-left:8px;}
-.cfg-sec{background:var(--glass);color:var(--text);border:1px solid var(--glass-b);}
+.cfg-row .cbtn{margin-top:0;}
+.cfg-sec{background:var(--glass2);color:var(--text);border:1px solid var(--glass-b);}
 </style>
 </head>
 <body>
@@ -699,7 +701,7 @@ body.legacy-safari nav{background:var(--glass2);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.12.2</span>
+      <span id="ver">v11.12.3</span>
       <button class="hbtn" onclick="forceReload()" title="Odśwież">↺</button>
     </div>
   </header>
@@ -1165,7 +1167,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.12.2';
+var BUILD='11.12.3';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
