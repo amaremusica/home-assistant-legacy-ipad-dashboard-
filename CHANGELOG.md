@@ -2,6 +2,12 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.12.2] — 2026-06-18
+
+### Naprawione
+- **Modal ☰ na iOS 10** — `inset:0` zastąpione `top/left/right/bottom`, przewijanie formularza, solidne tło `.cbox`.
+- **Pola konfiguracji** — wartości z `localStorage` wypełniają inputy (bez nachodzących placeholderów).
+
 ## [11.12.1] — 2026-06-18
 
 ### Naprawione

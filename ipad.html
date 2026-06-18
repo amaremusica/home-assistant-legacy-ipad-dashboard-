@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.12.1 -->
+<!-- build: v11.12.2 -->
 <title>Dom</title>
 <style>
 :root {
@@ -699,7 +699,7 @@ body.legacy-safari nav{background:var(--glass2);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.12.1</span>
+      <span id="ver">v11.12.2</span>
       <button class="hbtn" onclick="forceReload()" title="Odśwież">↺</button>
     </div>
   </header>
@@ -1165,7 +1165,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.12.1';
+var BUILD='11.12.2';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
@@ -1283,6 +1283,24 @@ function syncSceneBtns(){
   var o=document.getElementById('sc-of'); if(o) o.className=SCENE_OFF?'scenebtn':'scenebtn off';
 }
 
+function prefillConfigFields(){
+  var u=document.getElementById('cu'); if(u) u.value=HA||u.value||'';
+  var cd=document.getElementById('cd'); if(cd) cd.value=DIM?DIM/1000:45;
+  var cm=document.getElementById('cm'); if(cm) cm.value=MOTION||'';
+  var csp=document.getElementById('csp'); if(csp) csp.value=SP_EID||'';
+  var css=document.getElementById('css'); if(css) css.value=SP_SOURCE||'';
+  var ctr=document.getElementById('ctr'); if(ctr) ctr.value=TRASH_ENT||'';
+  var ctv=document.getElementById('ctv'); if(ctv) ctv.value=TV_EID||'';
+  var cb1=document.getElementById('cb1'); if(cb1) cb1.value=BED1_EID||'';
+  var cb2=document.getElementById('cb2'); if(cb2) cb2.value=BED2_EID||'';
+  var cb1l=document.getElementById('cb1l'); if(cb1l) cb1l.value=BED1_LBL||'';
+  var cb2l=document.getElementById('cb2l'); if(cb2l) cb2l.value=BED2_LBL||'';
+  var cse=document.getElementById('cse'); if(cse) cse.value=SCENE_EVE||'';
+  var csl=document.getElementById('csl'); if(csl) csl.value=SCENE_LEAVE||'';
+  var cso=document.getElementById('cso'); if(cso) cso.value=SCENE_OFF||'';
+  var s=document.getElementById('cts'); if(s) s.style.display=TOK?'block':'none';
+}
+
 function loadConfig(){
   loadEntConfig();
   applyLegacySafari();
@@ -1295,6 +1313,7 @@ function loadConfig(){
     document.getElementById('cfg').className='';
     document.getElementById('app').className='h';
     prefillDefaults();
+    prefillConfigFields();
   }
 }
 
@@ -1342,20 +1361,7 @@ function saveConfig(){
 function showConfig(){
   document.getElementById('cu').value=HA;
   document.getElementById('ct').value='';
-  document.getElementById('cd').value=DIM/1000;
-  var cm=document.getElementById('cm'); if(cm) cm.value=MOTION;
-  var csp=document.getElementById('csp'); if(csp) csp.value=SP_EID;
-  var css=document.getElementById('css'); if(css) css.value=SP_SOURCE;
-  var ctr=document.getElementById('ctr'); if(ctr) ctr.value=TRASH_ENT;
-  var ctv=document.getElementById('ctv'); if(ctv) ctv.value=TV_EID;
-  var cb1=document.getElementById('cb1'); if(cb1) cb1.value=BED1_EID;
-  var cb2=document.getElementById('cb2'); if(cb2) cb2.value=BED2_EID;
-  var cb1l=document.getElementById('cb1l'); if(cb1l) cb1l.value=BED1_LBL;
-  var cb2l=document.getElementById('cb2l'); if(cb2l) cb2l.value=BED2_LBL;
-  var cse=document.getElementById('cse'); if(cse) cse.value=SCENE_EVE;
-  var csl=document.getElementById('csl'); if(csl) csl.value=SCENE_LEAVE;
-  var cso=document.getElementById('cso'); if(cso) cso.value=SCENE_OFF;
-  var s=document.getElementById('cts'); if(s) s.style.display=TOK?'block':'none';
+  prefillConfigFields();
   var sl=document.getElementById('cbg'); if(sl) sl.value=BGLVL;
   document.getElementById('cfg').className='';
 }
