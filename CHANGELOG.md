@@ -2,6 +2,11 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.11.4] — 2026-06-18
+
+### Zmienione
+- Podbicie wersji (`BUILD`, `ipad-version.json`, README).
+
 ## [11.11.3] — 2026-06-18
 
 ### Naprawione
