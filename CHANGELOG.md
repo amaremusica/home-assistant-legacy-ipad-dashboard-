@@ -2,6 +2,13 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.12.4] — 2026-06-18
+
+### Zmienione — modal ☰
+- Szersza karta (do 680px na iPadzie), większe pola (16px, min. 48px wysokości).
+- Układ 2-kolumnowy: łóżka; 3-kolumnowy: sceny.
+- Lepsze odstępy, czytelniejsze etykiety, poprawki motywu jasnego.
+
 ## [11.12.3] — 2026-06-18
 
 ### Naprawione

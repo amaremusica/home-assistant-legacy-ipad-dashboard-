@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.12.3 -->
+<!-- build: v11.12.4 -->
 <title>Dom</title>
 <style>
 :root {
@@ -73,26 +73,47 @@ body.light #amb{background:transparent;}
 .glass,.card,.wcard,.rtcard,.qtile,.mcol,.aqcard,.gcard{border-radius:var(--r);box-shadow:var(--shadow);}
 
 /* CONFIG */
-#cfg{position:fixed;top:0;left:0;right:0;bottom:0;z-index:999;background:#262119;background:var(--bg);display:-webkit-flex;display:flex;-webkit-align-items:flex-start;align-items:flex-start;-webkit-justify-content:center;justify-content:center;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 0;}
+#cfg{position:fixed;top:0;left:0;right:0;bottom:0;z-index:999;background:#262119;background:var(--bg);display:-webkit-flex;display:flex;-webkit-align-items:flex-start;align-items:flex-start;-webkit-justify-content:center;justify-content:center;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px 16px;box-sizing:border-box;}
 #cfg.h{display:none;}
-.cbox{background:var(--glass2);border:1px solid var(--glass-b);border-radius:var(--r);padding:28px;width:88%;max-width:400px;box-shadow:var(--shadow);margin:0 auto;-webkit-flex-shrink:0;flex-shrink:0;box-sizing:border-box;}
-.cbox h2{font-size:26px;font-weight:600;color:var(--bright);margin-bottom:4px;letter-spacing:-0.02em;}
+.cbox{background:var(--glass2);border:1px solid var(--glass-b);border-radius:var(--r-lg);padding:28px 24px;width:100%;max-width:520px;box-shadow:var(--shadow);margin:0 auto;-webkit-flex-shrink:0;flex-shrink:0;box-sizing:border-box;}
+.cbox h2{font-size:28px;font-weight:600;color:var(--bright);margin-bottom:6px;letter-spacing:-0.02em;}
 .cbox h2 span{color:var(--accent);}
-.cbox p{color:var(--dim);font-size:13px;margin-bottom:18px;}
-.cf{margin-bottom:12px;}
-.cf label{display:block;font-size:10px;color:var(--dim);margin-bottom:5px;text-transform:uppercase;letter-spacing:.1em;}
-.cf input{width:100%;padding:11px 14px;background:rgba(0,0,0,0.25);border:1px solid var(--glass-b);border-radius:var(--rsm);color:var(--bright);font-size:15px;outline:none;-webkit-appearance:none;}
+.cbox p{color:var(--dim);font-size:14px;margin-bottom:20px;line-height:1.45;}
+.cf{margin-bottom:16px;}
+.cf label{display:block;font-size:11px;color:var(--dim);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
+.cf input{width:100%;padding:14px 16px;min-height:48px;background:rgba(0,0,0,0.25);border:1px solid var(--glass-b);border-radius:var(--rsm);color:var(--bright);font-size:16px;outline:none;-webkit-appearance:none;box-sizing:border-box;}
+body.light .cf input{background:rgba(255,255,255,0.92);color:var(--text);}
 .cf input:focus{border-color:var(--accent);}
-.cbtn{width:100%;padding:13px;background:var(--accent);border:none;border-radius:var(--rsm);color:#0a0c12;font-size:15px;font-weight:600;cursor:pointer;margin-top:4px;-webkit-appearance:none;box-sizing:border-box;}
-.cnote{font-size:11px;color:var(--dim);margin-top:10px;text-align:center;line-height:1.5;}
-.csaved{font-size:11px;color:var(--accent);margin-top:4px;display:none;}
-.swatches{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:-5px;}
-.swatches>*{margin:5px;}
-.sw{width:34px;height:34px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;-webkit-appearance:none;-webkit-box-shadow:0 2px 8px rgba(0,0,0,0.25);box-shadow:0 2px 8px rgba(0,0,0,0.25);-webkit-transition:-webkit-transform .12s;transition:transform .12s;}
+.cfg-row2{display:block;}
+.cfg-row2 .cf{margin-bottom:16px;}
+.cfg-row3{display:block;}
+.cfg-row3 .cf{margin-bottom:16px;}
+.cfg-theme{display:-webkit-flex;display:flex;}
+.cfg-theme>*{-webkit-flex:1;flex:1;}
+.cfg-theme>*+*{margin-left:10px;}
+.cfg-tbtn{padding:12px 10px;border-radius:var(--rsm);font-size:15px;font-weight:600;cursor:pointer;-webkit-appearance:none;border:1px solid var(--glass-b);background:var(--glass);color:var(--text);}
+.cfg-tbtn.on{background:var(--accent);border-color:var(--accent);color:#0a0c12;}
+body.light .cfg-tbtn.on{color:#fff;}
+.cbtn{width:100%;padding:15px;background:var(--accent);border:none;border-radius:var(--rsm);color:#0a0c12;font-size:16px;font-weight:600;cursor:pointer;margin-top:8px;-webkit-appearance:none;box-sizing:border-box;min-height:48px;}
+.cnote{font-size:12px;color:var(--dim);margin-top:12px;text-align:center;line-height:1.55;}
+.csaved{font-size:12px;color:var(--accent);margin-top:6px;display:none;}
+.swatches{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:-6px;}
+.swatches>*{margin:6px;}
+.sw{width:40px;height:40px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;-webkit-appearance:none;-webkit-box-shadow:0 2px 8px rgba(0,0,0,0.25);box-shadow:0 2px 8px rgba(0,0,0,0.25);-webkit-transition:-webkit-transform .12s;transition:transform .12s;}
 .sw:active{-webkit-transform:scale(0.9);transform:scale(0.9);}
 .sw.sel{border-color:var(--bright);-webkit-box-shadow:0 0 0 3px var(--accent-dim),0 2px 8px rgba(0,0,0,0.25);box-shadow:0 0 0 3px var(--accent-dim),0 2px 8px rgba(0,0,0,0.25);}
-.crange{width:100%;height:26px;-webkit-appearance:none;appearance:none;background:-webkit-linear-gradient(left,#080808,#d2d2d2);background:linear-gradient(to right,#080808,#d2d2d2);border-radius:999px;outline:none;border:1px solid var(--glass-b);}
-.crange::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent);border:2px solid #fff;-webkit-box-shadow:0 1px 4px rgba(0,0,0,0.4);box-shadow:0 1px 4px rgba(0,0,0,0.4);cursor:pointer;}
+.crange{width:100%;height:32px;-webkit-appearance:none;appearance:none;background:-webkit-linear-gradient(left,#080808,#d2d2d2);background:linear-gradient(to right,#080808,#d2d2d2);border-radius:999px;outline:none;border:1px solid var(--glass-b);}
+.crange::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--accent);border:2px solid #fff;-webkit-box-shadow:0 1px 4px rgba(0,0,0,0.4);box-shadow:0 1px 4px rgba(0,0,0,0.4);cursor:pointer;}
+@media (min-width:520px){
+  #cfg{padding:24px 28px;-webkit-align-items:center;align-items:center;}
+  .cbox{max-width:680px;padding:36px 40px;}
+  .cfg-row2{display:-webkit-flex;display:flex;}
+  .cfg-row2 .cf{-webkit-flex:1;flex:1;margin-bottom:16px;}
+  .cfg-row2 .cf+.cf{margin-left:16px;}
+  .cfg-row3{display:-webkit-flex;display:flex;}
+  .cfg-row3 .cf{-webkit-flex:1;flex:1;margin-bottom:16px;}
+  .cfg-row3 .cf+.cf{margin-left:12px;}
+}
 
 /* APP */
 #app{position:absolute;top:0;left:0;right:0;bottom:0;z-index:1;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;overflow:hidden;}
@@ -650,18 +671,24 @@ body.legacy-safari nav{background:var(--glass2);}
     <div class="cf"><label>Spotify — domyślne wyjście</label><input type="text" id="css" placeholder="Wzmacniacz" autocorrect="off" autocapitalize="off"></div>
     <div class="cf"><label>Kalendarz śmieci</label><input type="text" id="ctr" placeholder="calendar.trash" autocorrect="off" autocapitalize="off"></div>
     <div class="cf"><label>Telewizor (entity_id)</label><input type="text" id="ctv" placeholder="media_player.living_room_tv" autocorrect="off" autocapitalize="off"></div>
-    <div class="cf"><label>Łóżko 1 — encja</label><input type="text" id="cb1" placeholder="switch.bed_1" autocorrect="off" autocapitalize="off"></div>
-    <div class="cf"><label>Łóżko 1 — nazwa</label><input type="text" id="cb1l" placeholder="Osoba 1" autocorrect="off" autocapitalize="off"></div>
-    <div class="cf"><label>Łóżko 2 — encja</label><input type="text" id="cb2" placeholder="switch.bed_2" autocorrect="off" autocapitalize="off"></div>
-    <div class="cf"><label>Łóżko 2 — nazwa</label><input type="text" id="cb2l" placeholder="Osoba 2" autocorrect="off" autocapitalize="off"></div>
-    <div class="cf"><label>Scena — Wieczór</label><input type="text" id="cse" placeholder="scene.nazwa (opcjonalnie)" autocorrect="off" autocapitalize="off"></div>
-    <div class="cf"><label>Scena — Wyjdź</label><input type="text" id="csl" placeholder="scene.nazwa (opcjonalnie)" autocorrect="off" autocapitalize="off"></div>
-    <div class="cf"><label>Scena — Wszystko off</label><input type="text" id="cso" placeholder="scene.nazwa (opcjonalnie)" autocorrect="off" autocapitalize="off"></div>
+    <div class="cfg-row2">
+      <div class="cf"><label>Łóżko 1 — encja</label><input type="text" id="cb1" placeholder="switch.bed_1" autocorrect="off" autocapitalize="off"></div>
+      <div class="cf"><label>Łóżko 1 — nazwa</label><input type="text" id="cb1l" placeholder="Osoba 1" autocorrect="off" autocapitalize="off"></div>
+    </div>
+    <div class="cfg-row2">
+      <div class="cf"><label>Łóżko 2 — encja</label><input type="text" id="cb2" placeholder="switch.bed_2" autocorrect="off" autocapitalize="off"></div>
+      <div class="cf"><label>Łóżko 2 — nazwa</label><input type="text" id="cb2l" placeholder="Osoba 2" autocorrect="off" autocapitalize="off"></div>
+    </div>
+    <div class="cfg-row3">
+      <div class="cf"><label>Scena — Wieczór</label><input type="text" id="cse" placeholder="scene (opc.)" autocorrect="off" autocapitalize="off"></div>
+      <div class="cf"><label>Scena — Wyjdź</label><input type="text" id="csl" placeholder="scene (opc.)" autocorrect="off" autocapitalize="off"></div>
+      <div class="cf"><label>Scena — Off</label><input type="text" id="cso" placeholder="scene (opc.)" autocorrect="off" autocapitalize="off"></div>
+    </div>
     <div class="cf">
       <label>Motyw</label>
-      <div style="display:-webkit-flex;display:flex;">
-        <button id="btn-dark" onclick="setTheme('dark')" style="flex:1;padding:9px;background:var(--accent);border:none;border-radius:var(--rsm);color:#000;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">🌙 Ciemny</button>
-        <button id="btn-light" onclick="setTheme('light')" style="flex:1;margin-left:8px;padding:9px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rsm);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;">☀️ Jasny</button>
+      <div class="cfg-theme">
+        <button type="button" id="btn-dark" class="cfg-tbtn" onclick="setTheme('dark')">🌙 Ciemny</button>
+        <button type="button" id="btn-light" class="cfg-tbtn" onclick="setTheme('light')">☀️ Jasny</button>
       </div>
     </div>
     <div class="cf">
@@ -701,7 +728,7 @@ body.legacy-safari nav{background:var(--glass2);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.12.3</span>
+      <span id="ver">v11.12.4</span>
       <button class="hbtn" onclick="forceReload()" title="Odśwież">↺</button>
     </div>
   </header>
@@ -1167,7 +1194,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.12.3';
+var BUILD='11.12.4';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
@@ -3236,16 +3263,14 @@ function setBg(v){
 function setTheme(t){
   curTheme=t;
   sSet('theme',t);
-  document.body.className=(t==='light')?'light':'';
+  var cls=(t==='light')?'light':'';
+  if(document.body.className.indexOf('legacy-safari')>=0) cls=(cls?cls+' ':'')+'legacy-safari';
+  document.body.className=cls;
   applyBg();
   var bd=document.getElementById('btn-dark');
   var bl=document.getElementById('btn-light');
-  if(bd&&bl){
-    bd.style.background=t==='dark'?'var(--accent)':'var(--glass)';
-    bd.style.color=t==='dark'?'#0a0c12':'var(--text)';
-    bl.style.background=t==='light'?'var(--accent)':'var(--glass)';
-    bl.style.color=t==='light'?'#0a0c12':'var(--text)';
-  }
+  if(bd) bd.className=t==='dark'?'cfg-tbtn on':'cfg-tbtn';
+  if(bl) bl.className=t==='light'?'cfg-tbtn on':'cfg-tbtn';
 }
 
 // ACCENT — kilka kolorów do wyboru
