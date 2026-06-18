@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.11.2 -->
+<!-- build: v11.11.3 -->
 <title>Dom</title>
 <style>
 :root {
@@ -668,7 +668,7 @@ body.light nav{background:var(--glass);}
     <button class="cbtn" onclick="saveConfig()">Połącz</button>
     <p class="cnote">Token: HA → Profil → Long-Lived Access Tokens</p>
     <p class="cnote" style="margin-top:6px;">Ściemnianie: czujnik HA + dotknięcie ekranu. Safari nie steruje jasnością iPadu — tylko warstwa na ekranie.</p>
-    <p style="font-size:10px;color:var(--dim);text-align:center;margin-top:6px;opacity:.5;">v7.5 — iPad Panel</p>
+    <p id="cfg-ver" style="font-size:10px;color:var(--dim);text-align:center;margin-top:6px;opacity:.5;"></p>
   </div>
 </div>
 
@@ -681,7 +681,7 @@ body.light nav{background:var(--glass);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.11.2</span>
+      <span id="ver">v11.11.3</span>
       <button class="hbtn" onclick="forceReload()" title="Odśwież">↺</button>
     </div>
   </header>
@@ -1139,7 +1139,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.11.2';
+var BUILD='11.11.3';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var MOTION='binary_sensor.motion';
@@ -1344,9 +1344,8 @@ function doVersionCheck(){
     }
     updRemote=remote;
     var sub=document.getElementById('upd-sub');
-    if(sub) sub.textContent='v'+BUILD+' → v'+remote+' — za chwilę…';
+    if(sub) sub.textContent='v'+BUILD+' → v'+remote+' — kliknij „Teraz”';
     if(bar) bar.className='show';
-    setTimeout(applyUpdate,2500);
   };
   x.send(null);
 }
@@ -2229,8 +2228,9 @@ function uZone(eid,id){
   el.className=(E[eid]&&E[eid].state==='on')?'zhot on':'zhot';
 }
 
-function toggleBulb(eid,id){
-  if(typeof event!=='undefined'&&event&&event.stopPropagation) event.stopPropagation();
+function toggleBulb(eid,id,ev){
+  var e=ev||(typeof event!=='undefined'?event:null);
+  if(e&&e.stopPropagation) e.stopPropagation();
   var on=(E[eid]&&E[eid].state==='on');
   if(!E[eid]) E[eid]={attributes:{}};
   E[eid].state=on?'off':'on';   // optymistycznie: natychmiast pokaż zmianę
@@ -3148,7 +3148,7 @@ function loadTheme(){
   var bl=sGet('bg_level');
   if(bl!==null&&bl!=='') BGLVL=parseInt(bl,10)||0;
   var sl=document.getElementById('cbg'); if(sl) sl.value=BGLVL;
-  setTheme('dark');
+  setTheme(sGet('theme')||'dark');
   var ac=sGet('accent')||'emerald';
   setAccent(ac);
 }
@@ -3183,7 +3183,13 @@ function prefillDefaults(){
   if(t&&!t.value&&!TOK) t.placeholder='eyJ0eXAi...';
 }
 
-loadConfig(); tick(); loadTheme();
+loadConfig(); syncVerLabels(); tick(); loadTheme();
+
+function syncVerLabels(){
+  var t='v'+BUILD+' — iPad Panel';
+  var v=document.getElementById('ver'); if(v) v.textContent='v'+BUILD;
+  var c=document.getElementById('cfg-ver'); if(c) c.textContent=t;
+}
 
 // Fix Safari / iPad – pełna wysokość ekranu
 function fixHeight(){

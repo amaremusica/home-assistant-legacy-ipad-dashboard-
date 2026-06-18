@@ -2,6 +2,13 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.11.3] — 2026-06-18
+
+### Naprawione
+- **Auto-aktualizacja** — banner czeka na kliknięcie „Teraz” zamiast przeładowywać stronę po 2,5 s.
+- **Motyw jasny** — po restarcie panelu przywracany z `localStorage` (wcześniej zawsze `dark`).
+- **Wersja w UI** — stopka ☰ i README zsynchronizowane z `BUILD`.
+
 ## [11.11.2] — 2026-06-14
 
 ### Naprawione

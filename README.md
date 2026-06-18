@@ -1,6 +1,6 @@
 # Home Assistant Dashboard for iPad 4 (iOS 10.3.3)
 
-**Aktualna wersja:** `v11.7.2` — plik [`ipad.html`](ipad.html) · [CHANGELOG](CHANGELOG.md)
+**Aktualna wersja:** `v11.11.3` — plik [`ipad.html`](ipad.html) · [CHANGELOG](CHANGELOG.md)
 
 [Wersja polska](#wersja-polska) | [English Version](#english-version)
 
@@ -53,7 +53,7 @@ Restart HA.
 
 **Potem:** `git push` → iPad co ~30 min sam robi `git pull` na HA i przeładowuje się gdy wersja nowsza.
 
-Skrót: `http://IP:8123/local/ipad.html?v=11.7.2`
+Skrót: `http://IP:8123/local/ipad.html?v=11.11.3`
 
 **Encje w ☰ (localStorage):** Spotify, TV, śmieci, ruch, łóżka, sceny.
 
