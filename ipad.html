@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.13.1 -->
+<!-- build: v11.13.2 -->
 <title>Dom</title>
 <style>
 :root {
@@ -777,7 +777,7 @@ body.legacy-safari nav{background:var(--glass2);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.13.1</span>
+      <span id="ver">v11.13.2</span>
       <button class="hbtn" onclick="forceReload()" title="Odśwież">↺</button>
     </div>
   </header>
@@ -1275,7 +1275,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.13.1';
+var BUILD='11.13.2';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
@@ -2743,9 +2743,15 @@ function maHaSearchResponse(resp){
 
 function maHaLibItems(resp){
   if(!resp) return [];
-  if(resp.items&&Array.isArray(resp.items)) return resp.items.map(maNormHaItem);
-  if(Array.isArray(resp)) return resp.map(maNormHaItem);
-  return maParseResult(resp).map(maNormHaItem);
+  var r=resp, k;
+  if(r.service_response) r=r.service_response;
+  if(r.items&&Array.isArray(r.items)) return r.items.map(maNormHaItem);
+  if(Array.isArray(r)) return r.map(maNormHaItem);
+  for(k in r){
+    if(!r.hasOwnProperty(k)) continue;
+    if(r[k]&&r[k].items&&Array.isArray(r[k].items)) return r[k].items.map(maNormHaItem);
+  }
+  return maParseResult(r).map(maNormHaItem);
 }
 
 function maHaQueue(resp,eid){
@@ -3134,6 +3140,35 @@ function maPlayEntry(entry,radioMode){
   });
 }
 
+function maFetchLibraryRadio(favorite,cb){
+  maCmd('music/radios/items',{favorite:!!favorite,limit:24},function(err,data){
+    var items=Array.isArray(data)?data:maParseResult(data);
+    cb(err,items||[]);
+  });
+}
+
+function maSearchRadioQuery(name,cb){
+  if(maViaHa()){
+    maLoadCfgEntry(function(){
+      haMaService('search',{name:name,media_type:'radio',limit:24},function(err,resp){
+        if(err){ cb(err,[]); return; }
+        cb(null,maHaSearchResponse(resp).radio||[]);
+      });
+    });
+    return;
+  }
+  maRequest('GET','/api/search?query='+encodeURIComponent(name)+'&media_types=radio&limit=24',null,function(err,data){
+    if(err){ cb(err,[]); return; }
+    cb(null,(data&&(data.radio||data.radios||data.radio_stations))||[]);
+  });
+}
+
+function maShowRadioList(title,items){
+  if(!items||!items.length) return false;
+  maShowRadioResults('<div class="sp-ma-sec"><div class="sp-ma-sec-h">'+spHtml(title)+'</div>'+maRenderItemList(items,'_maRadioItems',true)+'</div>');
+  return true;
+}
+
 function maDoRadioSearch(silent){
   var inp=document.getElementById('sp-mq-radio');
   var q=inp?inp.value.trim():'';
@@ -3143,20 +3178,31 @@ function maDoRadioSearch(silent){
   }
   if(!maViaHa()&&!maBase()){ maShowRadioResults('<div class="spv-empty">Skonfiguruj MA w ☰.</div>'); return; }
   maShowRadioResults('<div class="spv-empty">Szukam stacji…</div>');
-  maRequest('GET','/api/search?query='+encodeURIComponent(q)+'&media_types=radio&limit=20',null,function(err,data){
+  maSearchRadioQuery(q,function(err,radios){
     if(err){ maShowRadioResults('<div class="spv-empty">Błąd wyszukiwania.</div>'); return; }
-    var radios=(data&&(data.radio||data.radios||data.radio_stations))||[];
     if(!radios.length){ maShowRadioResults('<div class="spv-empty">Brak stacji.</div>'); return; }
-    maShowRadioResults('<div class="sp-ma-sec"><div class="sp-ma-sec-h">Stacje</div>'+maRenderItemList(radios,'_maRadioItems',true)+'</div>');
+    maShowRadioList('Stacje',radios);
   });
 }
 
 function maLoadRadioDefault(){
   maShowRadioResults('<div class="spv-empty">Ładowanie stacji…</div>');
-  maCmd('music/radios/items',{favorite:true,limit:24},function(err,data){
-    var items=maParseResult(data);
-    if(!items.length){ maDoRadioSearch(true); return; }
-    maShowRadioResults('<div class="sp-ma-sec"><div class="sp-ma-sec-h">Ulubione stacje</div>'+maRenderItemList(items,'_maRadioItems',true)+'</div>');
+  maFetchLibraryRadio(true,function(err,fav){
+    if(maShowRadioList('Ulubione stacje',fav)) return;
+    maFetchLibraryRadio(false,function(err2,all){
+      if(maShowRadioList('Stacje radiowe',all)) return;
+      maSearchRadioQuery('FM',function(err3,trend){
+        if(maShowRadioList('Popularne stacje',trend)) return;
+        maSearchRadioQuery('Radio',function(err4,more){
+          if(maShowRadioList('Popularne stacje',more)) return;
+          if(err||err2||err3||err4){
+            maShowRadioResults('<div class="spv-empty">Nie udało się wczytać stacji.<br>Sprawdź integrację Music Assistant w HA.</div>');
+            return;
+          }
+          maShowRadioResults('<div class="spv-empty">Brak stacji. Wpisz nazwę i naciśnij Szukaj.</div>');
+        });
+      });
+    });
   });
 }
 

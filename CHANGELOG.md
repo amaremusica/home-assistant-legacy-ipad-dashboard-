@@ -2,6 +2,12 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.13.2] — 2026-06-18
+
+### Naprawione
+- **Radio — „Ładowanie stacji…”** — gdy brak ulubionych, panel ładuje bibliotekę stacji i wyszukuje popularne (FM/Radio) zamiast wisieć w nieskończoność.
+- Lepsze parsowanie odpowiedzi `get_library` z Home Assistant.
+
 ## [11.13.1] — 2026-06-18
 
 ### Dodane
