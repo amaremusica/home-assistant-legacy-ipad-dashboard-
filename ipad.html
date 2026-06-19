@@ -475,6 +475,33 @@ body.light .wst b{color:#0b1220;}
 .ktemp-l{display:block;font-size:8px;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);font-weight:700;}
 .ktemp-v{font-size:14px;font-weight:400;color:var(--bright);letter-spacing:-0.02em;line-height:1.1;}
 
+/* Music Assistant search panel */
+.sp-ma{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;height:100%;overflow:hidden;}
+.sp-ma.sp-hide{display:none!important;}
+.sp-ma-bar{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;padding:12px 16px 8px;gap:8px;}
+.sp-ma-bar>*+*{margin-left:8px;}
+.sp-ma-input{-webkit-flex:1;flex:1;background:var(--glass2);border:1px solid var(--glass-b);border-radius:10px;padding:10px 14px;font-size:15px;color:var(--bright);outline:none;-webkit-appearance:none;appearance:none;}
+.sp-ma-input::-webkit-search-cancel-button{-webkit-appearance:none;}
+.sp-ma-sbtn{background:rgba(var(--accent-rgb),0.22);border:1px solid rgba(var(--accent-rgb),0.4);color:var(--accent);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;}
+.sp-ma-sbtn:active{opacity:0.75;}
+.sp-ma-players{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;padding:0 16px 10px;gap:6px;}
+.sp-ma-players>*+*{margin-left:0;}
+.sp-ma-pill{background:var(--glass2);border:1px solid var(--glass-b);border-radius:20px;padding:5px 12px;font-size:11px;color:var(--dim);cursor:pointer;white-space:nowrap;margin:3px 3px 0 0;}
+.sp-ma-pill.on{background:rgba(var(--accent-rgb),0.18);border-color:rgba(var(--accent-rgb),0.45);color:var(--accent);}
+.sp-ma-results{-webkit-flex:1;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 8px 16px;}
+.sp-ma-sec{margin-bottom:4px;}
+.sp-ma-sec-h{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.12em;font-weight:700;padding:8px 8px 4px;}
+.sp-ma-row{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;padding:8px;border-radius:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.sp-ma-row:active{background:var(--glass2);}
+.sp-ma-row>*+*{margin-left:10px;}
+.sp-ma-thumb{width:44px;height:44px;border-radius:8px;background:var(--glass2);-webkit-flex-shrink:0;flex-shrink:0;object-fit:cover;}
+.sp-ma-thumb-ph{width:44px;height:44px;border-radius:8px;background:var(--glass2);-webkit-flex-shrink:0;flex-shrink:0;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;font-size:18px;color:var(--dim);}
+.sp-ma-meta{-webkit-flex:1;flex:1;min-width:0;}
+.sp-ma-t{font-size:14px;color:var(--bright);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sp-ma-s{font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
+.sp-ma-play{width:32px;height:32px;border-radius:50%;background:rgba(var(--accent-rgb),0.18);border:1px solid rgba(var(--accent-rgb),0.35);color:var(--accent);font-size:13px;-webkit-flex-shrink:0;flex-shrink:0;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;cursor:pointer;}
+.sp-ma-play:active{background:rgba(var(--accent-rgb),0.35);}
+
 /* Kamera na pulpicie (pod Spotify) */
 .camcard-dash{-webkit-flex:0 0 auto;flex:0 0 auto;min-width:0;}
 .camcard-dash img,.camcard-dash video{min-height:120px;max-height:160px;object-fit:cover;}
@@ -669,6 +696,7 @@ body.legacy-safari nav{background:var(--glass2);}
     <div class="cf"><label>Czujnik ruchu (entity_id)</label><input type="text" id="cm" placeholder="binary_sensor.motion" autocorrect="off" autocapitalize="off"></div>
     <div class="cf"><label>Spotify (entity_id)</label><input type="text" id="csp" placeholder="media_player.spotify" autocorrect="off" autocapitalize="off"></div>
     <div class="cf"><label>Spotify — domyślne wyjście</label><input type="text" id="css" placeholder="Wzmacniacz" autocorrect="off" autocapitalize="off"></div>
+    <div class="cf"><label>Music Assistant URL</label><input type="url" id="cma" placeholder="http://192.168.1.x:8095" autocorrect="off" autocapitalize="off"></div>
     <div class="cf"><label>Kalendarz śmieci</label><input type="text" id="ctr" placeholder="calendar.trash" autocorrect="off" autocapitalize="off"></div>
     <div class="cf"><label>Telewizor (entity_id)</label><input type="text" id="ctv" placeholder="media_player.living_room_tv" autocorrect="off" autocapitalize="off"></div>
     <div class="cfg-row2">
@@ -963,8 +991,9 @@ body.legacy-safari nav{background:var(--glass2);}
           <div class="sp-logo">Muzyka</div>
           <div class="sp-greet" id="sp-greet">Propozycje z Twojego Spotify</div>
           <div class="sp-chips">
-            <button type="button" class="sp-chip on">Propozycje</button>
-            <button type="button" class="sp-chip" onclick="spOpenLibrary()">Biblioteka</button>
+            <button type="button" class="sp-chip on" id="sp-chip-home" onclick="spGoHome()">Propozycje</button>
+            <button type="button" class="sp-chip" id="sp-chip-lib" onclick="spOpenLibrary()">Biblioteka</button>
+            <button type="button" class="sp-chip" id="sp-chip-ma" onclick="maOpenSearch()">Szukaj</button>
           </div>
           <div class="sp-devices" id="sp-src"></div>
         </div>
@@ -977,6 +1006,15 @@ body.legacy-safari nav{background:var(--glass2);}
           <button type="button" class="sp-detail-play sp-hide" id="sp-detail-play" onclick="spPlayDetailAll()">▶ Odtwórz</button>
         </div>
         <div class="spv-list" id="sp-list"></div>
+      </div>
+      <!-- MUSIC ASSISTANT SEARCH -->
+      <div id="sp-ma" class="sp-ma sp-hide">
+        <div class="sp-ma-bar">
+          <input type="search" id="sp-mq" class="sp-ma-input" placeholder="Szukaj artysty, albumu, utworu…" autocorrect="off" autocapitalize="off" onkeydown="if(event.keyCode===13)maDoSearch()">
+          <button type="button" class="sp-ma-sbtn" onclick="maDoSearch()">Szukaj</button>
+        </div>
+        <div class="sp-ma-players" id="sp-ma-players"></div>
+        <div class="sp-ma-results" id="sp-ma-results"><div class="spv-empty">Wpisz frazę i naciśnij Szukaj.</div></div>
       </div>
       <div class="spv-status" id="sp-status"></div>
       <div class="sp-mini" id="sp-mini">
@@ -1204,6 +1242,7 @@ var pollFilter='';
 var MOTION='binary_sensor.motion';
 var SP_EID='media_player.spotify';
 var SP_SOURCE='Wzmacniacz';
+var MA_URL='';
 var TV_EID='media_player.living_room_tv';
 var TRASH_ENT='calendar.trash';
 var BED1_EID='switch.bed_1';
@@ -1214,7 +1253,7 @@ var SCENE_EVE='';
 var SCENE_LEAVE='';
 var SCENE_OFF='';
 var SUN='sun.sun';
-var CFG_KEYS=['ha_url','ha_token','ha_dim','ha_motion','ha_spotify','ha_spotify_src','ha_trash','ha_tv','ha_bed1','ha_bed2','ha_bed1_lbl','ha_bed2_lbl','ha_scene_eve','ha_scene_leave','ha_scene_off','theme','accent','bg_level'];
+var CFG_KEYS=['ha_url','ha_token','ha_dim','ha_motion','ha_spotify','ha_spotify_src','ha_ma_url','ha_trash','ha_tv','ha_bed1','ha_bed2','ha_bed1_lbl','ha_bed2_lbl','ha_scene_eve','ha_scene_leave','ha_scene_off','theme','accent','bg_level'];
 var POLL_IDS=['binary_sensor.lodowka_freezer_door','binary_sensor.lodowka_fridge_door','button.k1c_creality_pause_print','button.k1c_creality_resume_print','button.k1c_creality_stop_print','calendar.bieganie','camera.front','camera.tyl','light.lazienka_gora_swiatlo_swiatlo','light.lazienka_gora_swiatlo_swiatlo_2','light.lazienka_gora_swiatlo_swiatlo_3','light.led_kuchnia','light.led_kuchnia_i','light.led_salon_okno','light.led_tv_2','light.swiatlo_garderoba_swiatlo','light.swiatlo_garderoba_swiatlo_2','light.swiatlo_garderoba_swiatlo_3','light.swiatlo_kuchnia_swiatlo_2','light.swiatlo_kuchnia_swiatlo_3','light.swiatlo_lazienka_swiatlo','light.swiatlo_lazienka_swiatlo_2','light.swiatlo_lazienka_swiatlo_3','light.swiatlo_salon_swiatlo','light.swiatlo_salon_swiatlo_2','light.swiatlo_salon_swiatlo_3','light.swiatlo_sypialnia_swiatlo','light.wiatrolap_gorne_swiatlo','light.wiatrolap_gorne_swiatlo_2','sensor.k1c_creality_bed_temperature','sensor.k1c_creality_current_object','sensor.k1c_creality_nozzle_temperature','sensor.k1c_creality_position_x','sensor.k1c_creality_position_y','sensor.k1c_creality_print_job_time','sensor.k1c_creality_print_progress','sensor.k1c_creality_print_status','sensor.k1c_creality_print_time_left','sensor.k1c_creality_total_layers','sensor.k1c_creality_working_layer','sensor.lodowka_freezer_temperature','sensor.lodowka_fridge_temperature','sensor.lodowka_moc','sensor.parcel_locker_wol02bapp_cisnienie','sensor.parcel_locker_wol02bapp_norma_pm_10','sensor.parcel_locker_wol02bapp_norma_pm_2_5','sensor.parcel_locker_wol02bapp_pm_10','sensor.parcel_locker_wol02bapp_pm_2_5','sensor.parcel_locker_wol02bapp_polish_air_quality_index','sensor.parcel_locker_wol02bapp_temperatura','sensor.parcel_locker_wol02bapp_wilgotnosc','sensor.pobor_mocy_3_fazy','sensor.pralka_current_status','sensor.swiatlo_kuchnia_temperatura_urzadzenia','sensor.szuszarka_current_status','sensor.temperatura_garderoba_temperatura','sensor.temperatura_garderoba_wilgotnosc','sensor.termometr_lazienka_bateria','sensor.termometr_lazienka_temperatura','sensor.termometr_lazienka_wilgotnosc','sensor.termometr_ogrod_cisnienie','sensor.termometr_ogrod_temperatura','sensor.termometr_ogrod_wilgotnosc','sensor.termometr_salon_cisnienie','sensor.termometr_salon_temperatura','sensor.termometr_salon_wilgotnosc','sensor.termometr_sypialnia_cisnienie','sensor.termometr_sypialnia_temperatura','sensor.termometr_sypialnia_wilgotnosc','sensor.zamel_mew_01_electricity_meter_power_active_phase_1','sensor.zamel_mew_01_electricity_meter_power_active_phase_2','sensor.zamel_mew_01_electricity_meter_power_active_phase_3','sensor.zamel_mew_01_electricity_meter_total_forward_active_energy','sensor.zamel_mew_01_electricity_meter_voltage_phase_1','sensor.zamel_mew_01_electricity_meter_voltage_phase_2','sensor.zamel_mew_01_electricity_meter_voltage_phase_3','sun.sun','switch.furtka','switch.smart_switch_b78c','weather.forecast_dom'];
 
 function rebuildPollFilter(){
@@ -1287,6 +1326,7 @@ function loadEntConfig(){
   var m=sGet('ha_motion'); if(m) MOTION=m;
   var sp=sGet('ha_spotify'); if(sp) SP_EID=sp;
   var ss=sGet('ha_spotify_src'); if(ss) SP_SOURCE=ss;
+  var ma=sGet('ha_ma_url'); if(ma) MA_URL=ma;
   var tv=sGet('ha_tv'); if(tv) TV_EID=tv;
   var tr=sGet('ha_trash'); if(tr) TRASH_ENT=tr;
   var b1=sGet('ha_bed1'); if(b1) BED1_EID=b1;
@@ -1327,6 +1367,7 @@ function prefillConfigFields(){
   var cse=document.getElementById('cse'); if(cse) cse.value=SCENE_EVE||'';
   var csl=document.getElementById('csl'); if(csl) csl.value=SCENE_LEAVE||'';
   var cso=document.getElementById('cso'); if(cso) cso.value=SCENE_OFF||'';
+  var cma=document.getElementById('cma'); if(cma) cma.value=MA_URL||'';
   var s=document.getElementById('cts'); if(s) s.style.display=TOK?'block':'none';
 }
 
@@ -1377,6 +1418,8 @@ function saveConfig(){
   if(se){ sSet('ha_scene_eve',se); SCENE_EVE=se; }
   if(sl){ sSet('ha_scene_leave',sl); SCENE_LEAVE=sl; }
   if(so){ sSet('ha_scene_off',so); SCENE_OFF=so; }
+  var ma=document.getElementById('cma').value.trim().replace(/\/$/,'');
+  if(ma){ sSet('ha_ma_url',ma); MA_URL=ma; }
   applyEntLabels();
   syncSceneBtns();
   rebuildPollFilter();
@@ -1528,7 +1571,7 @@ function sv(id,btn){
   if(btn) btn.className='tb a';
   if(id==='kamery') refreshCameras(true);
   if(id==='pogoda'){ loadForecast(); loadHourly(); drawWeatherPage(); }
-  if(id==='spotify'){ spView='home'; spStack=[]; spItemRegistry=[]; spInitTab(); }
+  if(id==='spotify'){ spHideMa(); spView='home'; spStack=[]; spItemRegistry=[]; spInitTab(); }
 }
 function goTab(id){
   var btn=null,i,bs=document.querySelectorAll('nav .tb'),oc;
@@ -2432,6 +2475,173 @@ function updSpMiniPlayer(){
 }
 function updSpotifyTabNow(){ updSpMiniPlayer(); }
 
+// MUSIC ASSISTANT — wyszukiwarka i odtwarzanie
+var MA_PLAYER='';
+var maSearchTimer=null;
+
+function maBase(){ return (MA_URL||'').replace(/\/$/,''); }
+
+function maOpenSearch(){
+  var home=document.getElementById('sp-home');
+  var detail=document.getElementById('sp-detail');
+  var maEl=document.getElementById('sp-ma');
+  if(home) home.className='sp-home sp-hide';
+  if(detail) detail.className='sp-detail sp-hide';
+  if(maEl){ maEl.className='sp-ma'; }
+  var chips=document.querySelectorAll('.sp-chip');
+  for(var i=0;i<chips.length;i++) chips[i].className='sp-chip';
+  var ch=document.getElementById('sp-chip-ma'); if(ch) ch.className='sp-chip on';
+  maLoadPlayers();
+  var inp=document.getElementById('sp-mq'); if(inp) inp.focus();
+}
+
+function maCloseSearch(){
+  var maEl=document.getElementById('sp-ma');
+  if(maEl) maEl.className='sp-ma sp-hide';
+}
+
+function maLoadPlayers(){
+  var b=maBase(); if(!b) return;
+  var x=new XMLHttpRequest();
+  x.open('GET',b+'/api/players',true);
+  x.timeout=8000;
+  x.onload=function(){
+    if(x.status<200||x.status>=300) return;
+    var data; try{ data=JSON.parse(x.responseText); }catch(e){ return; }
+    maRenderPlayers(Array.isArray(data)?data:[]);
+  };
+  x.send(null);
+}
+
+function maRenderPlayers(players){
+  var el=document.getElementById('sp-ma-players'); if(!el) return;
+  var active=players.filter(function(p){ return p.available!==false; });
+  if(!active.length){ el.innerHTML=''; return; }
+  if(!MA_PLAYER && active.length) MA_PLAYER=active[0].player_id||active[0].player_id||'';
+  var h='';
+  for(var i=0;i<active.length;i++){
+    var p=active[i];
+    var id=p.player_id||'';
+    var nm=p.display_name||p.name||id;
+    if(!MA_PLAYER) MA_PLAYER=id;
+    h+='<button type="button" class="sp-ma-pill'+(id===MA_PLAYER?' on':'')+'" onclick="maPickPlayer(\''+id.replace(/'/g,"\\'")+'\')">'+(nm.length>18?nm.slice(0,16)+'…':nm)+'</button>';
+  }
+  el.innerHTML=h;
+}
+
+function maPickPlayer(id){
+  MA_PLAYER=id;
+  var pills=document.querySelectorAll('.sp-ma-pill');
+  for(var i=0;i<pills.length;i++){
+    pills[i].className=pills[i].getAttribute('onclick').indexOf(id)>=0?'sp-ma-pill on':'sp-ma-pill';
+  }
+}
+
+function maDoSearch(){
+  var inp=document.getElementById('sp-mq'); if(!inp) return;
+  var q=inp.value.trim(); if(!q) return;
+  var b=maBase();
+  if(!b){ maShowResults('<div class="spv-empty">Skonfiguruj adres Music Assistant w ☰.</div>'); return; }
+  maShowResults('<div class="spv-empty">Szukam…</div>');
+  var url=b+'/api/search?query='+encodeURIComponent(q)+'&limit=15';
+  var x=new XMLHttpRequest();
+  x.open('GET',url,true);
+  x.timeout=12000;
+  x.onload=function(){
+    if(x.status<200||x.status>=300){ maShowResults('<div class="spv-empty">Błąd: '+x.status+'</div>'); return; }
+    var data; try{ data=JSON.parse(x.responseText); }catch(e){ maShowResults('<div class="spv-empty">Błąd parsowania.</div>'); return; }
+    maRenderResults(data);
+  };
+  x.onerror=function(){ maShowResults('<div class="spv-empty">Nie można połączyć z Music Assistant.</div>'); };
+  x.ontimeout=function(){ maShowResults('<div class="spv-empty">Timeout — sprawdź adres MA.</div>'); };
+  x.send(null);
+}
+
+function maShowResults(html){
+  var el=document.getElementById('sp-ma-results'); if(el) el.innerHTML=html;
+}
+
+function maRenderResults(data){
+  var h='';
+  var tracks=(data.tracks||[]).slice(0,8);
+  var albums=(data.albums||[]).slice(0,5);
+  var artists=(data.artists||[]).slice(0,4);
+  var allItems=[];
+
+  if(tracks.length){
+    h+='<div class="sp-ma-sec"><div class="sp-ma-sec-h">Utwory</div>';
+    for(var i=0;i<tracks.length;i++){
+      var t=tracks[i];
+      var idx=allItems.length; allItems.push({item:t,type:'track'});
+      var art=maArtists(t.artists);
+      var img=t.image_url?'<img class="sp-ma-thumb" src="'+spHtml(t.image_url)+'" alt="">':'<div class="sp-ma-thumb-ph">♪</div>';
+      h+='<div class="sp-ma-row" onclick="maPlay('+idx+')">'
+        +img
+        +'<div class="sp-ma-meta"><div class="sp-ma-t">'+spHtml(t.name)+'</div><div class="sp-ma-s">'+spHtml(art)+'</div></div>'
+        +'<button type="button" class="sp-ma-play" onclick="maPlay('+idx+');if(event&&event.stopPropagation)event.stopPropagation();">▶</button>'
+        +'</div>';
+    }
+    h+='</div>';
+  }
+  if(albums.length){
+    h+='<div class="sp-ma-sec"><div class="sp-ma-sec-h">Albumy</div>';
+    for(var j=0;j<albums.length;j++){
+      var al=albums[j];
+      var aidx=allItems.length; allItems.push({item:al,type:'album'});
+      var alart=maArtists(al.artists);
+      var alimg=al.image_url?'<img class="sp-ma-thumb" src="'+spHtml(al.image_url)+'" alt="">':'<div class="sp-ma-thumb-ph">♫</div>';
+      h+='<div class="sp-ma-row" onclick="maPlay('+aidx+')">'
+        +alimg
+        +'<div class="sp-ma-meta"><div class="sp-ma-t">'+spHtml(al.name)+'</div><div class="sp-ma-s">'+spHtml(alart||'Album')+'</div></div>'
+        +'<button type="button" class="sp-ma-play" onclick="maPlay('+aidx+');if(event&&event.stopPropagation)event.stopPropagation();">▶</button>'
+        +'</div>';
+    }
+    h+='</div>';
+  }
+  if(artists.length){
+    h+='<div class="sp-ma-sec"><div class="sp-ma-sec-h">Artyści</div>';
+    for(var k=0;k<artists.length;k++){
+      var ar=artists[k];
+      var aridx=allItems.length; allItems.push({item:ar,type:'artist'});
+      var arimg=ar.image_url?'<img class="sp-ma-thumb" src="'+spHtml(ar.image_url)+'" alt="">':'<div class="sp-ma-thumb-ph">♬</div>';
+      h+='<div class="sp-ma-row" onclick="maPlay('+aridx+')">'
+        +arimg
+        +'<div class="sp-ma-meta"><div class="sp-ma-t">'+spHtml(ar.name)+'</div><div class="sp-ma-s">Artysta</div></div>'
+        +'<button type="button" class="sp-ma-play" onclick="maPlay('+aridx+');if(event&&event.stopPropagation)event.stopPropagation();">▶</button>'
+        +'</div>';
+    }
+    h+='</div>';
+  }
+  if(!h) h='<div class="spv-empty">Brak wyników.</div>';
+  maShowResults(h);
+  window._maItems=allItems;
+}
+
+function maArtists(arr){
+  if(!arr||!arr.length) return '';
+  return arr.map(function(a){ return a.name||''; }).join(', ');
+}
+
+function maPlay(idx){
+  var items=window._maItems||[]; if(idx>=items.length) return;
+  var entry=items[idx];
+  var item=entry.item;
+  var type=entry.type;
+  var b=maBase(); if(!b) return;
+  if(!MA_PLAYER){ spSetStatus('Wybierz głośnik.'); return; }
+  spSetStatus('Odtwarzam przez MA…');
+  var uri=item.uri||item.item_id||'';
+  var payload=JSON.stringify({media_id:uri,media_type:type,queue_option:'play'});
+  var url=b+'/api/player_queues/'+encodeURIComponent(MA_PLAYER)+'/play_media';
+  var x=new XMLHttpRequest();
+  x.open('POST',url,true);
+  x.setRequestHeader('Content-Type','application/json');
+  x.timeout=10000;
+  x.onload=function(){ spSetStatus(x.status<300?'':'Błąd '+x.status); };
+  x.onerror=function(){ spSetStatus('Błąd połączenia z MA.'); };
+  x.send(payload);
+}
+
 // SPOTIFY — ekran główny jak aplikacja + biblioteka
 var spStack=[], spItems=[], spItemRegistry=[], spBusy=false, spView='home', spDetailPlayable=null;
 var SP_HOME_MAX=9;
@@ -2711,10 +2921,27 @@ function spAppendHomeRow(title,items){
   h+='</div></div>';
   feed.innerHTML+=h;
 }
+function spHideMa(){
+  var maEl=document.getElementById('sp-ma'); if(maEl) maEl.className='sp-ma sp-hide';
+}
+function spGoHome(){
+  spHideMa();
+  var home=document.getElementById('sp-home'); if(home) home.className='sp-home';
+  var detail=document.getElementById('sp-detail'); if(detail) detail.className='sp-detail sp-hide';
+  spView='home'; spStack=[]; spItemRegistry=[];
+  var chips=document.querySelectorAll('.sp-chip');
+  for(var i=0;i<chips.length;i++) chips[i].className='sp-chip';
+  var ch=document.getElementById('sp-chip-home'); if(ch) ch.className='sp-chip on';
+  spInitTab();
+}
 function spOpenLibrary(){
+  spHideMa();
   spStack=[{title:'Biblioteka',type:'',id:''}];
   spShowDetail('Biblioteka',false);
   spBrowse('','');
+  var chips=document.querySelectorAll('.sp-chip');
+  for(var i=0;i<chips.length;i++) chips[i].className='sp-chip';
+  var ch=document.getElementById('sp-chip-lib'); if(ch) ch.className='sp-chip on';
 }
 function spOpenDetail(item){
   if(!item) return;
