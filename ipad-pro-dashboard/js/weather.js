@@ -74,7 +74,8 @@ export function renderHomeWeather() {
   const a = w.attributes || {};
   document.getElementById('w-temp').textContent = a.temperature != null ? Math.round(a.temperature) : '--';
   document.getElementById('w-cond').textContent = w.state || '—';
-  document.getElementById('w-feels').textContent = `Odczuwalna ${a.apparent_temperature != null ? Math.round(a.apparent_temperature) : '--'}°`;
+  const feels = a.apparent_temperature ?? a.temperature;
+  document.getElementById('w-feels').textContent = `Odczuwalna ${feels != null ? Math.round(feels) : '--'}°`;
   const iconEl = document.getElementById('w-icon');
   if (iconEl) iconEl.textContent = ICONS[w.state] || '🌤️';
 }

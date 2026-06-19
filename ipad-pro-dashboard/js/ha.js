@@ -140,9 +140,9 @@ export function getBase() {
 }
 
 export function cameraSnapshotUrl(entityId, width, height) {
-  const w = width ? `&width=${width}` : '';
-  const h = height ? `&height=${height}` : '';
-  return `${base()}/api/camera_proxy/${entityId}?token=${encodeURIComponent(cfg.ha_token)}${w}${h}&t=${Date.now()}`;
+  let extra = '';
+  if (width && height) extra += `&width=${width}&height=${height}`;
+  return `${base()}/api/camera_proxy/${entityId}?token=${encodeURIComponent(cfg.ha_token)}${extra}&_=${Date.now()}`;
 }
 
 export function cameraStreamUrl(entityId) {

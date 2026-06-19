@@ -13,8 +13,11 @@ let activePlayer = null;
 let pinchState = null;
 
 export function camSnapshot(entityId, tier = 'grid') {
-  const q = QUALITY[tier] || QUALITY.grid;
-  return cameraSnapshotUrl(entityId, q.w, q.h);
+  if (tier === 'full') {
+    const q = QUALITY.full;
+    return cameraSnapshotUrl(entityId, q.w, q.h);
+  }
+  return cameraSnapshotUrl(entityId);
 }
 
 export function camLabel(entityId, cfg) {
@@ -40,7 +43,7 @@ export function camCardHtml(entityId, cfg, tier = 'grid') {
   const snap = camSnapshot(entityId, tier);
   return `<article class="cam-card anim-card" data-cam="${entityId}">
     <div class="cam-viewport">
-      <img class="cam-thumb" src="${snap}" alt="" loading="lazy">
+      <img class="cam-thumb" src="${snap.replace(/"/g, '&quot;')}" alt="" decoding="async" onerror="this.classList.add('cam-err')">
       <span class="cam-live"><i></i>LIVE</span>
     </div>
     <span class="label">${label}</span>
@@ -60,7 +63,8 @@ export function startThumbnailRefresh(cfg, intervalMs = 3500) {
     for (const id of ids) {
       document.querySelectorAll(`.cam-card[data-cam="${id}"] .cam-thumb`).forEach((img) => {
         if (!img.offsetParent) return;
-        img.src = camSnapshot(id, 'preview');
+        img.classList.remove('cam-err');
+        img.src = camSnapshot(id);
       });
     }
   };
