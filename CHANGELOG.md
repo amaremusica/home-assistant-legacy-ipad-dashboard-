@@ -2,6 +2,15 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.13.4] — 2026-06-19
+
+### Naprawione — zakładka Muzyka (iPad 4)
+- **Mini-player** — przyklejony na dole (flex), treść przewija się osobno; koniec z „dziwnym” przewijaniem playera.
+- **Miganie ekranu** — propozycje Spotify cache’owane 3 min; wejście w zakładkę nie przeładowuje od zera.
+- **Okładki** — leniwe ładowanie na iOS 10 (kolejno, co 120 ms); mniej sekcji/kafelków na legacy.
+- **Music Assistant** — polling tylko gdy MA gra; rzadszy interwał na iPadzie 4 (8 s).
+- **Player legacy** — ukryty suwak głośności w mini-playerze (mniejszy pasek).
+
 ## [11.13.3] — 2026-06-18
 
 ### Dodane

@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.13.3 -->
+<!-- build: v11.13.4 -->
 <title>Dom</title>
 <style>
 :root {
@@ -167,10 +167,13 @@ body.light .tb.a{box-shadow:0 2px 12px rgba(15,23,42,0.08);}
 #view-salon,#view-sypialnia,#view-kuchnia,#view-lazienki,#view-ogrod,#view-energia,#view-drukarka,#view-kamery,#view-zero,#view-pogoda,#view-spotify{display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;position:absolute;top:0;left:0;right:0;bottom:0;padding:10px 12px;}
 #view-salon.active,#view-sypialnia.active,#view-kuchnia.active,#view-lazienki.active,#view-ogrod.active,#view-energia.active,#view-drukarka.active,#view-kamery.active,#view-pogoda.active,#view-spotify.active{display:block;}
 /* Spotify — układ jak aplikacja, kolory z motywu panelu (--accent, --glass…) */
-#view-spotify{padding:0;background:transparent;}
-#view-spotify.active{display:block;}
+#view-spotify{padding:0;background:transparent;overflow:hidden;}
+#view-spotify.active{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;}
+.sp-body{-webkit-flex:1;flex:1;min-height:0;overflow:hidden;position:relative;}
+.sp-body .sp-home,.sp-body .sp-detail,.sp-body .sp-ma:not(.sp-hide){position:absolute;top:0;left:0;right:0;bottom:0;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.sp-body .sp-ma:not(.sp-hide){display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;overflow:hidden;}
 .sp-hide{display:none!important;}
-.sp-home{padding:8px 0 96px;}
+.sp-home{padding:8px 0 8px;}
 .sp-head{padding:6px 16px 4px;}
 .sp-logo{font-size:26px;font-weight:800;color:var(--bright);letter-spacing:-0.03em;}
 .sp-greet{font-size:13px;color:var(--dim);margin-top:2px;font-weight:600;}
@@ -216,7 +219,7 @@ body.light .sp-chip.on{color:#fff;}
 .sp-radio-badge{position:absolute;left:10px;top:10px;font-size:9px;font-weight:800;letter-spacing:.14em;color:#fff;background:rgba(0,0,0,0.35);padding:3px 7px;border-radius:4px;}
 .sp-radio-name{position:absolute;left:10px;right:10px;bottom:10px;font-size:15px;font-weight:800;color:#fff;line-height:1.15;text-shadow:0 2px 8px rgba(0,0,0,0.4);}
 .sp-loading{padding:24px 16px;color:var(--dim);font-size:13px;}
-.sp-detail{padding:0 0 96px;}
+.sp-detail{padding:0 0 8px;}
 .sp-detail-top{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;padding:8px 12px 10px;position:-webkit-sticky;position:sticky;top:0;background:var(--glass);border-bottom:1px solid var(--glass-b);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);z-index:2;}
 .sp-detail-top>*+*{margin-left:10px;}
 .sp-detail-back{width:40px;height:40px;border-radius:50%;border:1px solid var(--glass-b);background:var(--glass2);color:var(--bright);font-size:18px;cursor:pointer;-webkit-flex-shrink:0;flex-shrink:0;}
@@ -236,7 +239,10 @@ body.light .sp-detail-play{color:#fff;}
 body.light .spv-play{color:#fff;}
 .spv-empty,.spv-hint,.spv-status{padding:16px;text-align:center;font-size:13px;color:var(--dim);}
 .spv-status{min-height:16px;padding:4px 16px;}
-.sp-mini{position:absolute;left:8px;right:8px;bottom:8px;border-radius:var(--rsm);background:var(--glass);border:1px solid var(--glass-b);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--shadow);overflow:hidden;z-index:5;}
+.sp-mini{position:relative;margin:0 8px 8px;-webkit-flex-shrink:0;flex-shrink:0;border-radius:var(--rsm);background:var(--glass);border:1px solid var(--glass-b);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--shadow);overflow:hidden;z-index:5;}
+body.legacy-safari .sp-mini-volrow{display:none;}
+body.legacy-safari .sp-mini-ctrl{margin-top:4px;}
+body.legacy-safari .sp-mini-inner{padding:8px 10px;}
 .sp-mini-inner{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;padding:10px 12px;}
 .sp-mini-inner>*+*{margin-left:10px;}
 .sp-mini-art{width:44px;height:44px;border-radius:8px;background:var(--glass2) -webkit-radial-gradient(50% 0,circle,rgba(var(--accent-rgb),0.35),transparent 70%);background-size:cover;background-position:center;-webkit-flex-shrink:0;flex-shrink:0;}
@@ -777,7 +783,7 @@ body.legacy-safari nav{background:var(--glass2);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.13.3</span>
+      <span id="ver">v11.13.4</span>
       <button class="hbtn" id="hbtn-upd" onclick="manualPanelUpdate()" title="Pobierz aktualizację z GitHub (git pull)">↺</button>
     </div>
   </header>
@@ -1007,6 +1013,7 @@ body.legacy-safari nav{background:var(--glass2);}
 
     <!-- SPOTIFY / MUZYKA — układ jak aplikacja Spotify -->
     <div id="view-spotify" class="view">
+      <div id="sp-body" class="sp-body">
       <div id="sp-home" class="sp-home">
         <div class="sp-head">
           <div class="sp-logo">Muzyka</div>
@@ -1052,6 +1059,7 @@ body.legacy-safari nav{background:var(--glass2);}
         <div class="sp-ma-results" id="sp-ma-lib-results"><div class="spv-empty">Ładowanie biblioteki MA…</div></div>
       </div>
       <div class="spv-status" id="sp-status"></div>
+      </div>
       <div class="sp-mini" id="sp-mini">
         <div class="sp-mini-inner">
           <div class="sp-mini-art" id="sp-mini-art"></div>
@@ -1275,7 +1283,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.13.3';
+var BUILD='11.13.4';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
@@ -1671,7 +1679,25 @@ function sv(id,btn){
   if(btn) btn.className='tb a';
   if(id==='kamery') refreshCameras(true);
   if(id==='pogoda'){ loadForecast(); loadHourly(); drawWeatherPage(); }
-  if(id==='spotify'){ spHideMaPanels(); spView='home'; spStack=[]; spItemRegistry=[]; spInitTab(); maLoadPlayers(); maStartPoll(); }
+  if(id==='spotify'){
+    spHideMaPanels();
+    maStartPoll();
+    updSpMiniPlayer();
+    if(spView==='home'){
+      confirmEntity(SP_EID,function(){
+        spUpdateGreet();
+        spRenderSources();
+        updSpMiniPlayer();
+        spHomeLoad(false);
+      });
+    }else{
+      confirmEntity(SP_EID,function(){
+        spUpdateGreet();
+        spRenderSources();
+        updSpMiniPlayer();
+      });
+    }
+  }
 }
 function goTab(id){
   var btn=null,i,bs=document.querySelectorAll('nav .tb'),oc;
@@ -2670,11 +2696,14 @@ function isMusicTabActive(){
 }
 function maStartPoll(){
   if(maPollIv) return;
+  var ms=isLegacySafari()?8000:5000;
   maPollIv=setInterval(function(){
     if(!isMusicTabActive()) return;
+    var maLive=(MU_SOURCE==='ma')||(MA_EID&&E[MA_EID]&&(E[MA_EID].state==='playing'||E[MA_EID].state==='paused'));
+    if(!maLive) return;
     maPollQueue();
     updMuMiniPlayer();
-  },3000);
+  },ms);
 }
 
 // MUSIC ASSISTANT — search, radio, library, hybrid control
@@ -3359,6 +3388,8 @@ function maPollQueue(){
 
 // SPOTIFY — ekran główny jak aplikacja + biblioteka
 var spStack=[], spItems=[], spItemRegistry=[], spBusy=false, spView='home', spDetailPlayable=null;
+var spHomeCache='', spHomeCacheTs=0, spHomeLoading=false, spHomeCacheItems=[];
+var SP_HOME_CACHE_MS=180000;
 var SP_HOME_MAX=9;
 var SP_HOME_ORDER={'current_user_recently_played':1,'current_user_playlists':2,'new_releases':3,'current_user_saved_tracks':4,'current_user_top_artists':5,'current_user_top_tracks':6,'current_user_saved_albums':7,'current_user_followed_artists':8};
 var SP_SECTION_TITLES={'current_user_recently_played':'Ostatnie','current_user_saved_tracks':'Polubione utwory','current_user_saved_albums':'Zapisane albumy','new_releases':'Więcej tego, co lubisz','current_user_top_tracks':'Twoje hity','current_user_top_artists':'Polecane stacje','current_user_followed_artists':'Obserwujesz'};
@@ -3367,6 +3398,67 @@ var SP_RADIO_TINTS=['sp-radio-t0','sp-radio-t1','sp-radio-t2','sp-radio-t3'];
 function spHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function spEscJs(s){ return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
 function spThumbUrl(u){ if(!u) return ''; return (u.indexOf('http')===0)?u:(HA+u); }
+var SP_LAZY_PX='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+function spHomeMax(){ return isLegacySafari()?4:SP_HOME_MAX; }
+function spRowItemMax(layout){
+  if(layout==='mix'||layout==='radio') return isLegacySafari()?4:8;
+  return isLegacySafari()?6:12;
+}
+function spImgTag(thumb,cls){
+  var u=spThumbUrl(thumb);
+  if(!u) return '';
+  if(isLegacySafari()) return '<img class="'+cls+' sp-lazy" data-src="'+spHtml(u)+'" alt="" src="'+SP_LAZY_PX+'">';
+  return '<img class="'+cls+'" src="'+spHtml(u)+'" alt="">';
+}
+function spMixBg(item){
+  if(!item.thumbnail) return '<div class="sp-mix-ph"></div>';
+  var u=spThumbUrl(item.thumbnail).replace(/'/g,'%27');
+  if(isLegacySafari()) return '<div class="sp-mix-bg sp-lazy-bg" data-bg="'+u+'"></div><div class="sp-mix-grad"></div>';
+  return '<div class="sp-mix-bg" style="background-image:url(\''+u+'\')"></div><div class="sp-mix-grad"></div>';
+}
+function spRadioBg(item,i){
+  var tint=SP_RADIO_TINTS[i%SP_RADIO_TINTS.length];
+  if(item.thumbnail){
+    var u=spThumbUrl(item.thumbnail).replace(/'/g,'%27');
+    if(isLegacySafari()) return '<div class="sp-radio-bg sp-lazy-bg" data-bg="'+u+'"></div>';
+    return '<div class="sp-radio-bg" style="background-image:url(\''+u+'\')"></div>';
+  }
+  return '<div class="sp-radio-bg" style="background:-webkit-linear-gradient(145deg,var(--accent2),var(--accent));background:linear-gradient(145deg,var(--accent2),var(--accent));"></div>';
+}
+function spLazyLoad(root){
+  if(!root) return;
+  var imgs=root.getElementsByTagName('img'), delay=0, i, img;
+  for(i=0;i<imgs.length;i++){
+    img=imgs[i];
+    if(!img.getAttribute('data-src')) continue;
+    (function(im,d){
+      setTimeout(function(){
+        im.src=im.getAttribute('data-src');
+        im.removeAttribute('data-src');
+      },d);
+    })(img,delay);
+    delay+=isLegacySafari()?120:40;
+  }
+  if(!root.querySelectorAll) return;
+  var bgs=root.querySelectorAll('[data-bg]');
+  for(i=0;i<bgs.length;i++){
+    (function(el,d){
+      setTimeout(function(){
+        el.style.backgroundImage='url("'+el.getAttribute('data-bg')+'")';
+        el.removeAttribute('data-bg');
+      },d);
+    })(bgs[i],delay);
+    delay+=isLegacySafari()?120:40;
+  }
+}
+function spSaveHomeCache(){
+  var feed=document.getElementById('sp-feed');
+  if(!feed) return;
+  spHomeCache=feed.innerHTML;
+  spHomeCacheItems=spItemRegistry.slice(0);
+  spHomeCacheTs=Date.now();
+  spLazyLoad(feed);
+}
 function spSub(item){
   var mc=(item.media_class||'').toLowerCase();
   if(mc==='playlist') return 'Playlista';
@@ -3533,16 +3625,30 @@ function spInitTab(){
     spUpdateGreet();
     spRenderSources();
     updSpMiniPlayer();
-    spHomeLoad();
+    spHomeLoad(false);
   });
 }
-function spHomeLoad(){
+function spHomeLoad(force){
   spShowHome();
-  spItemRegistry=[];
   var feed=document.getElementById('sp-feed');
+  if(!force&&spHomeCache&&feed&&(Date.now()-spHomeCacheTs)<SP_HOME_CACHE_MS){
+    feed.innerHTML=spHomeCache;
+    spItemRegistry=spHomeCacheItems.slice(0);
+    spLazyLoad(feed);
+    return;
+  }
+  if(spHomeLoading&&spHomeCache&&feed){
+    feed.innerHTML=spHomeCache;
+    spItemRegistry=spHomeCacheItems.slice(0);
+    spLazyLoad(feed);
+    return;
+  }
+  spHomeLoading=true;
+  spItemRegistry=[];
   if(feed) feed.innerHTML='<div class="sp-loading">Ładowanie propozycji…</div>';
   haBrowseMedia('','',function(err,root){
     if(err||!root||!root.children||!root.children.length){
+      spHomeLoading=false;
       if(feed) feed.innerHTML='<div class="spv-empty">Nie udało się wczytać Spotify.</div>';
       return;
     }
@@ -3553,7 +3659,13 @@ function spHomeLoad(){
   });
 }
 function spLoadHomeRows(cats,idx,loaded){
-  if(idx>=cats.length||loaded>=SP_HOME_MAX) return;
+  if(idx>=cats.length||loaded>=spHomeMax()){
+    spHomeLoading=false;
+    var feed=document.getElementById('sp-feed');
+    if(feed&&loaded===0&&!feed.innerHTML) feed.innerHTML='<div class="spv-empty">Brak propozycji.</div>';
+    spSaveHomeCache();
+    return;
+  }
   var cat=cats[idx];
   haBrowseMedia(cat.media_content_type,cat.media_content_id,function(err,data){
     if(!err&&data&&data.children&&data.children.length){
@@ -3561,10 +3673,6 @@ function spLoadHomeRows(cats,idx,loaded){
       loaded++;
     }
     spLoadHomeRows(cats,idx+1,loaded);
-    if(idx+1>=cats.length&&loaded===0){
-      var feed=document.getElementById('sp-feed');
-      if(feed&&!feed.innerHTML) feed.innerHTML='<div class="spv-empty">Brak propozycji.</div>';
-    }
   });
 }
 function spAppendSection(cat,data){
@@ -3578,14 +3686,13 @@ function spAppendSection(cat,data){
 function spAppendMixRow(title,items){
   var feed=document.getElementById('sp-feed');
   if(!feed) return;
-  var max=Math.min(items.length,8), h='', i, item, idx, inner, bg;
+  var max=Math.min(items.length,spRowItemMax('mix')), h='', i, item, idx, inner, bg;
   h+='<div class="sp-sec"><div class="sp-sec-h"><div class="sp-sec-t">'+spHtml(title)+'</div></div><div class="sp-mix-row">';
   for(i=0;i<max;i++){
     item=items[i];
     idx=spItemRegistry.length;
     spItemRegistry.push(item);
-    if(item.thumbnail) bg='<div class="sp-mix-bg" style="background-image:url(\''+spThumbUrl(item.thumbnail).replace(/'/g,'%27')+'\')"></div><div class="sp-mix-grad"></div>';
-    else bg='<div class="sp-mix-ph"></div>';
+    bg=spMixBg(item);
     inner='<span class="sp-mix-sub">Playlista</span><div class="sp-mix-lbl">'+spHtml(item.title)+'</div>';
     h+='<div class="sp-mix" onclick="spCardTap('+idx+')">'+bg+inner+'</div>';
   }
@@ -3595,15 +3702,14 @@ function spAppendMixRow(title,items){
 function spAppendRadioRow(title,items){
   var feed=document.getElementById('sp-feed');
   if(!feed) return;
-  var max=Math.min(items.length,8), h='', i, item, idx, bg, tint;
+  var max=Math.min(items.length,spRowItemMax('radio')), h='', i, item, idx, bg, tint;
   h+='<div class="sp-sec"><div class="sp-sec-h"><div class="sp-sec-t">'+spHtml(title)+'</div></div><div class="sp-radio-row">';
   for(i=0;i<max;i++){
     item=items[i];
     idx=spItemRegistry.length;
     spItemRegistry.push(item);
     tint=SP_RADIO_TINTS[i%SP_RADIO_TINTS.length];
-    if(item.thumbnail) bg='<div class="sp-radio-bg" style="background-image:url(\''+spThumbUrl(item.thumbnail).replace(/'/g,'%27')+'\')"></div>';
-    else bg='<div class="sp-radio-bg" style="background:-webkit-linear-gradient(145deg,var(--accent2),var(--accent));background:linear-gradient(145deg,var(--accent2),var(--accent));"></div>';
+    bg=spRadioBg(item,i);
     h+='<div class="sp-radio" onclick="spCardTap('+idx+')">'+bg+'<div class="sp-radio-tint '+tint+'"></div><span class="sp-radio-badge">Radio</span><div class="sp-radio-name">'+spHtml(item.title)+'</div></div>';
   }
   h+='</div></div>';
@@ -3623,13 +3729,13 @@ function spCardSub(item){
 function spAppendHomeRow(title,items){
   var feed=document.getElementById('sp-feed');
   if(!feed) return;
-  var max=Math.min(items.length,12), h='', i, item, idx, img;
+  var max=Math.min(items.length,spRowItemMax('card')), h='', i, item, idx, img;
   h+='<div class="sp-sec"><div class="sp-sec-h"><div class="sp-sec-t">'+spHtml(title)+'</div></div><div class="sp-row">';
   for(i=0;i<max;i++){
     item=items[i];
     idx=spItemRegistry.length;
     spItemRegistry.push(item);
-    if(item.thumbnail) img='<img class="sp-card-img" src="'+spThumbUrl(item.thumbnail)+'" alt="">';
+    if(item.thumbnail) img=spImgTag(item.thumbnail,'sp-card-img');
     else img='<div class="sp-card-ph">♪</div>';
     h+='<div class="sp-card" onclick="spCardTap('+idx+')">'+img+'<div class="sp-card-t">'+spHtml(item.title)+'</div><div class="sp-card-s">'+spHtml(spCardSub(item))+'</div></div>';
   }
@@ -3640,11 +3746,11 @@ function spGoHome(){
   spHideMaPanels();
   var home=document.getElementById('sp-home'); if(home) home.className='sp-home';
   var detail=document.getElementById('sp-detail'); if(detail) detail.className='sp-detail sp-hide';
-  spView='home'; spStack=[]; spItemRegistry=[];
+  spView='home'; spStack=[];
   var chips=document.querySelectorAll('.sp-chip');
   for(var i=0;i<chips.length;i++) chips[i].className='sp-chip';
   var ch=document.getElementById('sp-chip-home'); if(ch) ch.className='sp-chip on';
-  spInitTab();
+  spHomeLoad(false);
 }
 function spOpenLibrary(){
   spHideMaPanels();
@@ -3727,12 +3833,13 @@ function spRenderBrowse(data){
   var h='', i, item, thumb, playBtn;
   for(i=0;i<kids.length;i++){
     item=kids[i];
-    if(item.thumbnail) thumb='<img class="spv-thumb" src="'+spThumbUrl(item.thumbnail)+'" alt="">';
+    if(item.thumbnail) thumb=spImgTag(item.thumbnail,'spv-thumb');
     else thumb='<span class="spv-thumb spv-thumb-ph">♪</span>';
     playBtn=spCanPlay(item)?'<button type="button" class="spv-play" onclick="spPlayNow('+i+');if(event&&event.stopPropagation)event.stopPropagation();">▶</button>':'';
     h+='<div class="spv-row" onclick="spTapItem('+i+')">'+thumb+'<div class="spv-meta"><div class="spv-t">'+spHtml(item.title)+'</div><div class="spv-s">'+spHtml(spSub(item))+'</div></div>'+playBtn+'</div>';
   }
   el.innerHTML=h;
+  spLazyLoad(el);
 }
 function spCanPlay(item){
   var mc=(item.media_class||'').toLowerCase();
