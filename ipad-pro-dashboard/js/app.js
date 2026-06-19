@@ -1,7 +1,7 @@
 import { BUILD, loadConfig, saveConfig, exportConfig, importConfigFile, applyConfigObject, PRESET_URL, cameraList, ROOMS, SCENES, WEATHER, ENERGY } from './config.js';
 import {
   initHa, fetchStates, connectWebSocket, onStates, getState, callService,
-  browseMedia, maSearch, entityPicture, checkVersion, triggerPanelUpdate
+  browseMedia, maSearch, entityPicture
 } from './ha.js';
 import {
   camCardHtml, bindCamCards, attachCamStreams, stopCamStreams, resumeCamStreams,
@@ -9,6 +9,7 @@ import {
 } from './cameras.js';
 import { renderHomeWeather, renderWeatherPage } from './weather.js';
 import { toast, setOnline, setTab, bindDock, tickClock, esc, lazyImages } from './ui.js';
+import { autoUpdateOnRefresh, runPanelUpdate, startAutoUpdate } from './update.js';
 
 let cfg = loadConfig();
 let pollTimer = null;
@@ -396,13 +397,11 @@ document.getElementById('cfg-export')?.addEventListener('click', exportConfig);
 document.getElementById('cfg-import')?.addEventListener('click', pickImportFile);
 document.getElementById('cfg-preset')?.addEventListener('click', loadPresetFromHa);
 document.getElementById('btn-refresh')?.addEventListener('click', async () => {
+  cfg = loadConfig();
   toast('Aktualizuję panel…');
   try {
-    await triggerPanelUpdate();
-    const remote = await checkVersion();
-    if (remote && remote !== BUILD) {
-      location.href = `${cfg.ha_url.replace(/\/$/, '')}/local/ipad-pro/index.html?v=${remote}&_=${Date.now()}`;
-    } else toast('Panel aktualny');
+    const remote = await runPanelUpdate(cfg, { forcePull: true });
+    if (!remote) toast('Panel aktualny');
   } catch {
     toast('Brak shell_command.update_ipad_pro_panel — dodaj do configuration.yaml i zrestartuj HA');
   }
@@ -430,4 +429,14 @@ bindMusicChips();
 bindMediaControls();
 tickClock();
 setInterval(tickClock, 30000);
-connect();
+
+async function boot() {
+  cfg = loadConfig();
+  connect();
+  if (cfg.ha_url && cfg.ha_token) {
+    startAutoUpdate(cfg);
+    autoUpdateOnRefresh(cfg).catch(() => {});
+  }
+}
+
+boot();

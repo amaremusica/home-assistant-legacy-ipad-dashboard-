@@ -171,7 +171,11 @@ export async function triggerPanelUpdate() {
     await callService('shell_command', 'update_ipad_pro_panel', {});
     return;
   } catch {
-    /* stara konfiguracja użytkownika */
+    /* fallback dla starej konfiguracji */
   }
-  await callService('shell_command2', 'update_ipad_pro_panel', {});
+  try {
+    await callService('shell_command2', 'update_ipad_pro_panel', {});
+  } catch {
+    throw new Error('shell_command');
+  }
 }
