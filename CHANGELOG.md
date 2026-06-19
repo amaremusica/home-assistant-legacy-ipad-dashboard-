@@ -2,6 +2,17 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.12.5] — 2026-06-19
+
+### Dodane
+- **Music Assistant search** — chip „Szukaj" w zakładce Muzyka; wyszukiwarka przez MA REST API (`/api/search`).
+- Wyniki w sekcjach: Utwory / Albumy / Artyści z okładkami i przyciskiem ▶.
+- Lista aktywnych głośników MA jako klikalne chipsy (wybór odtwarzacza bez telefonu).
+- Odtwarzanie przez `POST /api/player_queues/{player_id}/play_media`.
+- Nowe pole `Music Assistant URL` w ustawieniach ☰ (zapisywane w `localStorage` jako `ha_ma_url`).
+- `ha_ma_url` dodany do `CFG_KEYS` — eksport/import konfiguracji obejmuje MA URL.
+- Cały kod w ES5 — kompatybilny z iOS 10 / Safari legacy.
+
 ## [11.12.4] — 2026-06-18
 
 ### Zmienione — modal ☰
