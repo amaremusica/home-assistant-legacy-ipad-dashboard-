@@ -1,4 +1,4 @@
-import { BUILD, loadConfig, saveConfig, exportConfig, cameraList, ROOMS, SCENES, WEATHER, ENERGY } from './config.js';
+import { BUILD, loadConfig, saveConfig, exportConfig, importConfigFile, applyConfigObject, PRESET_URL, cameraList, ROOMS, SCENES, WEATHER, ENERGY } from './config.js';
 import {
   initHa, fetchStates, connectWebSocket, onStates, getState, callService,
   browseMedia, maSearch, entityPicture, checkVersion, triggerPanelUpdate
@@ -34,16 +34,54 @@ function allEntityIds() {
   return [...ids];
 }
 
+function fillConfigForm(c) {
+  document.getElementById('cfg-url').value = c.ha_url || '';
+  document.getElementById('cfg-token').value = c.ha_token || '';
+  document.getElementById('cfg-spotify').value = c.ha_spotify || '';
+  document.getElementById('cfg-ma').value = c.ha_ma || '';
+  document.getElementById('cfg-cams').value = c.ha_cams || '';
+  document.getElementById('cfg-labels').value = c.ha_cam_labels || '';
+  document.getElementById('cfg-cam-mode').value = c.ha_cam_mode || 'auto';
+}
+
 function showConfig() {
-  const dlg = document.getElementById('cfg');
-  document.getElementById('cfg-url').value = cfg.ha_url || '';
-  document.getElementById('cfg-token').value = cfg.ha_token || '';
-  document.getElementById('cfg-spotify').value = cfg.ha_spotify || '';
-  document.getElementById('cfg-ma').value = cfg.ha_ma || '';
-  document.getElementById('cfg-cams').value = cfg.ha_cams || '';
-  document.getElementById('cfg-labels').value = cfg.ha_cam_labels || '';
-  document.getElementById('cfg-cam-mode').value = cfg.ha_cam_mode || 'auto';
-  dlg.showModal();
+  cfg = loadConfig();
+  fillConfigForm(cfg);
+  document.getElementById('cfg').showModal();
+}
+
+async function loadPresetFromHa() {
+  const urlInput = document.getElementById('cfg-url').value.trim();
+  const path = PRESET_URL + '?nocache=' + Date.now();
+  const url = urlInput ? urlInput.replace(/\/$/, '') + path : path;
+  try {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error(String(r.status));
+    const o = await r.json();
+    cfg = applyConfigObject(o);
+    fillConfigForm(cfg);
+    toast('Preset wczytany — uzupełnij URL i token jeśli puste');
+  } catch {
+    toast('Brak pliku /local/ipad-pro/ipad-pro-config.json — zrób git pull + update');
+  }
+}
+
+function pickImportFile() {
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = 'application/json,.json';
+  inp.onchange = async () => {
+    const f = inp.files?.[0];
+    if (!f) return;
+    try {
+      cfg = await importConfigFile(f);
+      fillConfigForm(cfg);
+      toast('JSON zaimportowany — sprawdij pola i Połącz');
+    } catch {
+      toast('Nieprawidłowy plik JSON');
+    }
+  };
+  inp.click();
 }
 
 async function connect() {
@@ -343,6 +381,8 @@ document.getElementById('cfg-form')?.addEventListener('submit', (e) => {
 
 document.getElementById('btn-menu')?.addEventListener('click', showConfig);
 document.getElementById('cfg-export')?.addEventListener('click', exportConfig);
+document.getElementById('cfg-import')?.addEventListener('click', pickImportFile);
+document.getElementById('cfg-preset')?.addEventListener('click', loadPresetFromHa);
 document.getElementById('btn-refresh')?.addEventListener('click', async () => {
   toast('Aktualizuję panel…');
   try {

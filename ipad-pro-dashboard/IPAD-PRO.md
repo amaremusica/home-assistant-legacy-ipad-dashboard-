@@ -25,3 +25,13 @@ shell_command2:
 ```
 
 Pełna dokumentacja: [README.md](README.md)
+
+## Import ustawień (JSON)
+
+Plik na HA: `/config/www/ipad-pro/ipad-pro-config.json`  
+URL: `http://IP:8123/local/ipad-pro/ipad-pro-config.json`
+
+W panelu ☰:
+1. **Preset z HA** — wczytuje ten plik automatycznie
+2. **Importuj JSON** — wybierz plik z dysku
+3. Uzupełnij **URL** i **token** → **Połącz**

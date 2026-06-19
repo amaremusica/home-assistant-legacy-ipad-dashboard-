@@ -245,7 +245,7 @@ body { position: fixed; inset: 0; }
   width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--glass-border);
   background: rgba(0,0,0,0.2); color: var(--text); font-size: 15px;
 }
-.cfg-actions { display: flex; gap: 10px; margin-top: 22px; justify-content: flex-end; }
+.cfg-actions { display: flex; gap: 8px; margin-top: 22px; justify-content: flex-end; flex-wrap: wrap; }
 
 .cam-modal.open .cam-modal-inner { animation: modalIn 0.4s var(--spring) both; }
 @keyframes modalIn { from{opacity:0;transform:scale(.92)} to{opacity:1;transform:none} }

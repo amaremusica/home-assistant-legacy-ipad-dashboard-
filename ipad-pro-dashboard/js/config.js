@@ -1,4 +1,4 @@
-export const BUILD = '1.1.1';
+export const BUILD = '1.1.2';
 
 export const CFG_KEYS = [
   'ha_url', 'ha_token', 'ha_spotify', 'ha_ma', 'ha_cams', 'ha_cam_labels', 'ha_cam_mode',
@@ -43,6 +43,7 @@ export function exportConfig() {
     const v = localStorage.getItem(k);
     if (v) o[k] = v;
   }
+  o._exported = new Date().toISOString();
   const blob = new Blob([JSON.stringify(o, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -50,6 +51,32 @@ export function exportConfig() {
   a.click();
   URL.revokeObjectURL(a.href);
 }
+
+/** Zastosuj obiekt JSON (import pliku lub preset z /local/) */
+export function applyConfigObject(o) {
+  if (!o || typeof o !== 'object') throw new Error('invalid');
+  for (const k of CFG_KEYS) {
+    if (o[k] !== undefined && o[k] !== null) saveConfig({ [k]: String(o[k]) });
+  }
+  return loadConfig();
+}
+
+export function importConfigFile(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => {
+      try {
+        resolve(applyConfigObject(JSON.parse(r.result)));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    r.onerror = () => reject(new Error('read'));
+    r.readAsText(file);
+  });
+}
+
+export const PRESET_URL = '/local/ipad-pro/ipad-pro-config.json';
 
 export function cameraList(cfg) {
   return (cfg.ha_cams || '')

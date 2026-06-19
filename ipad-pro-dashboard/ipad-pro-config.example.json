@@ -1,0 +1,17 @@
+{
+  "_info": "Szablon konfiguracji iPad Pro — skopiuj jako ipad-pro-config.json i uzupełnij ha_url + ha_token lokalnie (nie commituj tokena).",
+  "ha_url": "https://TWOJ-HA.example.com",
+  "ha_token": "",
+  "ha_spotify": "media_player.spotify_marcin_solowiow",
+  "ha_ma": "media_player.wolomin",
+  "ha_cams": "camera.front,camera.tyl",
+  "ha_cam_labels": "camera.front:Front,camera.tyl:Tył",
+  "ha_cam_mode": "auto",
+  "ha_motion": "binary_sensor.czujnik_garderoba",
+  "ha_tv": "media_player.samsung_q70aa_85_tv_qe85q70aatxxh",
+  "ha_scene_eve": "",
+  "ha_scene_leave": "",
+  "ha_scene_off": "",
+  "theme": "dark",
+  "accent": "emerald"
+}
