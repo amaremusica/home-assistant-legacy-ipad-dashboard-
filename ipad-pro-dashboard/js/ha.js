@@ -27,8 +27,29 @@ export function initHa(config) {
   cfg = config;
 }
 
+/** URL HA z poprawnym portem (np. :8123) gdy zapisany bez niego */
+export function getHaOrigin() {
+  let url = (cfg?.ha_url || '').trim().replace(/\/$/, '');
+  if (!url && typeof window !== 'undefined' && window.location.pathname.includes('/local/')) {
+    return window.location.origin;
+  }
+  if (url && typeof window !== 'undefined') {
+    try {
+      const page = new URL(window.location.href);
+      const ha = new URL(url.includes('://') ? url : `${page.protocol}//${url}`);
+      if (ha.hostname === page.hostname) {
+        if (page.port && !ha.port) ha.port = page.port;
+        return ha.origin;
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+  return url;
+}
+
 function base() {
-  return (cfg.ha_url || '').replace(/\/$/, '');
+  return getHaOrigin();
 }
 
 function headers() {

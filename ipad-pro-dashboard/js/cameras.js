@@ -1,7 +1,7 @@
 /**
  * Kamery iPad Pro — MJPEG na kafelkach (jak legacy iPad), WebRTC/HLS w modalu
  */
-import { wsSend, cameraSnapshotUrl, cameraStreamUrl, getState, getBase } from './ha.js';
+import { wsSend, cameraSnapshotUrl, cameraStreamUrl, getState, getBase } from './ha.js?v=1.1.3';
 
 const QUALITY = { full: { w: 3840, h: 2160 } };
 const MJPEG_TIMEOUT = 18000;

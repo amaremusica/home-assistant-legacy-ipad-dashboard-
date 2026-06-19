@@ -1,15 +1,20 @@
-import { BUILD, loadConfig, saveConfig, exportConfig, importConfigFile, applyConfigObject, PRESET_URL, cameraList, ROOMS, SCENES, WEATHER, ENERGY } from './config.js';
+import { BUILD, loadConfig, saveConfig, exportConfig, importConfigFile, applyConfigObject, PRESET_URL, cameraList, ROOMS, SCENES, WEATHER, ENERGY } from './config.js?v=1.1.3';
 import {
   initHa, fetchStates, connectWebSocket, onStates, getState, callService,
-  browseMedia, maSearch, entityPicture
-} from './ha.js';
+  browseMedia, maSearch, entityPicture, checkVersion, triggerPanelUpdate, getHaOrigin
+} from './ha.js?v=1.1.3';
 import {
   camCardHtml, bindCamCards, attachCamStreams, stopCamStreams, resumeCamStreams,
   openCameraModal, closeCameraModal, bindCameraModal
-} from './cameras.js';
-import { renderHomeWeather, renderWeatherPage } from './weather.js';
-import { toast, setOnline, setTab, bindDock, tickClock, esc, lazyImages } from './ui.js';
-import { autoUpdateOnRefresh, runPanelUpdate, startAutoUpdate } from './update.js';
+} from './cameras.js?v=1.1.3';
+import { renderHomeWeather, renderWeatherPage } from './weather.js?v=1.1.3';
+import { toast, setOnline, setTab, bindDock, tickClock, esc, lazyImages } from './ui.js?v=1.1.3';
+
+const GIT_PULL_MS = 30 * 60 * 1000;
+const CHECK_MS = 2 * 60 * 1000;
+const COPY_WAIT_MS = 6500;
+const LS_PULL = 'ipad_pro_git_pull_ts';
+const RELOAD_GUARD_MS = 15000;
 
 let cfg = loadConfig();
 let pollTimer = null;
@@ -20,6 +25,123 @@ let progressTimer = null;
 const PLACEHOLDER = 'data:image/svg+xml,' + encodeURIComponent(
   '<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>'
 );
+
+function hideBootStatus() {
+  document.getElementById('boot-status')?.classList.add('hidden');
+}
+
+function ensureHaUrl(c) {
+  if (c.ha_url) {
+    c.ha_url = c.ha_url.trim().replace(/\/$/, '');
+    return c;
+  }
+  if (window.location.pathname.includes('/local/')) {
+    c.ha_url = window.location.origin;
+  }
+  return c;
+}
+
+function verParts(v) {
+  const p = String(v || '0').replace(/^v/i, '').split('.');
+  return [0, 1, 2].map((i) => parseInt(p[i], 10) || 0);
+}
+
+function verCmp(a, b) {
+  const pa = verParts(a);
+  const pb = verParts(b);
+  for (let i = 0; i < 3; i++) {
+    if (pa[i] > pb[i]) return 1;
+    if (pa[i] < pb[i]) return -1;
+  }
+  return 0;
+}
+
+function panelUrl(version) {
+  const base = (getHaOrigin() || window.location.origin).replace(/\/$/, '');
+  return `${base}/local/ipad-pro/index.html?v=${version || BUILD}&_=${Date.now()}`;
+}
+
+function reloadPanel(version) {
+  window.location.href = panelUrl(version);
+}
+
+function withTimeout(promise, ms) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
+  ]);
+}
+
+function canReload() {
+  const last = parseInt(sessionStorage.getItem('ipad_pro_upd_ts') || '0', 10);
+  return Date.now() - last >= RELOAD_GUARD_MS;
+}
+
+function markReload() {
+  sessionStorage.setItem('ipad_pro_upd_ts', String(Date.now()));
+}
+
+async function waitForCopy() {
+  await new Promise((r) => setTimeout(r, COPY_WAIT_MS));
+}
+
+async function autoUpdateOnRefresh(c) {
+  if (!c?.ha_url || !c?.ha_token || !canReload()) return false;
+  initHa(c);
+  try {
+    localStorage.setItem(LS_PULL, String(Date.now()));
+    await withTimeout(triggerPanelUpdate(), 12000);
+  } catch {
+    return false;
+  }
+  await waitForCopy();
+  const remote = await checkVersion();
+  if (remote && verCmp(remote, BUILD) > 0 && canReload()) {
+    markReload();
+    reloadPanel(remote);
+    return true;
+  }
+  return false;
+}
+
+async function runPanelUpdate(c, { forcePull = false } = {}) {
+  if (!c?.ha_url || !c?.ha_token) return null;
+  initHa(c);
+  const last = parseInt(localStorage.getItem(LS_PULL) || '0', 10);
+  if (forcePull || Date.now() - last >= GIT_PULL_MS) {
+    const verEl = document.getElementById('ver');
+    if (verEl) verEl.textContent = '⏳ Git…';
+    localStorage.setItem(LS_PULL, String(Date.now()));
+    try {
+      await withTimeout(triggerPanelUpdate(), 12000);
+    } catch {
+      if (verEl) verEl.textContent = 'v' + BUILD;
+      throw new Error('shell_command');
+    }
+    if (verEl) verEl.textContent = '⏳';
+    await waitForCopy();
+  }
+  const remote = await checkVersion();
+  if (remote && verCmp(remote, BUILD) > 0 && canReload()) {
+    markReload();
+    reloadPanel(remote);
+    return remote;
+  }
+  const verEl = document.getElementById('ver');
+  if (verEl) verEl.textContent = 'v' + BUILD;
+  return null;
+}
+
+function startAutoUpdate(c) {
+  setInterval(async () => {
+    if (document.hidden || !c?.ha_url || !c?.ha_token) return;
+    try {
+      await runPanelUpdate(c, { forcePull: false });
+    } catch {
+      /* brak shell_command — ignoruj w tle */
+    }
+  }, CHECK_MS);
+}
 
 function allEntityIds() {
   const ids = new Set([WEATHER, cfg.ha_spotify, cfg.ha_ma, cfg.ha_motion].filter(Boolean));
@@ -86,8 +208,10 @@ function pickImportFile() {
 }
 
 async function connect() {
-  cfg = loadConfig();
+  cfg = ensureHaUrl(loadConfig());
+  hideBootStatus();
   if (!cfg.ha_url || !cfg.ha_token) {
+    fillConfigForm(cfg);
     showConfig();
     return;
   }
