@@ -392,7 +392,7 @@ document.getElementById('btn-refresh')?.addEventListener('click', async () => {
       location.href = `${cfg.ha_url.replace(/\/$/, '')}/local/ipad-pro/index.html?v=${remote}&_=${Date.now()}`;
     } else toast('Panel aktualny');
   } catch {
-    toast('Brak shell_command2.update_ipad_pro_panel w HA');
+    toast('Brak shell_command.update_ipad_pro_panel — dodaj do configuration.yaml i zrestartuj HA');
   }
 });
 

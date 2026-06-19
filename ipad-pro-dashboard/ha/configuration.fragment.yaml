@@ -1,4 +1,6 @@
 # Fragment do configuration.yaml
+# OBA panele — jeden blok shell_command (HA nie ma shell_command2!)
 
-shell_command2:
+shell_command:
+  update_ipad_panel: bash /config/www/dashboard/scripts/ha-update-panel.sh
   update_ipad_pro_panel: bash /config/www/dashboard/ipad-pro-dashboard/scripts/ha-update-panel.sh

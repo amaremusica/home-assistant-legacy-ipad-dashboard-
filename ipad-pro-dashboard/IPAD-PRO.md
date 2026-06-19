@@ -20,7 +20,8 @@ Otwórz: `http://IP:8123/local/ipad-pro/index.html`
 ## Auto-update
 
 ```yaml
-shell_command2:
+shell_command:
+  update_ipad_panel: bash /config/www/dashboard/scripts/ha-update-panel.sh
   update_ipad_pro_panel: bash /config/www/dashboard/ipad-pro-dashboard/scripts/ha-update-panel.sh
 ```
 

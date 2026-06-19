@@ -32,7 +32,8 @@ bash /config/www/dashboard/ipad-pro-dashboard/scripts/ha-first-time-setup.sh
 Do `configuration.yaml`:
 
 ```yaml
-shell_command2:
+shell_command:
+  update_ipad_panel: bash /config/www/dashboard/scripts/ha-update-panel.sh
   update_ipad_pro_panel: bash /config/www/dashboard/ipad-pro-dashboard/scripts/ha-update-panel.sh
 ```
 
@@ -55,7 +56,7 @@ Restart HA. Otwórz na iPad Pro:
 
 ## Auto-aktualizacja
 
-Przycisk **↺** → `shell_command2.update_ipad_pro_panel` (git pull w `/config/www/dashboard` + kopia do `/local/ipad-pro/`).
+Przycisk **↺** → `shell_command.update_ipad_pro_panel` (git pull w `/config/www/dashboard` + kopia do `/local/ipad-pro/`).
 
 ## Bezpieczeństwo
 

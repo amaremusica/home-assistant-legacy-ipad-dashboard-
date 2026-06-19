@@ -1,4 +1,4 @@
-export const BUILD = '1.1.2';
+export const BUILD = '1.1.3';
 
 export const CFG_KEYS = [
   'ha_url', 'ha_token', 'ha_spotify', 'ha_ma', 'ha_cams', 'ha_cam_labels', 'ha_cam_mode',
