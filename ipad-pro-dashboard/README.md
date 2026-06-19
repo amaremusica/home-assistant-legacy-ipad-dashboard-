@@ -1,8 +1,10 @@
 # Home Assistant Dashboard — iPad Pro (M1 / iPadOS 16+)
 
-**Wersja:** `v1.1.0` · nowoczesny panel obok [legacy iPad 4](https://github.com/amaremusica/home-assistant-legacy-ipad-dashboard-)
+**Wersja:** `v1.1.0` · panel w repozytorium [legacy iPad 4](https://github.com/amaremusica/home-assistant-legacy-ipad-dashboard-) → katalog **`ipad-pro-dashboard/`**
 
-Osobne repozytorium pod **iPad Pro 10″ (M1)** i nowsze — WebSocket, animacje CSS, kamery **WebRTC/HLS/4K**, pinch-zoom, pogoda, energia, Spotify + MA.
+Panel dla **iPad Pro 10″ (M1)** — WebSocket, animacje CSS, kamery **WebRTC/HLS/4K**, pinch-zoom, pogoda, energia, Spotify + MA.
+
+> **Uwaga:** Nie ma osobnego repo `home-assistant-ipad-pro-dashboard` na GitHubie. Wszystko jest w monorepo powyżej.
 
 ## Wymagania
 
@@ -12,20 +14,29 @@ Osobne repozytorium pod **iPad Pro 10″ (M1)** i nowsze — WebSocket, animacje
 
 ## Instalacja na Home Assistant
 
+### Masz już panel iPad 4 (`/config/www/dashboard`):
+
 ```bash
-cd /config/www
-git clone https://github.com/amaremusica/home-assistant-ipad-pro-dashboard.git ipad-pro-dashboard
-bash /config/www/ipad-pro-dashboard/scripts/ha-first-time-setup.sh
+cd /config/www/dashboard
+git pull origin main
+bash /config/www/dashboard/ipad-pro-dashboard/scripts/ha-update-panel.sh
+```
+
+### Pierwsza instalacja (oba panele):
+
+```bash
+git clone https://github.com/amaremusica/home-assistant-legacy-ipad-dashboard-.git /config/www/dashboard
+bash /config/www/dashboard/ipad-pro-dashboard/scripts/ha-first-time-setup.sh
 ```
 
 Do `configuration.yaml`:
 
 ```yaml
 shell_command2:
-  update_ipad_pro_panel: bash /config/www/ipad-pro-dashboard/scripts/ha-update-panel.sh
+  update_ipad_pro_panel: bash /config/www/dashboard/ipad-pro-dashboard/scripts/ha-update-panel.sh
 ```
 
-Restart HA. Otwórz na iPadzie:
+Restart HA. Otwórz na iPad Pro:
 
 `https://TWOJ-HA/local/ipad-pro/index.html`
 
@@ -38,30 +49,14 @@ Restart HA. Otwórz na iPadzie:
 | JS | ES modules (nowoczesny) | ES5 |
 | Stany HA | WebSocket + polling backup | Tylko polling |
 | UI | Animacje, glass, View Transitions | Fallback bez blur |
-| Kamery | Lazy snapshot + fullscreen stream | MJPEG tylko |
+| Kamery | WebRTC / HLS / 4K snapshot | MJPEG |
 | Muzyka | Spotify browse + MA search | Pełny Spotify + MA |
 | Pliki | `css/` + `js/` moduły | Jeden `ipad.html` |
 
-## Struktura
-
-```
-index.html          — szkielet UI
-css/app.css         — design system, animacje
-js/config.js        — ustawienia localStorage
-js/ha.js            — REST + WebSocket HA
-js/ui.js            — nawigacja, toast
-js/app.js           — logika widoków
-version.json        — wersja dla auto-update
-```
-
 ## Auto-aktualizacja
 
-Przycisk **↺** w nagłówku wywołuje `shell_command2.update_ipad_pro_panel` (git pull + kopia do `/local/ipad-pro/`).
+Przycisk **↺** → `shell_command2.update_ipad_pro_panel` (git pull w `/config/www/dashboard` + kopia do `/local/ipad-pro/`).
 
 ## Bezpieczeństwo
 
 Token tylko w `localStorage` iPada — nigdy w Git. Zobacz [SECURITY.md](SECURITY.md).
-
-## Legacy iPad 4
-
-Stary panel **nie jest zastępowany** — nadal w repo `home-assistant-legacy-ipad-dashboard-` (`ipad.html`).

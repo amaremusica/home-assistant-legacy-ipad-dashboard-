@@ -1,20 +1,22 @@
-export const BUILD = '1.1.0';
+export const BUILD = '1.1.1';
 
 export const CFG_KEYS = [
   'ha_url', 'ha_token', 'ha_spotify', 'ha_ma', 'ha_cams', 'ha_cam_labels', 'ha_cam_mode',
-  'ha_scene_eve', 'ha_scene_leave', 'ha_scene_off', 'ha_motion', 'theme', 'accent'
+  'ha_scene_eve', 'ha_scene_leave', 'ha_scene_off', 'ha_motion', 'ha_tv', 'theme', 'accent'
 ];
 
+/** Domyślne encje — zgodne z dashboardem Lovelace użytkownika */
 const DEFAULTS = {
   ha_spotify: 'media_player.spotify_marcin_solowiow',
-  ha_ma: '',
+  ha_ma: 'media_player.wolomin',
   ha_cams: 'camera.front,camera.tyl',
-  ha_cam_labels: 'camera.front:Front,camera.tyl:Tyl',
+  ha_cam_labels: 'camera.front:Front,camera.tyl:Tył',
   ha_cam_mode: 'auto',
   ha_scene_eve: '',
   ha_scene_leave: '',
   ha_scene_off: '',
-  ha_motion: 'binary_sensor.hobeian_zg_204z',
+  ha_motion: 'binary_sensor.czujnik_garderoba',
+  ha_tv: 'media_player.samsung_q70aa_85_tv_qe85q70aatxxh',
   theme: 'dark',
   accent: 'emerald'
 };
@@ -56,6 +58,7 @@ export function cameraList(cfg) {
     .filter(Boolean);
 }
 
+/** Pokoje i encje — z Lovelace YAML */
 export const ROOMS = {
   salon: {
     label: 'Salon',
@@ -67,10 +70,6 @@ export const ROOMS = {
       { id: 'light.led_tv_2', name: 'LED TV' }
     ]
   },
-  sypialnia: {
-    label: 'Sypialnia',
-    lights: [{ id: 'light.swiatlo_sypialnia_swiatlo', name: 'Sypialnia' }]
-  },
   kuchnia: {
     label: 'Kuchnia',
     lights: [
@@ -80,16 +79,53 @@ export const ROOMS = {
       { id: 'light.led_kuchnia_i', name: 'LED i' }
     ]
   },
-  lazienki: {
-    label: 'Łazienki',
+  sypialnia: {
+    label: 'Sypialnia',
+    lights: [
+      { id: 'light.swiatlo_sypialnia_swiatlo', name: 'Sypialnia' },
+      { id: 'switch.marcin_sypialnia', name: 'Marcin' },
+      { id: 'switch.marzenka_sypialnia', name: 'Marzenka' }
+    ]
+  },
+  lazienka_dol: {
+    label: 'Łazienka dół',
+    lights: [
+      { id: 'light.swiatlo_lazienka_swiatlo', name: 'Łaz. 1' },
+      { id: 'light.swiatlo_lazienka_swiatlo_2', name: 'Łaz. 2' },
+      { id: 'light.swiatlo_lazienka_swiatlo_3', name: 'Łaz. 3' }
+    ]
+  },
+  lazienka_gora: {
+    label: 'Łazienka góra',
     lights: [
       { id: 'light.lazienka_gora_swiatlo_swiatlo', name: 'Góra 1' },
-      { id: 'light.swiatlo_lazienka_swiatlo', name: 'Parter' }
+      { id: 'light.lazienka_gora_swiatlo_swiatlo_2', name: 'Góra 2' },
+      { id: 'light.lazienka_gora_swiatlo_swiatlo_3', name: 'Góra 3' }
     ]
+  },
+  wiatrolap: {
+    label: 'Wiatrołap',
+    lights: [
+      { id: 'light.wiatrolap_gorne_swiatlo', name: 'Górne 1' },
+      { id: 'light.wiatrolap_gorne_swiatlo_2', name: 'Górne 2' }
+    ]
+  },
+  garderoba: {
+    label: 'Garderoba',
+    lights: [
+      { id: 'light.swiatlo_garderoba_swiatlo', name: 'Garderoba 1' },
+      { id: 'light.swiatlo_garderoba_swiatlo_2', name: 'Garderoba 2' },
+      { id: 'light.swiatlo_garderoba_swiatlo_3', name: 'Garderoba 3' },
+      { id: 'light.swiatlo_szafa', name: 'Szafa' }
+    ]
+  },
+  schody: {
+    label: 'Schody',
+    lights: [{ id: 'switch.schody_dol', name: 'Schody dół' }]
   },
   ogrod: {
     label: 'Ogród',
-    lights: [{ id: 'light.wiatrolap_gorne_swiatlo', name: 'Wiatrołap' }]
+    lights: [{ id: 'switch.smart_switch_b78c', name: 'Brama' }]
   }
 };
 
@@ -100,13 +136,36 @@ export const SCENES = [
 ];
 
 export const WEATHER = 'weather.forecast_dom';
+export const SUN = 'sun.sun';
 
 export const ENERGY = {
   p1: 'sensor.zamel_mew_01_electricity_meter_power_active_phase_1',
   p2: 'sensor.zamel_mew_01_electricity_meter_power_active_phase_2',
   p3: 'sensor.zamel_mew_01_electricity_meter_power_active_phase_3',
-  total: 'sensor.zamel_mew_01_electricity_meter_total_forward_active_energy'
+  total: 'sensor.pobor_mocy_3_fazy',
+  v1: 'sensor.zamel_mew_01_electricity_meter_voltage_phase_1',
+  v2: 'sensor.zamel_mew_01_electricity_meter_voltage_phase_2',
+  v3: 'sensor.zamel_mew_01_electricity_meter_voltage_phase_3',
+  kwh: 'sensor.zamel_mew_01_electricity_meter_total_forward_active_energy'
 };
+
+export const AIR = {
+  index: 'sensor.parcel_locker_wol02bapp_polish_air_quality_index',
+  pm25: 'sensor.parcel_locker_wol02bapp_pm_2_5',
+  pm10: 'sensor.parcel_locker_wol02bapp_pm_10'
+};
+
+export const K1C = {
+  camera: 'camera.k1c_creality_printer_camera',
+  status: 'sensor.k1c_creality_print_status',
+  progress: 'sensor.k1c_creality_print_progress'
+};
+
+export const MA_SPEAKERS = [
+  { id: 'media_player.wolomin', name: 'Wołomin' },
+  { id: 'media_player.salon', name: 'Salon' },
+  { id: 'media_player.lewy', name: 'Lewy' }
+];
 
 export const CAM_MODES = [
   { id: 'auto', label: 'Auto (WebRTC→HLS→MJPEG)' },

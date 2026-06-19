@@ -157,9 +157,10 @@ function renderRoom(container, room) {
 
 async function toggleLight(id, tile) {
   const on = getState(id)?.state === 'on';
+  const domain = id.startsWith('switch.') ? 'switch' : 'light';
   tile.classList.toggle('on', !on);
   tile.querySelector('.state').textContent = on ? 'off' : 'on';
-  await callService('light', on ? 'turn_off' : 'turn_on', { entity_id: id });
+  await callService(domain, on ? 'turn_off' : 'turn_on', { entity_id: id });
 }
 
 function renderRoomTabs() {

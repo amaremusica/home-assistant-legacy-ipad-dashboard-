@@ -1,4 +1,4 @@
 # Fragment do configuration.yaml
 
 shell_command2:
-  update_ipad_pro_panel: bash /config/www/ipad-pro-dashboard/scripts/ha-update-panel.sh
+  update_ipad_pro_panel: bash /config/www/dashboard/ipad-pro-dashboard/scripts/ha-update-panel.sh

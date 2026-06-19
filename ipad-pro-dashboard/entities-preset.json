@@ -1,0 +1,12 @@
+{
+  "_comment": "Preset encji z Lovelace — w panelu: ☰ → wklej ręcznie LUB zaimportuj ten plik (po dodaniu ha_url i ha_token)",
+  "ha_spotify": "media_player.spotify_marcin_solowiow",
+  "ha_ma": "media_player.wolomin",
+  "ha_cams": "camera.front,camera.tyl",
+  "ha_cam_labels": "camera.front:Front,camera.tyl:Tył",
+  "ha_cam_mode": "auto",
+  "ha_motion": "binary_sensor.czujnik_garderoba",
+  "ha_tv": "media_player.samsung_q70aa_85_tv_qe85q70aatxxh",
+  "theme": "dark",
+  "accent": "emerald"
+}
