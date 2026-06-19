@@ -1,0 +1,11 @@
+{
+  "name": "Dom — iPad Pro",
+  "short_name": "Dom",
+  "description": "Home Assistant dashboard for iPad Pro",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#050508",
+  "theme_color": "#10b981",
+  "icons": []
+}

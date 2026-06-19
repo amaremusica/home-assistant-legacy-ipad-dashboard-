@@ -1,0 +1,4 @@
+{
+  "_comment": "Opcjonalnie skopiuj do /config/www/entities.json — wspólny z legacy panelem",
+  "poll": []
+}

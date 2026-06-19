@@ -49,6 +49,8 @@ Restart HA. Potem: `git push` → iPad co ~30 min pobiera update z HA.
 
 Skrót: `http://IP:8123/local/ipad.html?v=11.12.1`
 
+**iPad Pro (M1):** [ipad-pro-dashboard/](ipad-pro-dashboard/) → `/local/ipad-pro/index.html` — patrz [IPAD-PRO.md](ipad-pro-dashboard/IPAD-PRO.md).
+
 **Encje w ☰ (localStorage):** ruch, Spotify, TV, śmieci, łóżka, sceny.
 
 ![Panel — zakładki](IMG_5485.jpeg)

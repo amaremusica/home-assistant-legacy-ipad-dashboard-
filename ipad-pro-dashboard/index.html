@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#10b981">
+  <meta name="color-scheme" content="dark light">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="css/app.css">
+  <title>Dom</title>
+</head>
+<body>
+  <div id="ambient" aria-hidden="true">
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+    <div class="orb orb-c"></div>
+    <div class="grain"></div>
+  </div>
+
+  <div id="app" class="app hidden">
+    <header class="topbar glass anim-in">
+      <button type="button" class="icon-btn" id="btn-menu" aria-label="Ustawienia">☰</button>
+      <div class="topbar-center">
+        <div class="status-pill" id="status-pill"><span class="dot"></span><span id="status-text">offline</span></div>
+        <div class="clock" id="clock">--:--</div>
+      </div>
+      <div class="topbar-right">
+        <button type="button" class="icon-btn subtle" id="btn-refresh" aria-label="Odśwież panel" title="Aktualizuj z Git">↺</button>
+        <span class="ver" id="ver">v1.1.0</span>
+      </div>
+    </header>
+
+    <main id="main" class="main">
+      <section id="view-home" class="view active" data-view="home">
+        <div class="hero glass anim-in hero-tap" id="hero-weather-tap" role="button" tabindex="0">
+          <div class="hero-weather">
+            <div class="hero-temp"><span id="w-temp">--</span><span class="unit">°</span></div>
+            <div class="hero-meta">
+              <div class="hero-cond" id="w-cond">Pogoda</div>
+              <div class="hero-feels" id="w-feels">Odczuwalna --°</div>
+            </div>
+          </div>
+          <div class="hero-icon" id="w-icon">🌤️</div>
+        </div>
+        <div class="energy-strip glass anim-in delay-1" id="energy-strip">
+          <div class="en-ph"><span>L1</span><b id="en-p1">--</b> W</div>
+          <div class="en-ph"><span>L2</span><b id="en-p2">--</b> W</div>
+          <div class="en-ph"><span>L3</span><b id="en-p3">--</b> W</div>
+        </div>
+        <div class="quick-grid anim-in delay-1" id="quick-scenes"></div>
+        <h2 class="section-title anim-in delay-2">Kamery · podgląd 4K</h2>
+        <div class="cam-preview-grid anim-in delay-2" id="cam-preview"></div>
+        <h2 class="section-title anim-in delay-3">Salon</h2>
+        <div class="light-grid anim-in delay-3" id="room-salon"></div>
+      </section>
+
+      <section id="view-cameras" class="view" data-view="cameras">
+        <div class="page-head anim-in">
+          <h1 class="page-title">Kamery</h1>
+          <p class="page-sub">WebRTC / HLS / MJPEG · pinch-to-zoom w pełnym ekranie</p>
+        </div>
+        <div class="cam-grid" id="cam-grid"></div>
+      </section>
+
+      <section id="view-weather" class="view" data-view="weather">
+        <h1 class="page-title anim-in">Pogoda</h1>
+        <div id="weather-hero" class="weather-hero glass anim-in"></div>
+        <h2 class="section-title anim-in delay-1">Prognoza 7 dni</h2>
+        <div id="weather-daily" class="weather-daily"></div>
+      </section>
+
+      <section id="view-music" class="view" data-view="music">
+        <div class="music-header anim-in">
+          <h1 class="page-title">Muzyka</h1>
+          <div class="chip-row" id="music-chips">
+            <button type="button" class="chip on" data-music="home">Propozycje</button>
+            <button type="button" class="chip" data-music="search">Szukaj MA</button>
+          </div>
+        </div>
+        <div id="music-home" class="music-panel"></div>
+        <div id="music-search" class="music-panel hidden">
+          <div class="search-bar glass">
+            <input type="search" id="ma-query" placeholder="Szukaj utworu, albumu, stacji…" enterkeyhint="search">
+            <button type="button" class="btn primary" id="ma-search-btn">Szukaj</button>
+          </div>
+          <div id="ma-results" class="ma-results"></div>
+        </div>
+        <div class="now-playing glass" id="now-playing">
+          <div class="np-art" id="np-art"></div>
+          <div class="np-meta">
+            <div class="np-title" id="np-title">Nic nie gra</div>
+            <div class="np-artist" id="np-artist">—</div>
+            <div class="np-progress"><div class="np-bar" id="np-bar"></div></div>
+            <div class="np-ctrl">
+              <button type="button" class="icon-btn" id="np-prev">⏮</button>
+              <button type="button" class="icon-btn primary round" id="np-play">▶</button>
+              <button type="button" class="icon-btn" id="np-next">⏭</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-rooms" class="view" data-view="rooms">
+        <h1 class="page-title anim-in">Pokoje</h1>
+        <div class="room-tabs anim-in delay-1" id="room-tabs"></div>
+        <div class="light-grid anim-in delay-2" id="room-grid"></div>
+      </section>
+    </main>
+
+    <nav class="dock glass anim-in" id="dock">
+      <button type="button" class="dock-btn active" data-tab="home"><span>🏠</span>Dom</button>
+      <button type="button" class="dock-btn" data-tab="cameras"><span>📷</span>Kamery</button>
+      <button type="button" class="dock-btn" data-tab="weather"><span>🌦️</span>Pogoda</button>
+      <button type="button" class="dock-btn" data-tab="music"><span>♪</span>Muzyka</button>
+      <button type="button" class="dock-btn" data-tab="rooms"><span>💡</span>Pokoje</button>
+    </nav>
+  </div>
+
+  <dialog id="cfg" class="cfg-dialog">
+    <form method="dialog" class="cfg-card glass" id="cfg-form">
+      <h2>Połącz z <span>Home Assistant</span></h2>
+      <p class="cfg-sub">iPad Pro · WebRTC 4K · animacje · WebSocket na żywo</p>
+      <label>URL Home Assistant</label>
+      <input type="url" id="cfg-url" placeholder="https://twoj-ha.example.com" autocomplete="url" required>
+      <label>Long-Lived Access Token</label>
+      <input type="password" id="cfg-token" placeholder="eyJ…" autocomplete="off" required>
+      <label>Encja Spotify</label>
+      <input type="text" id="cfg-spotify" placeholder="media_player.spotify_…">
+      <label>Encja Music Assistant</label>
+      <input type="text" id="cfg-ma" placeholder="media_player.mass_…">
+      <label>Kamery (po przecinku)</label>
+      <input type="text" id="cfg-cams" placeholder="camera.front,camera.tyl">
+      <label>Etykiety kamer (encja: nazwa)</label>
+      <input type="text" id="cfg-labels" placeholder="camera.front:Front,camera.tyl:Tyl">
+      <label>Tryb streamu kamer</label>
+      <select id="cfg-cam-mode">
+        <option value="auto">Auto — WebRTC → HLS → MJPEG</option>
+        <option value="webrtc">WebRTC (najlepsza jakość)</option>
+        <option value="4k">HLS HD/4K</option>
+        <option value="mjpeg">MJPEG (zawsze działa)</option>
+      </select>
+      <div class="cfg-actions">
+        <button type="button" class="btn ghost" id="cfg-export">Eksportuj JSON</button>
+        <button type="submit" class="btn primary">Połącz</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="cam-modal" class="cam-modal">
+    <div class="cam-modal-inner glass">
+      <div class="cam-modal-top">
+        <button type="button" class="cam-close" id="cam-close">✕</button>
+        <div class="cam-mode-row">
+          <button type="button" class="chip sm" id="cam-mode-webrtc">WebRTC</button>
+          <button type="button" class="chip sm" id="cam-mode-hls">HLS</button>
+          <button type="button" class="chip sm" id="cam-mode-mjpeg">MJPEG</button>
+        </div>
+      </div>
+      <div id="cam-viewport" class="cam-viewport-wrap">
+        <video id="cam-video" autoplay playsinline muted></video>
+        <img id="cam-snap" alt="" hidden>
+      </div>
+      <div class="cam-modal-foot">
+        <div class="cam-modal-label" id="cam-modal-label"></div>
+        <div class="cam-modal-status" id="cam-modal-status">—</div>
+      </div>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
