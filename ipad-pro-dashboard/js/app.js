@@ -4,14 +4,14 @@ import {
   browseMedia, maSearch, entityPicture, checkVersion, triggerPanelUpdate
 } from './ha.js';
 import {
-  camCardHtml, bindCamCards, startThumbnailRefresh, openCameraModal, closeCameraModal, bindCameraModal
+  camCardHtml, bindCamCards, attachCamStreams, stopCamStreams, resumeCamStreams,
+  openCameraModal, closeCameraModal, bindCameraModal
 } from './cameras.js';
 import { renderHomeWeather, renderWeatherPage } from './weather.js';
 import { toast, setOnline, setTab, bindDock, tickClock, esc, lazyImages } from './ui.js';
 
 let cfg = loadConfig();
 let pollTimer = null;
-let camRefreshTimer = null;
 let activeRoom = 'salon';
 let mediaEntity = '';
 let progressTimer = null;
@@ -111,8 +111,7 @@ async function connect() {
   onStates(renderAll);
   if (pollTimer) clearInterval(pollTimer);
   pollTimer = setInterval(() => fetchStates(allEntityIds()).catch(() => setOnline(false)), 45000);
-  if (camRefreshTimer) clearInterval(camRefreshTimer);
-  camRefreshTimer = startThumbnailRefresh(cfg, 3500);
+  renderCamPreviews();
   loadMusicHome();
   bindProgress();
   bindCameraModal(cfg);
@@ -122,11 +121,9 @@ function renderAll() {
   renderHomeWeather();
   renderEnergy();
   renderScenes();
-  renderCamPreviews();
   renderRoom(document.getElementById('room-salon'), ROOMS.salon);
   renderRoomTabs();
   renderRoom(document.getElementById('room-grid'), ROOMS[activeRoom]);
-  renderCamGrid();
   renderNowPlaying();
 }
 
@@ -163,16 +160,31 @@ function renderCamPreviews() {
   const el = document.getElementById('cam-preview');
   const cams = cameraList(cfg).slice(0, 2);
   if (!el || !cams.length) return;
-  el.innerHTML = cams.map((c) => camCardHtml(c, cfg, 'preview')).join('');
+  const key = cams.join('|');
+  if (el.dataset.camKey === key && el.children.length) {
+    attachCamStreams(el);
+    return;
+  }
+  stopCamStreams();
+  el.dataset.camKey = key;
+  el.innerHTML = cams.map((c) => camCardHtml(c, cfg)).join('');
   bindCamCards(el, (id) => openCameraModal(id, cfg));
+  attachCamStreams(el);
 }
 
 function renderCamGrid() {
   const el = document.getElementById('cam-grid');
   const cams = cameraList(cfg);
   if (!el) return;
-  el.innerHTML = cams.map((c) => camCardHtml(c, cfg, 'grid')).join('');
+  const key = cams.join('|');
+  if (el.dataset.camKey === key && el.children.length) {
+    attachCamStreams(el);
+    return;
+  }
+  el.dataset.camKey = key;
+  el.innerHTML = cams.map((c) => camCardHtml(c, cfg)).join('');
   bindCamCards(el, (id) => openCameraModal(id, cfg));
+  attachCamStreams(el);
 }
 
 function renderRoom(container, room) {
@@ -409,6 +421,10 @@ document.getElementById('ma-query')?.addEventListener('keydown', (e) => {
 bindDock((tab) => {
   if (tab === 'cameras') renderCamGrid();
   if (tab === 'weather') renderWeatherPage();
+});
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) stopCamStreams();
+  else resumeCamStreams();
 });
 bindMusicChips();
 bindMediaControls();

@@ -1,21 +1,30 @@
 /**
- * Kamery iPad Pro — WebRTC → HLS → MJPEG, snapshot 4K, pinch-zoom
+ * Kamery iPad Pro — MJPEG na kafelkach (jak legacy iPad), WebRTC/HLS w modalu
  */
 import { wsSend, cameraSnapshotUrl, cameraStreamUrl, getState, getBase } from './ha.js';
 
-const QUALITY = {
-  preview: { w: 1280, h: 720 },
-  grid: { w: 1920, h: 1080 },
-  full: { w: 3840, h: 2160 }
-};
+const QUALITY = { full: { w: 3840, h: 2160 } };
+const MJPEG_TIMEOUT = 18000;
 
 let activePlayer = null;
 let pinchState = null;
+const camLive = new Map();
+const camTimers = new Map();
 
 export function camSnapshot(entityId, tier = 'grid') {
   if (tier === 'full') {
     const q = QUALITY.full;
     return cameraSnapshotUrl(entityId, q.w, q.h);
+  }
+  return camSnapUrl(entityId);
+}
+
+export function camSnapUrl(entityId) {
+  const ent = getState(entityId);
+  const pic = ent?.attributes?.entity_picture;
+  if (pic) {
+    const base = pic.startsWith('http') ? pic : getBase() + pic;
+    return base + (base.includes('?') ? '&' : '?') + '_=' + Date.now();
   }
   return cameraSnapshotUrl(entityId);
 }
@@ -38,12 +47,112 @@ function parseCamLabels(raw) {
   return out;
 }
 
-export function camCardHtml(entityId, cfg, tier = 'grid') {
+function clearCamTimer(entityId) {
+  const t = camTimers.get(entityId);
+  if (t) {
+    clearTimeout(t);
+    camTimers.delete(entityId);
+  }
+}
+
+function setCamErr(img, on) {
+  img.classList.toggle('cam-err', on);
+}
+
+function isImgLive(img, entityId) {
+  const mode = camLive.get(entityId);
+  if ((mode === 'mjpeg' || mode === 'snap') && img.naturalWidth > 0) return true;
+  return img.naturalWidth > 0 && !!img.getAttribute('src');
+}
+
+function snapRefresh(img, entityId, force) {
+  if (!force && camLive.get(entityId) === 'mjpeg' && img.naturalWidth > 0) return;
+  const url = camSnapUrl(entityId);
+  if (!url) return;
+  const pre = new Image();
+  pre.onload = () => {
+    if (document.hidden) return;
+    if (!force && camLive.get(entityId) === 'mjpeg' && img.naturalWidth > 0) return;
+    img.src = url;
+    setCamErr(img, false);
+    camLive.set(entityId, 'snap');
+  };
+  pre.onerror = () => setCamErr(img, true);
+  pre.src = url;
+}
+
+function startMjpeg(img, entityId) {
+  if (document.hidden) return;
+  if (camLive.get(entityId) === 'mjpeg' && img.naturalWidth > 0) return;
+  const url = cameraStreamUrl(entityId);
+  if (!url) return;
+  if (camLive.get(entityId) === 'mjpeg' && img.getAttribute('src') === url && img.naturalWidth > 0) return;
+
+  clearCamTimer(entityId);
+  camTimers.set(
+    entityId,
+    setTimeout(() => {
+      camTimers.delete(entityId);
+      if (camLive.get(entityId) === 'mjpeg' && img.naturalWidth > 0) return;
+      snapRefresh(img, entityId, true);
+    }, MJPEG_TIMEOUT)
+  );
+
+  img.onerror = () => {
+    clearCamTimer(entityId);
+    img.onerror = null;
+    if (camLive.get(entityId) !== 'mjpeg') snapRefresh(img, entityId, true);
+  };
+  img.onload = () => {
+    clearCamTimer(entityId);
+    setCamErr(img, false);
+    camLive.set(entityId, 'mjpeg');
+  };
+  img.src = url;
+  camLive.set(entityId, 'mjpeg');
+}
+
+function startCardStream(img, entityId) {
+  if (isImgLive(img, entityId)) return;
+  snapRefresh(img, entityId, false);
+  setTimeout(() => {
+    if (document.hidden || isImgLive(img, entityId)) return;
+    startMjpeg(img, entityId);
+  }, 350);
+}
+
+export function attachCamStreams(root) {
+  if (!root || document.hidden) return;
+  root.querySelectorAll('.cam-card[data-cam]').forEach((card) => {
+    const entityId = card.dataset.cam;
+    const img = card.querySelector('.cam-thumb');
+    if (!entityId || !img) return;
+    if (isImgLive(img, entityId)) return;
+    startCardStream(img, entityId);
+  });
+}
+
+export function stopCamStreams() {
+  camTimers.forEach((t) => clearTimeout(t));
+  camTimers.clear();
+  document.querySelectorAll('.cam-thumb').forEach((img) => {
+    img.onload = null;
+    img.onerror = null;
+  });
+  camLive.clear();
+}
+
+export function resumeCamStreams() {
+  attachCamStreams(document.getElementById('cam-preview'));
+  const grid = document.getElementById('cam-grid');
+  if (grid?.offsetParent) attachCamStreams(grid);
+}
+
+export function camCardHtml(entityId, cfg) {
   const label = camLabel(entityId, cfg);
-  const snap = camSnapshot(entityId, tier);
   return `<article class="cam-card anim-card" data-cam="${entityId}">
     <div class="cam-viewport">
-      <img class="cam-thumb" src="${snap.replace(/"/g, '&quot;')}" alt="" decoding="async" onerror="this.classList.add('cam-err')">
+      <img class="cam-thumb" alt="" decoding="async">
       <span class="cam-live"><i></i>LIVE</span>
     </div>
     <span class="label">${label}</span>
@@ -56,22 +165,6 @@ export function bindCamCards(root, onOpen) {
   });
 }
 
-export function startThumbnailRefresh(cfg, intervalMs = 3500) {
-  const ids = (cfg.ha_cams || '').split(',').map((s) => s.trim()).filter(Boolean);
-  const tick = () => {
-    if (document.hidden) return;
-    for (const id of ids) {
-      document.querySelectorAll(`.cam-card[data-cam="${id}"] .cam-thumb`).forEach((img) => {
-        if (!img.offsetParent) return;
-        img.classList.remove('cam-err');
-        img.src = camSnapshot(id);
-      });
-    }
-  };
-  tick();
-  return setInterval(tick, intervalMs);
-}
-
 class CameraPlayer {
   constructor(entityId, videoEl, statusEl) {
     this.entityId = entityId;
@@ -79,7 +172,6 @@ class CameraPlayer {
     this.statusEl = statusEl;
     this.pc = null;
     this.mode = 'idle';
-    this.wsHandler = null;
   }
 
   setStatus(text) {
