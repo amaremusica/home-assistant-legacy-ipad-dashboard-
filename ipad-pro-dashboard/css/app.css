@@ -346,8 +346,10 @@ body.theme-light {
   --text: #0f172a;
   --muted: rgba(15, 23, 42, 0.55);
   color-scheme: light;
+  background: var(--bg);
+  color: var(--text);
 }
-body.theme-light #ambient { opacity: 0.35; }
+body.theme-light #ambient { opacity: 0.2; }
 body.theme-light .wcard { color: #0b2034; }
 
 /* ——— Nawigacja górna ——— */
@@ -365,18 +367,23 @@ body.theme-light .wcard { color: #0b2034; }
 .tb.active { background: var(--accent-soft); color: var(--accent); }
 
 /* ——— Dashboard 3 kolumny ——— */
-#view-home { overflow: hidden; }
-.dash { height: 100%; display: flex; flex-direction: column; min-height: 0; }
-.dash-cols { flex: 1; display: flex; gap: 12px; min-height: 0; }
+#view-home.view.active { display: flex; flex-direction: column; overflow: hidden; }
+.dash { height: 100%; flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.dash-cols {
+  flex: 1; min-height: 0; display: grid;
+  grid-template-columns: minmax(180px, 27%) minmax(220px, 1fr) minmax(180px, 25%);
+  gap: 12px; align-items: stretch;
+}
 .dash-col { display: flex; flex-direction: column; gap: 10px; min-height: 0; overflow: hidden; }
-.dash-left { flex: 0 0 26%; }
-.dash-mid { flex: 1 1 auto; min-width: 0; }
-.dash-right { flex: 0 0 24%; }
+.dash-left { min-width: 0; }
+.dash-mid { min-width: 0; overflow-y: auto; }
+.dash-right { min-width: 0; }
 .card { border-radius: var(--radius-sm); }
 
 .wcard {
-  flex: 1; padding: 16px 18px; border-radius: var(--radius); cursor: pointer;
-  background: linear-gradient(150deg, #9cc6ef 0%, #bcd8f2 42%, #e9f1fa 100%);
+  flex: 1; min-height: 120px; display: flex; flex-direction: column;
+  padding: 16px 18px; border-radius: var(--radius); cursor: pointer;
+  background: linear-gradient(150deg, #9cc6ef 0%, #bcd8f2 42%, #e9f1fa 100%) !important;
   border: 1px solid rgba(255,255,255,0.5); color: #0b2034;
 }
 .wtop { display: flex; justify-content: space-between; align-items: flex-start; }
@@ -390,8 +397,11 @@ body.theme-light .wcard { color: #0b2034; }
 .wst span { font-size: 10px; opacity: 0.6; margin-left: 2px; }
 .wsunline { font-size: 10px; opacity: 0.55; margin-top: auto; padding-top: 8px; }
 
-.gauge { padding: 12px; text-align: center; flex-shrink: 0; color: #0b1220; }
-.gauge-svg { width: 72px; height: 72px; }
+.gauge {
+  padding: 12px; text-align: center; flex-shrink: 0; color: #0b1220;
+  background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--radius-sm);
+}
+.gauge-svg { width: 72px; height: 72px; max-width: 72px; max-height: 72px; display: block; margin: 0 auto; }
 .gauge-lbl { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 800; margin-top: 4px; }
 .gauge-val { font-size: 13px; font-weight: 800; }
 
@@ -445,11 +455,13 @@ body.theme-light .wcard { color: #0b2034; }
 
 .camcard, .cam-card {
   position: relative; border-radius: var(--radius-sm); overflow: hidden; cursor: pointer;
-  border: 1px solid var(--glass-border); flex: 1; min-height: 100px;
+  border: 1px solid var(--glass-border); flex: 1 1 auto; max-height: 160px; min-height: 110px;
 }
-.camcard .cam-viewport, .cam-card .cam-viewport { position: relative; width: 100%; height: 100%; min-height: 100px; background: #111; }
+.camcard .cam-viewport, .cam-card .cam-viewport {
+  position: absolute; inset: 0; background: #111;
+}
 .cam-stream, .camcard img, .cam-card img {
-  width: 100%; height: 100%; min-height: 100px; object-fit: cover; display: block; background: #111;
+  width: 100%; height: 100%; object-fit: cover; display: block; background: #111;
 }
 .cam-off {
   position: absolute; inset: 0; display: none; align-items: center; justify-content: center;
