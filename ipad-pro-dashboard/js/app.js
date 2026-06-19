@@ -1,15 +1,16 @@
-import { BUILD, loadConfig, saveConfig, exportConfig, importConfigFile, applyConfigObject, PRESET_URL, cameraList, ROOMS, SCENES, WEATHER, ENERGY, DASH_ROOMS, GATES, FRIDGE, AIR } from './config.js?v=1.1.4';
+import { BUILD, loadConfig, saveConfig, exportConfig, importConfigFile, applyConfigObject, PRESET_URL, cameraList, ROOMS, SCENES, WEATHER, ENERGY, DASH_ROOMS, GATES, FRIDGE, AIR } from './config.js?v=1.1.5';
 import {
   initHa, fetchStates, connectWebSocket, onStates, getState, callService,
   browseMedia, maSearch, entityPicture, checkVersion, triggerPanelUpdate, getHaOrigin
-} from './ha.js?v=1.1.4';
+} from './ha.js?v=1.1.5';
 import {
   camCardHtml, bindCamCards, attachCamStreams, attachDashCam, stopCamStreams, resumeCamStreams,
   openCameraModal, closeCameraModal, bindCameraModal, camLabel
-} from './cameras.js?v=1.1.4';
-import { renderWeatherPage } from './weather.js?v=1.1.4';
-import { initDashboard, renderDashboard } from './dashboard.js?v=1.1.4';
-import { toast, setOnline, setTab, tickClock, esc, lazyImages } from './ui.js?v=1.1.4';
+} from './cameras.js?v=1.1.5';
+import { renderWeatherPage } from './weather.js?v=1.1.5';
+import { initDashboard, renderDashboard } from './dashboard.js?v=1.1.5';
+import { loadTrash } from './trash.js?v=1.1.5';
+import { toast, setOnline, setTab, tickClock, esc, lazyImages } from './ui.js?v=1.1.5';
 
 const GIT_PULL_MS = 30 * 60 * 1000;
 const CHECK_MS = 2 * 60 * 1000;
@@ -175,6 +176,7 @@ function fillConfigForm(c) {
   document.getElementById('cfg-cams').value = c.ha_cams || '';
   document.getElementById('cfg-labels').value = c.ha_cam_labels || '';
   document.getElementById('cfg-cam-mode').value = c.ha_cam_mode || 'auto';
+  document.getElementById('cfg-trash').value = c.ha_trash || '';
 }
 
 function showConfig() {
@@ -250,6 +252,7 @@ async function connect() {
   renderCamGrid();
   renderCamPreviews();
   initDashCam();
+  loadTrash(cfg.ha_trash);
   loadMusicHome();
   bindProgress();
   bindCameraModal(cfg);
@@ -327,6 +330,7 @@ function bindTabNav() {
 
 function renderAll() {
   renderDashboard(cfg);
+  loadTrash(cfg.ha_trash);
   renderRoomTabs();
   renderRoom(document.getElementById('room-grid'), ROOMS[activeRoom]);
   renderNowPlaying();
@@ -565,7 +569,8 @@ document.getElementById('cfg-form')?.addEventListener('submit', (e) => {
     ha_ma: document.getElementById('cfg-ma').value.trim(),
     ha_cams: document.getElementById('cfg-cams').value.trim(),
     ha_cam_labels: document.getElementById('cfg-labels').value.trim(),
-    ha_cam_mode: document.getElementById('cfg-cam-mode').value
+    ha_cam_mode: document.getElementById('cfg-cam-mode').value,
+    ha_trash: document.getElementById('cfg-trash').value.trim()
   });
   document.getElementById('cfg').close();
   connect();

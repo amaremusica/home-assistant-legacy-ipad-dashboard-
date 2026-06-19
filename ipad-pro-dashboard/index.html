@@ -10,7 +10,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
-  <link rel="stylesheet" href="css/app.css?v=1.1.4-2">
+  <link rel="stylesheet" href="css/app.css?v=1.1.5">
   <title>Dom</title>
   <style>
     .boot-status {
@@ -20,7 +20,8 @@
     .boot-status.err { color: #fca5a5; padding: 24px; text-align: center; max-width: 420px; margin: auto; }
     .boot-status.hidden { display: none; }
     /* krytyczny layout — działa nawet gdy Safari trzyma stary app.css */
-    body.theme-light { background: #c8d4e4; color: #0f172a; }
+    body.theme-light { background: #d4dce8; color: #0f172a; }
+    body.theme-light #ambient { display: none; }
     #view-home { overflow: hidden; display: flex; flex-direction: column; }
     .dash { flex: 1; min-height: 0; display: flex; flex-direction: column; }
     .dash-cols {
@@ -29,18 +30,33 @@
       gap: 12px; align-items: stretch;
     }
     .dash-col { display: flex; flex-direction: column; gap: 10px; min-height: 0; overflow: hidden; }
+    .tile {
+      background: rgba(255,255,255,0.94);
+      border: 1px solid rgba(15,23,42,0.08);
+      box-shadow: 0 2px 14px rgba(15,23,42,0.06);
+      border-radius: 16px;
+    }
     .wcard {
       flex: 1; min-height: 120px; display: flex; flex-direction: column;
       padding: 16px 18px; border-radius: 20px; cursor: pointer;
       background: linear-gradient(150deg, #9cc6ef, #bcd8f2 42%, #e9f1fa);
-      border: 1px solid rgba(255,255,255,0.5); color: #0b2034;
+      border: 1px solid rgba(255,255,255,0.55); color: #0b2034;
+      box-shadow: 0 4px 20px rgba(15,23,42,0.08);
     }
-    .gauge { flex-shrink: 0; padding: 12px; text-align: center; background: rgba(255,255,255,0.72); border-radius: 14px; border: 1px solid rgba(15,23,42,0.1); }
+    .gauge { flex-shrink: 0; padding: 12px; text-align: center; }
     .gauge-svg { width: 72px; height: 72px; max-width: 72px; max-height: 72px; display: block; margin: 0 auto; }
+    .trash-card {
+      flex-shrink: 0; display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+      border-left: 4px solid var(--trash-accent, #94a3b8);
+    }
+    .trash-ic { width: 28px; height: 28px; flex-shrink: 0; fill: none; stroke: var(--trash-accent, #94a3b8); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .trash-when { font-size: 16px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+    .trash-when.soon { color: #ca8a04; }
+    .trash-what { font-size: 11px; font-weight: 600; color: rgba(15,23,42,0.55); margin-top: 2px; }
     .rgrid { display: flex; flex-wrap: wrap; margin: -4px; }
-    .rcell { flex: 1 1 calc(33.33% - 8px); margin: 4px; min-width: 88px; padding: 8px 10px; border-radius: 14px; background: rgba(255,255,255,0.72); border: 1px solid rgba(15,23,42,0.1); }
-    .ecard, .kcard, .spro { background: rgba(255,255,255,0.72); border: 1px solid rgba(15,23,42,0.1); border-radius: 14px; }
-    .camcard { flex: 1 1 auto; max-height: 160px; min-height: 110px; position: relative; border-radius: 14px; overflow: hidden; background: #111; border: 1px solid rgba(15,23,42,0.1); }
+    .rcell { flex: 1 1 calc(33.33% - 8px); margin: 4px; min-width: 88px; padding: 8px 10px; }
+    .ecard, .kcard, .spro { border-radius: 16px; }
+    .camcard { flex: 1 1 auto; max-height: 160px; min-height: 110px; position: relative; overflow: hidden; background: #111; border: 1px solid rgba(15,23,42,0.1); box-shadow: 0 2px 14px rgba(15,23,42,0.06); }
     .camcard .cam-viewport { position: absolute; inset: 0; }
     .camcard .cam-stream { width: 100%; height: 100%; object-fit: cover; display: block; }
   </style>
@@ -55,7 +71,7 @@
   </div>
 
   <div id="app" class="app hidden">
-    <header class="topbar glass anim-in">
+    <header class="topbar tile anim-in">
       <button type="button" class="icon-btn" id="btn-menu" aria-label="Ustawienia">☰</button>
       <div class="topbar-center">
         <div class="status-pill" id="status-pill"><span class="dot"></span><span id="status-text">offline</span></div>
@@ -63,11 +79,11 @@
       </div>
       <div class="topbar-right">
         <button type="button" class="icon-btn subtle" id="btn-refresh" aria-label="Odśwież panel" title="Aktualizuj z Git">↺</button>
-        <span class="ver" id="ver">v1.1.4</span>
+        <span class="ver" id="ver">v1.1.5</span>
       </div>
     </header>
 
-    <nav class="tabnav glass anim-in" id="tabnav">
+    <nav class="tabnav tile anim-in" id="tabnav">
       <button type="button" class="tb active" data-tab="home"><span class="tbi">🏠</span>Dom</button>
       <button type="button" class="tb" data-tab="rooms" data-room="salon"><span class="tbi">🛋️</span>Salon</button>
       <button type="button" class="tb" data-tab="rooms" data-room="sypialnia"><span class="tbi">🛏️</span>Sypialnia</button>
@@ -100,7 +116,7 @@
                 </div>
                 <div class="wsunline" id="wd-sun"></div>
               </div>
-              <div class="gauge card">
+              <div class="gauge tile">
                 <svg class="gauge-svg" viewBox="0 0 120 120" width="72" height="72" aria-hidden="true">
                   <circle cx="60" cy="60" r="52" stroke="rgba(127,127,127,0.18)" stroke-width="10" fill="none"/>
                   <circle id="gauge-arc" cx="60" cy="60" r="52" stroke="#34d399" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="327" stroke-dashoffset="327" transform="rotate(-90 60 60)"/>
@@ -109,11 +125,18 @@
                 <div class="gauge-lbl">Jakość powietrza</div>
                 <div class="gauge-val" id="gauge-lab">--</div>
               </div>
+              <div class="trash-card tile" id="trash-card">
+                <svg class="trash-ic" id="trash-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13M10 11v6M14 11v6"/></svg>
+                <div class="trash-info">
+                  <div class="trash-when" id="trash-when">--</div>
+                  <div class="trash-what" id="trash-what">sprawdzam…</div>
+                </div>
+              </div>
             </div>
             <div class="dash-col dash-mid">
               <div class="rgrid" id="dash-rooms"></div>
               <div class="scenerow" id="dash-scenes"></div>
-              <div class="ecard glass">
+              <div class="ecard tile">
                 <div class="ecard-h">
                   <span class="ecard-t">⚡ Pobór mocy</span>
                   <span class="ecard-now"><span id="e-now">--</span><span class="eu">W</span></span>
@@ -124,7 +147,7 @@
                   <div class="eph"><span>L3</span><div class="eph-bar"><i id="e-b3"></i></div><b id="e-pp3">--</b> W</div>
                 </div>
               </div>
-              <div class="kcard glass">
+              <div class="kcard tile">
                 <div class="kc-h">❄️ Lodówka</div>
                 <div class="ktemps">
                   <div><span>🧊 Lodówka</span><b id="ft2">--</b>°</div>
@@ -133,7 +156,7 @@
               </div>
             </div>
             <div class="dash-col dash-right">
-              <div class="spro card glass">
+              <div class="spro tile">
                 <div class="spro-top"><span>Spotify</span><span class="sp-badge">♪</span></div>
                 <div class="spro-body">
                   <div class="spro-art" id="sp-art"></div>
@@ -146,7 +169,7 @@
                   <button type="button" class="mbtn" id="sp-next">⏭</button>
                 </div>
               </div>
-              <div class="camcard glass" id="dash-cam" data-cam="">
+              <div class="camcard tile" id="dash-cam" data-cam="">
                 <div class="cam-viewport">
                   <img class="cam-stream" alt="">
                   <div class="cam-off">brak obrazu</div>
@@ -237,6 +260,8 @@
         <option value="4k">HLS HD/4K</option>
         <option value="mjpeg">MJPEG (zawsze działa)</option>
       </select>
+      <label>Kalendarz śmieci</label>
+      <input type="text" id="cfg-trash" placeholder="calendar.trash" autocorrect="off" autocapitalize="off" value="">
       <div class="cfg-actions">
         <button type="button" class="btn ghost" id="cfg-import">Importuj JSON</button>
         <button type="button" class="btn ghost" id="cfg-preset">Preset z HA</button>
@@ -270,7 +295,7 @@
   <div id="toast" class="toast" role="status"></div>
 
   <script type="module">
-    import('./js/app.js?v=1.1.4').catch(() => {
+    import('./js/app.js?v=1.1.5').catch(() => {
       const s = document.getElementById('boot-status');
       if (s) {
         s.classList.add('err');

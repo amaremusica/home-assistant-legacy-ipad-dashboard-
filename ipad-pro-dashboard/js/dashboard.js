@@ -1,7 +1,7 @@
 /** Ekran Dom — układ 3 kolumny jak legacy iPad, nowoczesny styl */
-import { getState, callService, entityPicture } from './ha.js?v=1.1.4';
-import { WEATHER, ENERGY, AIR, SCENES, DASH_ROOMS, GATES, FRIDGE } from './config.js?v=1.1.4';
-import { esc } from './ui.js?v=1.1.4';
+import { getState, callService, entityPicture } from './ha.js?v=1.1.5';
+import { WEATHER, ENERGY, AIR, SCENES, DASH_ROOMS, GATES, FRIDGE } from './config.js?v=1.1.5';
+import { esc } from './ui.js?v=1.1.5';
 
 const WICON = {
   'clear-night': '🌙', cloudy: '☁️', fog: '🌫️', hail: '🌨️', lightning: '⛈️',
@@ -25,7 +25,7 @@ export function initDashboard(cfg, onScene, onRoomLight, onGate) {
   const rooms = document.getElementById('dash-rooms');
   if (rooms && !rooms.dataset.ready) {
     rooms.innerHTML = DASH_ROOMS.map((r) => `
-      <div class="rcell glass" data-room="${r.key}" id="rc-${r.key}">
+      <div class="rcell tile" data-room="${r.key}" id="rc-${r.key}">
         <div class="rcell-h"><span class="rcell-name">${esc(r.label)}</span>
           <button type="button" class="rbulb" data-light="${esc(r.light)}" aria-label="Światło">💡</button></div>
         <div class="ricon">${r.icon}</div>
@@ -56,7 +56,7 @@ export function initDashboard(cfg, onScene, onRoomLight, onGate) {
   const gates = document.getElementById('dash-gates');
   if (gates && !gates.dataset.ready) {
     gates.innerHTML = GATES.map((g) => `
-      <button type="button" class="statecard glass ${g.cls}" data-switch="${esc(g.id)}" id="sc-${g.key}">
+      <button type="button" class="statecard tile ${g.cls}" data-switch="${esc(g.id)}" id="sc-${g.key}">
         <span class="scico">${g.icon}</span>
         <span class="scname">${esc(g.label)}</span>
         <span class="scstate" id="ss-${g.key}">--</span>

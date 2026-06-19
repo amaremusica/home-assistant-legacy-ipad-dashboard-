@@ -1,8 +1,8 @@
-export const BUILD = '1.1.4';
+export const BUILD = '1.1.5';
 
 export const CFG_KEYS = [
   'ha_url', 'ha_token', 'ha_spotify', 'ha_ma', 'ha_cams', 'ha_cam_labels', 'ha_cam_mode',
-  'ha_scene_eve', 'ha_scene_leave', 'ha_scene_off', 'ha_motion', 'ha_tv', 'theme', 'accent'
+  'ha_scene_eve', 'ha_scene_leave', 'ha_scene_off', 'ha_motion', 'ha_tv', 'ha_trash', 'theme', 'accent'
 ];
 
 /** Domyślne encje — zgodne z dashboardem Lovelace użytkownika */
@@ -17,6 +17,7 @@ const DEFAULTS = {
   ha_scene_off: '',
   ha_motion: 'binary_sensor.czujnik_garderoba',
   ha_tv: 'media_player.samsung_q70aa_85_tv_qe85q70aatxxh',
+  ha_trash: 'calendar.trash',
   theme: 'dark',
   accent: 'emerald'
 };

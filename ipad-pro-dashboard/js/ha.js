@@ -65,6 +65,13 @@ export async function apiGet(path) {
   return r.json();
 }
 
+export async function fetchCalendar(entityId, start, end) {
+  const id = encodeURIComponent(entityId);
+  return apiGet(
+    `calendars/${id}?start=${encodeURIComponent(start.toISOString())}&end=${encodeURIComponent(end.toISOString())}`
+  );
+}
+
 export async function callService(domain, service, data = {}) {
   const r = await fetch(`${base()}/api/services/${domain}/${service}`, {
     method: 'POST',

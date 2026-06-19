@@ -1,7 +1,7 @@
 /**
  * Kamery — płynny MJPEG na kafelkach (EZVIZ), WebRTC/HLS w modalu
  */
-import { wsSend, cameraSnapshotUrl, cameraStreamUrl, getState, getBase } from './ha.js?v=1.1.4';
+import { wsSend, cameraSnapshotUrl, cameraStreamUrl, getState, getBase } from './ha.js?v=1.1.5';
 
 const QUALITY = { full: { w: 3840, h: 2160 } };
 
