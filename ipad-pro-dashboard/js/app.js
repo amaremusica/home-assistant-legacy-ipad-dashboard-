@@ -1,15 +1,15 @@
-import { BUILD, loadConfig, saveConfig, exportConfig, importConfigFile, applyConfigObject, PRESET_URL, cameraList, ROOMS, SCENES, WEATHER, ENERGY, DASH_ROOMS, GATES, FRIDGE, AIR } from './config.js?v=1.1.3';
+import { BUILD, loadConfig, saveConfig, exportConfig, importConfigFile, applyConfigObject, PRESET_URL, cameraList, ROOMS, SCENES, WEATHER, ENERGY, DASH_ROOMS, GATES, FRIDGE, AIR } from './config.js?v=1.1.4';
 import {
   initHa, fetchStates, connectWebSocket, onStates, getState, callService,
   browseMedia, maSearch, entityPicture, checkVersion, triggerPanelUpdate, getHaOrigin
-} from './ha.js?v=1.1.3';
+} from './ha.js?v=1.1.4';
 import {
   camCardHtml, bindCamCards, attachCamStreams, attachDashCam, stopCamStreams, resumeCamStreams,
   openCameraModal, closeCameraModal, bindCameraModal, camLabel
-} from './cameras.js?v=1.1.3';
-import { renderWeatherPage } from './weather.js?v=1.1.3';
-import { initDashboard, renderDashboard } from './dashboard.js?v=1.1.3';
-import { toast, setOnline, setTab, tickClock, esc, lazyImages } from './ui.js?v=1.1.3';
+} from './cameras.js?v=1.1.4';
+import { renderWeatherPage } from './weather.js?v=1.1.4';
+import { initDashboard, renderDashboard } from './dashboard.js?v=1.1.4';
+import { toast, setOnline, setTab, tickClock, esc, lazyImages } from './ui.js?v=1.1.4';
 
 const GIT_PULL_MS = 30 * 60 * 1000;
 const CHECK_MS = 2 * 60 * 1000;

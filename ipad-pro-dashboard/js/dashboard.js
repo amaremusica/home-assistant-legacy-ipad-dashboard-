@@ -1,7 +1,7 @@
 /** Ekran Dom — układ 3 kolumny jak legacy iPad, nowoczesny styl */
-import { getState, callService, entityPicture } from './ha.js?v=1.1.3';
-import { WEATHER, ENERGY, AIR, SCENES, DASH_ROOMS, GATES, FRIDGE } from './config.js?v=1.1.3';
-import { esc } from './ui.js?v=1.1.3';
+import { getState, callService, entityPicture } from './ha.js?v=1.1.4';
+import { WEATHER, ENERGY, AIR, SCENES, DASH_ROOMS, GATES, FRIDGE } from './config.js?v=1.1.4';
+import { esc } from './ui.js?v=1.1.4';
 
 const WICON = {
   'clear-night': '🌙', cloudy: '☁️', fog: '🌫️', hail: '🌨️', lightning: '⛈️',
