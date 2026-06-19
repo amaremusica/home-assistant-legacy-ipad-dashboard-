@@ -2,6 +2,17 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.13.1] — 2026-06-18
+
+### Dodane
+- **Music Assistant przez Home Assistant** — Szukaj, Radio, Biblioteka i odtwarzanie działają przez Nabu Casa (bez bezpośredniego dostępu do lokalnego IP MA).
+- Automatyczne wykrywanie integracji `music_assistant` w HA (`config_entry_id`).
+- Głośniki MA z encji `media_player.*` (app_id music_assistant) zamiast REST `/api/players`.
+- Fallback do bezpośredniego MA URL gdy panel jest w LAN.
+
+### Zmienione
+- Pole MA URL w ☰ — opcjonalne przy dostępie zdalnym (proxy HA domyślnie).
+
 ## [11.13.0] — 2026-06-18
 
 ### Dodane — Music Assistant (pełna integracja)

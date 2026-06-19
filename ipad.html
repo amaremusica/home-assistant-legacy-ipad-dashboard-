@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.13.0 -->
+<!-- build: v11.13.1 -->
 <title>Dom</title>
 <style>
 :root {
@@ -715,7 +715,7 @@ body.legacy-safari nav{background:var(--glass2);}
     <div class="cf"><label>Czujnik ruchu (entity_id)</label><input type="text" id="cm" placeholder="binary_sensor.motion" autocorrect="off" autocapitalize="off"></div>
     <div class="cf"><label>Spotify (entity_id)</label><input type="text" id="csp" placeholder="media_player.spotify" autocorrect="off" autocapitalize="off"></div>
     <div class="cf"><label>Spotify — domyślne wyjście</label><input type="text" id="css" placeholder="Wzmacniacz" autocorrect="off" autocapitalize="off"></div>
-    <div class="cf"><label>Music Assistant URL</label><input type="url" id="cma" placeholder="http://192.168.1.x:8095" autocorrect="off" autocapitalize="off"></div>
+    <div class="cf"><label>Music Assistant URL</label><input type="url" id="cma" placeholder="Opcjonalnie — tylko LAN (Nabu Casa → przez HA)" autocorrect="off" autocapitalize="off"></div>
     <div class="cf"><label>MA Token (opcjonalnie)</label><input type="password" id="cmat" placeholder="Bearer token z MA ≥2.7" autocomplete="off"></div>
     <div class="cf"><label>MA Player — encja HA</label><input type="text" id="cmae" placeholder="media_player.wzmacniacz" autocorrect="off" autocapitalize="off"></div>
     <div class="cf"><label>Kalendarz śmieci</label><input type="text" id="ctr" placeholder="calendar.trash" autocorrect="off" autocapitalize="off"></div>
@@ -777,7 +777,7 @@ body.legacy-safari nav{background:var(--glass2);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.13.0</span>
+      <span id="ver">v11.13.1</span>
       <button class="hbtn" onclick="forceReload()" title="Odśwież">↺</button>
     </div>
   </header>
@@ -1275,7 +1275,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.13.0';
+var BUILD='11.13.1';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
@@ -1290,6 +1290,7 @@ var MA_TOK='';
 var MA_EID='';
 var MA_PLAYER='';
 var MU_SOURCE='';
+var MA_CFG_ENTRY='';
 var TV_EID='media_player.living_room_tv';
 var TRASH_ENT='calendar.trash';
 var BED1_EID='switch.bed_1';
@@ -2583,16 +2584,22 @@ function readMuProgress(eid){
 }
 function muPP(){
   if(MU_SOURCE==='ma'&&MA_EID){ mPP(MA_EID,'sp-mini-p'); return; }
+  var ent=maHaPlayEntity();
+  if(MU_SOURCE==='ma'&&ent&&ent.indexOf('media_player.')===0){ mPP(ent,'sp-mini-p'); return; }
   if(MU_SOURCE==='ma'&&MA_PLAYER){ maCmd('players/cmd/play_pause',{player_id:MA_PLAYER}); return; }
   mPP(SP_EID,'sp-mini-p');
 }
 function muPrev(){
   if(MU_SOURCE==='ma'&&MA_EID){ mCmd(MA_EID,'media_previous_track'); return; }
+  var ent=maHaPlayEntity();
+  if(MU_SOURCE==='ma'&&ent&&ent.indexOf('media_player.')===0){ mCmd(ent,'media_previous_track'); return; }
   if(MU_SOURCE==='ma'&&MA_PLAYER){ maCmd('players/cmd/previous',{player_id:MA_PLAYER}); return; }
   mCmd(SP_EID,'media_previous_track');
 }
 function muNext(){
   if(MU_SOURCE==='ma'&&MA_EID){ mCmd(MA_EID,'media_next_track'); return; }
+  var ent=maHaPlayEntity();
+  if(MU_SOURCE==='ma'&&ent&&ent.indexOf('media_player.')===0){ mCmd(ent,'media_next_track'); return; }
   if(MU_SOURCE==='ma'&&MA_PLAYER){ maCmd('players/cmd/next',{player_id:MA_PLAYER}); return; }
   mCmd(SP_EID,'media_next_track');
 }
@@ -2601,6 +2608,11 @@ function muVol(val){
   if(isNaN(n)) return;
   if(MU_SOURCE==='ma'&&MA_EID){
     haPost('media_player','volume_set',{entity_id:MA_EID,volume_level:n/100});
+    return;
+  }
+  var ent=maHaPlayEntity();
+  if(MU_SOURCE==='ma'&&ent&&ent.indexOf('media_player.')===0){
+    haPost('media_player','volume_set',{entity_id:ent,volume_level:n/100});
     return;
   }
   if(MU_SOURCE==='ma'&&MA_PLAYER){
@@ -2627,12 +2639,169 @@ var maSearchTimer=null;
 
 function maBase(){ return (MA_URL||'').replace(/\/$/,''); }
 
+function maViaHa(){ return !!(HA&&TOK); }
+
+function maLoadCfgEntry(cb){
+  if(MA_CFG_ENTRY){ if(cb) cb(); return; }
+  haGet('config/config_entries/entry',function(err,entries){
+    if(!err&&entries&&entries.length){
+      var i,e;
+      for(i=0;i<entries.length;i++){
+        e=entries[i];
+        if(e&&e.domain==='music_assistant'&&e.entry_id){
+          MA_CFG_ENTRY=e.entry_id;
+          break;
+        }
+      }
+    }
+    if(cb) cb();
+  });
+}
+
+function haMaService(svc,data,cb){
+  if(!HA||!TOK){ if(cb) cb('Brak HA'); return; }
+  var payload={}, k;
+  if(data){ for(k in data){ if(data.hasOwnProperty(k)) payload[k]=data[k]; } }
+  payload.return_response=true;
+  if(MA_CFG_ENTRY&&!payload.config_entry_id&&(svc==='search'||svc==='get_library')){
+    payload.config_entry_id=MA_CFG_ENTRY;
+  }
+  var x=new XMLHttpRequest();
+  x.open('POST',HA.replace(/\/$/,'')+'/api/services/music_assistant/'+svc+'?return_response',true);
+  x.setRequestHeader('Authorization','Bearer '+TOK);
+  x.setRequestHeader('Content-Type','application/json');
+  x.timeout=15000;
+  x.onload=function(){
+    if(x.status<200||x.status>=300){ cb('HTTP '+x.status); return; }
+    var r=null;
+    try{ r=JSON.parse(x.responseText); }catch(e){ cb('parse'); return; }
+    var resp=r.service_response||r.response||r;
+    cb(null,resp);
+  };
+  x.onerror=function(){ cb('network'); };
+  x.ontimeout=function(){ cb('timeout'); };
+  x.send(JSON.stringify(payload));
+}
+
+function maHaPlayEntity(){
+  if(MA_PLAYER&&MA_PLAYER.indexOf('media_player.')===0) return MA_PLAYER;
+  if(MA_EID) return MA_EID;
+  return MA_PLAYER||'';
+}
+
+function maHaDiscoverPlayers(){
+  var out=[], id, e, a, seen={}, nm;
+  for(id in E){
+    if(id.indexOf('media_player.')!==0) continue;
+    e=E[id];
+    if(!e||e.state==='unavailable') continue;
+    a=e.attributes||{};
+    if(a.app_id==='music_assistant'||a.mass_player_id||(MA_EID&&id===MA_EID)){
+      nm=a.friendly_name||id.replace('media_player.','');
+      out.push({player_id:id,display_name:nm,available:true});
+      seen[id]=1;
+    }
+  }
+  if(!out.length&&MA_EID&&E[MA_EID]&&!seen[MA_EID]){
+    a=(E[MA_EID].attributes)||{};
+    out.push({
+      player_id:MA_EID,
+      display_name:a.friendly_name||MA_EID.replace('media_player.',''),
+      available:true
+    });
+  }
+  return out;
+}
+
+function maNormHaItem(item){
+  if(!item) return item;
+  return {
+    name:item.name||item.title,
+    title:item.title||item.name,
+    uri:item.uri||item.media_content_id,
+    item_id:item.uri||item.item_id,
+    image_url:item.image_url||item.image||item.thumbnail,
+    artists:item.artists||[],
+    media_type:item.media_type||item.type
+  };
+}
+
+function maHaSearchResponse(resp){
+  var r=resp||{}, out={tracks:[],albums:[],artists:[],radio:[]}, k, arr, i, key;
+  if(r.service_response) r=r.service_response;
+  var keys=['tracks','albums','artists','radio','radios','radio_stations'];
+  for(i=0;i<keys.length;i++){
+    k=keys[i];
+    if(!r[k]||!r[k].length) continue;
+    key=(k==='radios'||k==='radio_stations')?'radio':k;
+    arr=r[k];
+    if(!out[key]) out[key]=[];
+    for(var j=0;j<arr.length;j++) out[key].push(maNormHaItem(arr[j]));
+  }
+  return out;
+}
+
+function maHaLibItems(resp){
+  if(!resp) return [];
+  if(resp.items&&Array.isArray(resp.items)) return resp.items.map(maNormHaItem);
+  if(Array.isArray(resp)) return resp.map(maNormHaItem);
+  return maParseResult(resp).map(maNormHaItem);
+}
+
+function maHaQueue(resp,eid){
+  eid=eid||maHaPlayEntity();
+  if(!resp) return null;
+  if(eid&&resp[eid]) return resp[eid];
+  if(resp.current_item) return resp;
+  var k;
+  for(k in resp){ if(resp.hasOwnProperty(k)&&resp[k]&&resp[k].current_item) return resp[k]; }
+  return resp;
+}
+
 function maHeaders(x){
   if(MA_TOK) x.setRequestHeader('Authorization','Bearer '+MA_TOK);
   x.setRequestHeader('Accept','application/json');
 }
 
 function maRequest(method,path,body,cb){
+  if(maViaHa()){
+    if(method==='GET'&&path.indexOf('/api/search')===0){
+      var qs=path.split('?')[1]||'', params={}, parts, i, kv;
+      parts=qs?qs.split('&'):[];
+      for(i=0;i<parts.length;i++){
+        kv=parts[i].split('=');
+        if(kv[0]) params[decodeURIComponent(kv[0])]=decodeURIComponent((kv[1]||'').replace(/\+/g,' '));
+      }
+      var sd={name:params.query||'',limit:parseInt(params.limit,10)||15};
+      if(params.media_types) sd.media_type=params.media_types;
+      maLoadCfgEntry(function(){
+        haMaService('search',sd,function(err,resp){
+          if(err&&maBase()){ maRequestDirect(method,path,body,cb); return; }
+          if(err){ cb(err); return; }
+          cb(null,maHaSearchResponse(resp));
+        });
+      });
+      return;
+    }
+    if(method==='GET'&&path.indexOf('/api/player_queues/')===0){
+      var ent=maHaPlayEntity();
+      if(!ent){ cb('Brak głośnika'); return; }
+      haMaService('get_queue',{entity_id:ent},function(err,resp){
+        if(err&&maBase()){ maRequestDirect(method,path,body,cb); return; }
+        if(err){ cb(err); return; }
+        cb(null,maHaQueue(resp,ent));
+      });
+      return;
+    }
+    if(method==='POST'&&path.indexOf('/play_media')>0){
+      maPlayEntryHa(body,cb);
+      return;
+    }
+  }
+  maRequestDirect(method,path,body,cb);
+}
+
+function maRequestDirect(method,path,body,cb){
   var b=maBase();
   if(!b){ if(cb) cb('Brak URL MA'); return; }
   var x=new XMLHttpRequest();
@@ -2652,8 +2821,100 @@ function maRequest(method,path,body,cb){
   x.send(body?JSON.stringify(body):null);
 }
 
+function maPlayEntryHa(body,cb){
+  var ent=maHaPlayEntity();
+  if(!ent){ if(cb) cb('Brak głośnika'); return; }
+  var payload={
+    entity_id:ent,
+    media_id:body.media_id||body.media_content_id||'',
+    media_type:body.media_type||'track',
+    enqueue:'play'
+  };
+  if(body.radio_mode) payload.radio_mode=true;
+  haMaService('play_media',payload,function(err){
+    if(err&&maBase()){
+      maRequestDirect('POST','/api/player_queues/'+encodeURIComponent(MA_PLAYER)+'/play_media',body,cb);
+      return;
+    }
+    if(cb) cb(err);
+  });
+}
+
 function maCmd(command,args,cb){
-  maRequest('POST','/api',{
+  if(maViaHa()){
+    if(command==='music/radios/items'){
+      maLoadCfgEntry(function(){
+        haMaService('get_library',{
+          media_type:'radio',
+          favorite:!!(args&&args.favorite),
+          limit:(args&&args.limit)||24
+        },function(err,resp){
+          if(err&&maBase()){ maCmdDirect(command,args,cb); return; }
+          cb(err,maHaLibItems(resp));
+        });
+      });
+      return;
+    }
+    if(command==='music/tracks/items'){
+      maLoadCfgEntry(function(){
+        haMaService('get_library',{
+          media_type:'track',
+          favorite:!!(args&&args.favorite),
+          limit:(args&&args.limit)||10
+        },function(err,resp){
+          if(err&&maBase()){ maCmdDirect(command,args,cb); return; }
+          cb(err,maHaLibItems(resp));
+        });
+      });
+      return;
+    }
+    if(command==='music/recently_played_items'){
+      maLoadCfgEntry(function(){
+        haMaService('get_library',{
+          media_type:'track',
+          limit:(args&&args.limit)||10,
+          order_by:'last_played'
+        },function(err,resp){
+          if(err&&maBase()){ maCmdDirect(command,args,cb); return; }
+          cb(err,maHaLibItems(resp));
+        });
+      });
+      return;
+    }
+    if(command==='music/in_progress_items'){
+      maLoadCfgEntry(function(){
+        haMaService('get_library',{
+          media_type:'audiobook',
+          limit:(args&&args.limit)||8
+        },function(err,resp){
+          if(err&&maBase()){ maCmdDirect(command,args,cb); return; }
+          cb(err,maHaLibItems(resp));
+        });
+      });
+      return;
+    }
+    if(command.indexOf('players/cmd/')===0){
+      var ent=maHaPlayEntity(), svc;
+      if(ent&&ent.indexOf('media_player.')===0){
+        if(command.indexOf('play_pause')>0) svc='media_play_pause';
+        else if(command.indexOf('next')>0) svc='media_next_track';
+        else if(command.indexOf('previous')>0) svc='media_previous_track';
+        else if(command.indexOf('volume_set')>0){
+          haPost('media_player','volume_set',{
+            entity_id:ent,
+            volume_level:((args&&args.volume_level)||0)/100
+          },function(){ if(cb) cb(null); });
+          return;
+        }
+        if(svc){ mCmd(ent,svc); if(cb) cb(null); return; }
+      }
+    }
+  }
+  maCmdDirect(command,args,cb);
+}
+
+function maCmdDirect(command,args,cb){
+  maRequestDirect('POST','/api',{
     message_id:String(maMsgId++),
     command:command,
     args:args||{}
@@ -2711,6 +2972,13 @@ function maOpenLib(){
 }
 
 function maLoadPlayers(){
+  if(maViaHa()){
+    maPlayersCache=maHaDiscoverPlayers();
+    if(!MA_PLAYER&&maPlayersCache.length) MA_PLAYER=maPlayersCache[0].player_id;
+    else if(!MA_PLAYER&&MA_EID) MA_PLAYER=MA_EID;
+    maRenderAllPlayers();
+    return;
+  }
   maRequest('GET','/api/players',null,function(err,data){
     if(err) return;
     maPlayersCache=Array.isArray(data)?data:[];
@@ -2748,7 +3016,7 @@ function maPickPlayer(id){
 function maDoSearch(){
   var inp=document.getElementById('sp-mq'); if(!inp) return;
   var q=inp.value.trim(); if(!q) return;
-  if(!maBase()){ maShowResults('<div class="spv-empty">Skonfiguruj adres Music Assistant w ☰.</div>'); return; }
+  if(!maViaHa()&&!maBase()){ maShowResults('<div class="spv-empty">Skonfiguruj Music Assistant (HA) w ☰.</div>'); return; }
   maShowResults('<div class="spv-empty">Szukam…</div>');
   maRequest('GET','/api/search?query='+encodeURIComponent(q)+'&limit=15',null,function(err,data){
     if(err){ maShowResults('<div class="spv-empty">Błąd wyszukiwania.</div>'); return; }
@@ -2853,8 +3121,8 @@ function maPlayRadio(idx){
 function maPlayEntry(entry,radioMode){
   var item=entry.item;
   var type=entry.type||'track';
-  if(!maBase()) return;
-  if(!MA_PLAYER){ spSetStatus('Wybierz głośnik.'); return; }
+  if(!maViaHa()&&!maBase()) return;
+  if(!MA_PLAYER&&!maHaPlayEntity()){ spSetStatus('Wybierz głośnik.'); return; }
   spSetStatus('Odtwarzam przez MA…');
   MU_SOURCE='ma';
   var uri=item.uri||item.item_id||'';
@@ -2873,7 +3141,7 @@ function maDoRadioSearch(silent){
     if(!silent) maLoadRadioDefault();
     return;
   }
-  if(!maBase()){ maShowRadioResults('<div class="spv-empty">Skonfiguruj MA w ☰.</div>'); return; }
+  if(!maViaHa()&&!maBase()){ maShowRadioResults('<div class="spv-empty">Skonfiguruj MA w ☰.</div>'); return; }
   maShowRadioResults('<div class="spv-empty">Szukam stacji…</div>');
   maRequest('GET','/api/search?query='+encodeURIComponent(q)+'&media_types=radio&limit=20',null,function(err,data){
     if(err){ maShowRadioResults('<div class="spv-empty">Błąd wyszukiwania.</div>'); return; }
@@ -2946,6 +3214,35 @@ function maPlayLib(idx){
 }
 
 function maPollQueue(){
+  if(maViaHa()){
+    var ent=maHaPlayEntity();
+    if(!ent) return;
+    if(MA_EID&&E[MA_EID]&&(E[MA_EID].state==='playing'||E[MA_EID].state==='paused')){
+      MU_SOURCE='ma';
+      window._maNowArt='';
+      return;
+    }
+    haMaService('get_queue',{entity_id:ent},function(err,resp){
+      if(err) return;
+      var data=maHaQueue(resp,ent);
+      if(!data) return;
+      var cur=data.current_item||data.current_media||null;
+      if(!cur) return;
+      MU_SOURCE='ma';
+      window._maNowArt=cur.image_url||cur.image||'';
+      var t=document.getElementById('sp-mini-t');
+      var a=document.getElementById('sp-mini-a');
+      if(t) t.textContent=cur.name||cur.title||'—';
+      if(a) a.textContent=maArtists(cur.artists)||'Music Assistant';
+      var art=document.getElementById('sp-mini-art');
+      if(art&&window._maNowArt) art.style.backgroundImage='url("'+spHtml(window._maNowArt)+'")';
+      MPP.dur=parseFloat(data.duration)||parseFloat(cur.duration)||0;
+      MPP.pos=parseFloat(data.elapsed_time)||parseFloat(data.queue_position)||0;
+      MPP.playing=(data.state==='playing'||data.playback_state==='playing');
+      MPP.upd=MPP.playing?Date.now():0;
+    });
+    return;
+  }
   if(!MA_URL||!MA_PLAYER) return;
   if(MA_EID&&E[MA_EID]&&(E[MA_EID].state==='playing'||E[MA_EID].state==='paused')){
     MU_SOURCE='ma';
@@ -3868,6 +4165,7 @@ function startApp(){
   tick(); setInterval(tick,30000);
   loadEntitiesJson(function(){
     fetch15(); setInterval(fetch15,15000);
+    maLoadCfgEntry();
   });
   pollMotion(); setInterval(pollMotion,2500);
   refreshCameras();
