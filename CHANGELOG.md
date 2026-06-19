@@ -2,6 +2,22 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.13.0] — 2026-06-18
+
+### Dodane — Music Assistant (pełna integracja)
+- **MA Token** — pole w ☰ + nagłówek `Authorization: Bearer` we wszystkich requestach MA.
+- **MA Player (encja HA)** — `media_player.*` do sterowania play/pause/next/vol przez Home Assistant (hybrid).
+- Chipy **Radio** i **Biblioteka MA** w zakładce Muzyka.
+- **Radio** — ulubione stacje (`music/radios/items`), wyszukiwanie stacji, `radio_mode` przy odtwarzaniu.
+- **Biblioteka MA** — ostatnio grane, w trakcie (audiobooki/podcasty), ulubione utwory (Command API).
+- **Mini-player** — prev/play/next + suwak głośności; hybryda MA REST + encja HA.
+- Polling kolejki MA co 3 s (gdy aktywna zakładka Muzyka).
+- `ha_ma_token`, `ha_ma_eid`, `ha_ma_player` w `CFG_KEYS` (eksport/import ☰).
+
+### Zmienione
+- Wyszukiwarka MA: sekcja Radio w wynikach; auth na `/api/players` i `/api/search`.
+- Wybór głośnika MA synchronizowany między panelami Szukaj / Radio / Biblioteka.
+
 ## [11.12.5] — 2026-06-19
 
 ### Dodane
