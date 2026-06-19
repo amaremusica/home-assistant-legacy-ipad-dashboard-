@@ -1,14 +1,15 @@
-import { BUILD, loadConfig, saveConfig, exportConfig, importConfigFile, applyConfigObject, PRESET_URL, cameraList, ROOMS, SCENES, WEATHER, ENERGY } from './config.js?v=1.1.3';
+import { BUILD, loadConfig, saveConfig, exportConfig, importConfigFile, applyConfigObject, PRESET_URL, cameraList, ROOMS, SCENES, WEATHER, ENERGY, DASH_ROOMS, GATES, FRIDGE, AIR } from './config.js?v=1.1.3';
 import {
   initHa, fetchStates, connectWebSocket, onStates, getState, callService,
   browseMedia, maSearch, entityPicture, checkVersion, triggerPanelUpdate, getHaOrigin
 } from './ha.js?v=1.1.3';
 import {
-  camCardHtml, bindCamCards, attachCamStreams, stopCamStreams, resumeCamStreams,
-  openCameraModal, closeCameraModal, bindCameraModal
+  camCardHtml, bindCamCards, attachCamStreams, attachDashCam, stopCamStreams, resumeCamStreams,
+  openCameraModal, closeCameraModal, bindCameraModal, camLabel
 } from './cameras.js?v=1.1.3';
-import { renderHomeWeather, renderWeatherPage } from './weather.js?v=1.1.3';
-import { toast, setOnline, setTab, bindDock, tickClock, esc, lazyImages } from './ui.js?v=1.1.3';
+import { renderWeatherPage } from './weather.js?v=1.1.3';
+import { initDashboard, renderDashboard } from './dashboard.js?v=1.1.3';
+import { toast, setOnline, setTab, tickClock, esc, lazyImages } from './ui.js?v=1.1.3';
 
 const GIT_PULL_MS = 30 * 60 * 1000;
 const CHECK_MS = 2 * 60 * 1000;
@@ -149,6 +150,15 @@ function allEntityIds() {
   for (const r of Object.values(ROOMS)) {
     for (const l of r.lights) ids.add(l.id);
   }
+  for (const r of DASH_ROOMS) {
+    ids.add(r.light);
+    ids.add(r.temp);
+    ids.add(r.hum);
+  }
+  for (const g of GATES) ids.add(g.id);
+  ids.add(FRIDGE.fridge);
+  ids.add(FRIDGE.freezer);
+  Object.values(AIR).forEach((id) => ids.add(id));
   for (const s of SCENES) {
     const id = cfg[s.key];
     if (id) ids.add(id);
@@ -236,49 +246,90 @@ async function connect() {
   onStates(renderAll);
   if (pollTimer) clearInterval(pollTimer);
   pollTimer = setInterval(() => fetchStates(allEntityIds()).catch(() => setOnline(false)), 45000);
+  initDashboard(cfg, runScene, toggleDashLight, toggleGate);
+  renderCamGrid();
   renderCamPreviews();
+  initDashCam();
   loadMusicHome();
   bindProgress();
   bindCameraModal(cfg);
+  bindDashSpotify();
+}
+
+function initDashCam() {
+  const cams = cameraList(cfg);
+  if (!cams.length) return;
+  const dash = document.getElementById('dash-cam');
+  if (dash) {
+    dash.querySelector('.label').textContent = camLabel(cams[0], cfg);
+    dash.onclick = () => openCameraModal(cams[0], cfg);
+  }
+  attachDashCam(cams[0]);
+}
+
+function runScene(id) {
+  if (!id) return;
+  callService('scene', 'turn_on', { entity_id: id }).then(() => toast('Scena uruchomiona'));
+}
+
+async function toggleDashLight(id, cell) {
+  if (!id) return;
+  const on = getState(id)?.state === 'on';
+  const domain = id.startsWith('switch.') ? 'switch' : 'light';
+  if (cell) cell.classList.toggle('lit', !on);
+  await callService(domain, on ? 'turn_off' : 'turn_on', { entity_id: id });
+}
+
+async function toggleGate(id, btn) {
+  if (!id) return;
+  const on = getState(id)?.state === 'on';
+  await callService('switch', on ? 'turn_off' : 'turn_on', { entity_id: id });
+}
+
+function bindDashSpotify() {
+  document.getElementById('sp-play')?.addEventListener('click', () => {
+    const e = getState(cfg.ha_spotify);
+    const svc = e?.state === 'playing' ? 'media_pause' : 'media_play';
+    callService('media_player', svc, { entity_id: cfg.ha_spotify });
+  });
+  document.getElementById('sp-prev')?.addEventListener('click', () =>
+    callService('media_player', 'media_previous_track', { entity_id: cfg.ha_spotify })
+  );
+  document.getElementById('sp-next')?.addEventListener('click', () =>
+    callService('media_player', 'media_next_track', { entity_id: cfg.ha_spotify })
+  );
+}
+
+function bindTabNav() {
+  document.getElementById('tabnav')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('.tb');
+    if (!btn) return;
+    const tab = btn.dataset.tab;
+    const room = btn.dataset.room;
+    if (room) {
+      activeRoom = room;
+      setTab('rooms');
+      renderRoomTabs();
+      renderRoom(document.getElementById('room-grid'), ROOMS[activeRoom]);
+    } else {
+      setTab(tab);
+      if (tab === 'cameras') renderCamGrid();
+      if (tab === 'weather') renderWeatherPage();
+    }
+    document.querySelectorAll('#tabnav .tb').forEach((b) => b.classList.toggle('active', b === btn));
+  });
+  document.getElementById('dash-wcard')?.addEventListener('click', () => {
+    setTab('weather');
+    renderWeatherPage();
+    document.querySelectorAll('#tabnav .tb').forEach((b) => b.classList.toggle('active', b.dataset.tab === 'weather'));
+  });
 }
 
 function renderAll() {
-  renderHomeWeather();
-  renderEnergy();
-  renderScenes();
-  renderRoom(document.getElementById('room-salon'), ROOMS.salon);
+  renderDashboard(cfg);
   renderRoomTabs();
   renderRoom(document.getElementById('room-grid'), ROOMS[activeRoom]);
   renderNowPlaying();
-}
-
-function renderEnergy() {
-  const fmt = (id) => {
-    const v = parseFloat(getState(id)?.state);
-    return Number.isFinite(v) ? Math.round(v) : '--';
-  };
-  const p1 = document.getElementById('en-p1');
-  const p2 = document.getElementById('en-p2');
-  const p3 = document.getElementById('en-p3');
-  if (p1) p1.textContent = fmt(ENERGY.p1);
-  if (p2) p2.textContent = fmt(ENERGY.p2);
-  if (p3) p3.textContent = fmt(ENERGY.p3);
-}
-
-function renderScenes() {
-  const el = document.getElementById('quick-scenes');
-  if (!el) return;
-  el.innerHTML = SCENES.map((s) => {
-    const id = cfg[s.key];
-    return `<button type="button" class="scene-btn" data-scene="${esc(id)}" ${id ? '' : 'disabled'}>${s.icon} ${s.label}</button>`;
-  }).join('');
-  el.querySelectorAll('.scene-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const id = btn.dataset.scene;
-      if (!id) return;
-      callService('scene', 'turn_on', { entity_id: id }).then(() => toast('Scena uruchomiona'));
-    });
-  });
 }
 
 function renderCamPreviews() {
@@ -290,7 +341,6 @@ function renderCamPreviews() {
     attachCamStreams(el);
     return;
   }
-  stopCamStreams();
   el.dataset.camKey = key;
   el.innerHTML = cams.map((c) => camCardHtml(c, cfg)).join('');
   bindCamCards(el, (id) => openCameraModal(id, cfg));
@@ -467,7 +517,12 @@ function renderNowPlaying() {
   playBtn.textContent = e.state === 'playing' ? '⏸' : '▶';
   const dur = a.media_duration || 0;
   const pos = a.media_position || 0;
-  bar.style.width = dur > 0 ? `${(pos / dur) * 100}%` : '0%';
+  const pct = dur > 0 ? `${(pos / dur) * 100}%` : '0%';
+  bar.style.width = pct;
+  const spBar = document.getElementById('sp-pf');
+  if (spBar) spBar.style.width = pct;
+  const spPlay = document.getElementById('sp-play');
+  if (spPlay) spPlay.textContent = e.state === 'playing' ? '⏸' : '▶';
 }
 
 function bindProgress() {
@@ -531,20 +586,12 @@ document.getElementById('btn-refresh')?.addEventListener('click', async () => {
   }
 });
 
-document.getElementById('hero-weather-tap')?.addEventListener('click', () => {
-  setTab('weather');
-  renderWeatherPage();
-});
-
 document.getElementById('ma-search-btn')?.addEventListener('click', searchMa);
 document.getElementById('ma-query')?.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') searchMa();
 });
 
-bindDock((tab) => {
-  if (tab === 'cameras') renderCamGrid();
-  if (tab === 'weather') renderWeatherPage();
-});
+bindTabNav();
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) stopCamStreams();
   else resumeCamStreams();

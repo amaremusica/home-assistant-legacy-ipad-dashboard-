@@ -18,12 +18,6 @@ export function setTab(name) {
   document.querySelectorAll('.view').forEach((v) => {
     v.classList.toggle('active', v.dataset.view === name);
   });
-  document.querySelectorAll('.dock-btn').forEach((b) => {
-    b.classList.toggle('active', b.dataset.tab === name);
-  });
-  if (document.startViewTransition) {
-    document.startViewTransition?.(() => {});
-  }
 }
 
 export function bindDock(onTab) {

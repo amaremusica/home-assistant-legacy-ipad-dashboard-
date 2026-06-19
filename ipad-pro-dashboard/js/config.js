@@ -11,7 +11,7 @@ const DEFAULTS = {
   ha_ma: 'media_player.wolomin',
   ha_cams: 'camera.front,camera.tyl',
   ha_cam_labels: 'camera.front:Front,camera.tyl:Tył',
-  ha_cam_mode: 'auto',
+  ha_cam_mode: 'mjpeg',
   ha_scene_eve: '',
   ha_scene_leave: '',
   ha_scene_off: '',
@@ -181,6 +181,25 @@ export const AIR = {
   pm25: 'sensor.parcel_locker_wol02bapp_pm_2_5',
   pm10: 'sensor.parcel_locker_wol02bapp_pm_10'
 };
+
+export const FRIDGE = {
+  fridge: 'sensor.lodowka_fridge_temperature',
+  freezer: 'sensor.lodowka_freezer_temperature'
+};
+
+/** Pokoje na ekranie Dom (jak legacy iPad) */
+export const DASH_ROOMS = [
+  { key: 'salon', label: 'Salon', icon: '🛋️', light: 'light.swiatlo_salon_swiatlo', temp: 'sensor.termometr_salon_temperatura', hum: 'sensor.termometr_salon_wilgotnosc' },
+  { key: 'syp', label: 'Sypialnia', icon: '🛏️', light: 'light.swiatlo_sypialnia_swiatlo', temp: 'sensor.termometr_sypialnia_temperatura', hum: 'sensor.termometr_sypialnia_wilgotnosc' },
+  { key: 'laz', label: 'Łazienka', icon: '🛁', light: 'light.swiatlo_lazienka_swiatlo', temp: 'sensor.termometr_lazienka_temperatura', hum: 'sensor.termometr_lazienka_wilgotnosc' },
+  { key: 'gar', label: 'Garderoba', icon: '🧥', light: 'light.swiatlo_garderoba_swiatlo', temp: 'sensor.temperatura_garderoba_temperatura', hum: 'sensor.temperatura_garderoba_wilgotnosc' },
+  { key: 'ogr', label: 'Ogród', icon: '🌳', light: 'light.wiatrolap_gorne_swiatlo', temp: 'sensor.termometr_ogrod_temperatura', hum: 'sensor.termometr_ogrod_wilgotnosc' }
+];
+
+export const GATES = [
+  { key: 'brama', id: 'switch.smart_switch_b78c', label: 'Brama', icon: '🔒', cls: 'sc-rose', onLabel: 'Otwarta', offLabel: 'Zamknięta' },
+  { key: 'furtka', id: 'switch.furtka', label: 'Furtka', icon: '🚪', cls: 'sc-emerald', onLabel: 'Otwarta', offLabel: 'Zamknięta' }
+];
 
 export const K1C = {
   camera: 'camera.k1c_creality_printer_camera',

@@ -21,7 +21,7 @@
     .boot-status.hidden { display: none; }
   </style>
 </head>
-<body>
+<body class="theme-light">
   <div id="boot-status" class="boot-status">Ładowanie panelu…</div>
   <div id="ambient" aria-hidden="true">
     <div class="orb orb-a"></div>
@@ -43,28 +43,97 @@
       </div>
     </header>
 
+    <nav class="tabnav glass anim-in" id="tabnav">
+      <button type="button" class="tb active" data-tab="home"><span class="tbi">🏠</span>Dom</button>
+      <button type="button" class="tb" data-tab="rooms" data-room="salon"><span class="tbi">🛋️</span>Salon</button>
+      <button type="button" class="tb" data-tab="rooms" data-room="sypialnia"><span class="tbi">🛏️</span>Sypialnia</button>
+      <button type="button" class="tb" data-tab="rooms" data-room="kuchnia"><span class="tbi">🍳</span>Kuchnia</button>
+      <button type="button" class="tb" data-tab="rooms" data-room="lazienka_dol"><span class="tbi">🛁</span>Łazienki</button>
+      <button type="button" class="tb" data-tab="rooms" data-room="ogrod"><span class="tbi">🌳</span>Ogród</button>
+      <button type="button" class="tb" data-tab="cameras"><span class="tbi">📷</span>Kamery</button>
+      <button type="button" class="tb" data-tab="music"><span class="tbi">♪</span>Muzyka</button>
+      <button type="button" class="tb" data-tab="weather"><span class="tbi">🌦️</span>Pogoda</button>
+    </nav>
+
     <main id="main" class="main">
       <section id="view-home" class="view active" data-view="home">
-        <div class="hero glass anim-in hero-tap" id="hero-weather-tap" role="button" tabindex="0">
-          <div class="hero-weather">
-            <div class="hero-temp"><span id="w-temp">--</span><span class="unit">°</span></div>
-            <div class="hero-meta">
-              <div class="hero-cond" id="w-cond">Pogoda</div>
-              <div class="hero-feels" id="w-feels">Odczuwalna --°</div>
+        <div class="dash">
+          <div class="dash-cols">
+            <div class="dash-col dash-left">
+              <div class="wcard glass" id="dash-wcard" title="Pogoda — szczegóły">
+                <div class="wtop">
+                  <div>
+                    <div class="wcond" id="wd-cond">Pogoda</div>
+                    <div class="wloc">📍 Dom</div>
+                  </div>
+                  <div class="wicon" id="wd-icon">🌤️</div>
+                </div>
+                <div class="wtemp"><span id="wd-temp">--</span><span class="wunit">°C</span></div>
+                <div class="wstats">
+                  <div class="wst"><b id="wd-pres">--</b><span>hPa</span></div>
+                  <div class="wst"><b id="wd-hum">--</b><span>%</span></div>
+                  <div class="wst"><b id="wd-wind">--</b><span>km/h</span></div>
+                </div>
+                <div class="wsunline" id="wd-sun"></div>
+              </div>
+              <div class="gauge card glass">
+                <svg class="gauge-svg" viewBox="0 0 120 120">
+                  <circle cx="60" cy="60" r="52" stroke="rgba(127,127,127,0.18)" stroke-width="10" fill="none"/>
+                  <circle id="gauge-arc" cx="60" cy="60" r="52" stroke="#34d399" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="327" stroke-dashoffset="327" transform="rotate(-90 60 60)"/>
+                  <text id="gauge-pct" x="60" y="57" text-anchor="middle" font-size="22" font-weight="700">--</text>
+                </svg>
+                <div class="gauge-lbl">Jakość powietrza</div>
+                <div class="gauge-val" id="gauge-lab">--</div>
+              </div>
+            </div>
+            <div class="dash-col dash-mid">
+              <div class="rgrid" id="dash-rooms"></div>
+              <div class="scenerow" id="dash-scenes"></div>
+              <div class="ecard glass">
+                <div class="ecard-h">
+                  <span class="ecard-t">⚡ Pobór mocy</span>
+                  <span class="ecard-now"><span id="e-now">--</span><span class="eu">W</span></span>
+                </div>
+                <div class="ephases">
+                  <div class="eph"><span>L1</span><div class="eph-bar"><i id="e-b1"></i></div><b id="e-pp1">--</b> W</div>
+                  <div class="eph"><span>L2</span><div class="eph-bar"><i id="e-b2"></i></div><b id="e-pp2">--</b> W</div>
+                  <div class="eph"><span>L3</span><div class="eph-bar"><i id="e-b3"></i></div><b id="e-pp3">--</b> W</div>
+                </div>
+              </div>
+              <div class="kcard glass">
+                <div class="kc-h">❄️ Lodówka</div>
+                <div class="ktemps">
+                  <div><span>🧊 Lodówka</span><b id="ft2">--</b>°</div>
+                  <div><span>❄️ Zamrażarka</span><b id="fzt">--</b>°</div>
+                </div>
+              </div>
+            </div>
+            <div class="dash-col dash-right">
+              <div class="spro card glass">
+                <div class="spro-top"><span>Spotify</span><span class="sp-badge">♪</span></div>
+                <div class="spro-body">
+                  <div class="spro-art" id="sp-art"></div>
+                  <div><div class="spro-track" id="sp-t">--</div><div class="spro-artist" id="sp-a">--</div></div>
+                </div>
+                <div class="spprog"><div class="sppbar"><div class="sppfill" id="sp-pf"></div></div></div>
+                <div class="mctrl">
+                  <button type="button" class="mbtn" id="sp-prev">⏮</button>
+                  <button type="button" class="mbtn play" id="sp-play">▶</button>
+                  <button type="button" class="mbtn" id="sp-next">⏭</button>
+                </div>
+              </div>
+              <div class="camcard glass" id="dash-cam" data-cam="">
+                <div class="cam-viewport">
+                  <img class="cam-stream" alt="">
+                  <div class="cam-off">brak obrazu</div>
+                  <span class="cam-live"><i></i>LIVE</span>
+                </div>
+                <span class="label">Front</span>
+              </div>
+              <div class="ctlrow" id="dash-gates"></div>
             </div>
           </div>
-          <div class="hero-icon" id="w-icon">🌤️</div>
         </div>
-        <div class="energy-strip glass anim-in delay-1" id="energy-strip">
-          <div class="en-ph"><span>L1</span><b id="en-p1">--</b> W</div>
-          <div class="en-ph"><span>L2</span><b id="en-p2">--</b> W</div>
-          <div class="en-ph"><span>L3</span><b id="en-p3">--</b> W</div>
-        </div>
-        <div class="quick-grid anim-in delay-1" id="quick-scenes"></div>
-        <h2 class="section-title anim-in delay-2">Kamery · podgląd 4K</h2>
-        <div class="cam-preview-grid anim-in delay-2" id="cam-preview"></div>
-        <h2 class="section-title anim-in delay-3">Salon</h2>
-        <div class="light-grid anim-in delay-3" id="room-salon"></div>
       </section>
 
       <section id="view-cameras" class="view" data-view="cameras">
@@ -119,14 +188,6 @@
         <div class="light-grid anim-in delay-2" id="room-grid"></div>
       </section>
     </main>
-
-    <nav class="dock glass anim-in" id="dock">
-      <button type="button" class="dock-btn active" data-tab="home"><span>🏠</span>Dom</button>
-      <button type="button" class="dock-btn" data-tab="cameras"><span>📷</span>Kamery</button>
-      <button type="button" class="dock-btn" data-tab="weather"><span>🌦️</span>Pogoda</button>
-      <button type="button" class="dock-btn" data-tab="music"><span>♪</span>Muzyka</button>
-      <button type="button" class="dock-btn" data-tab="rooms"><span>💡</span>Pokoje</button>
-    </nav>
   </div>
 
   <dialog id="cfg" class="cfg-dialog">

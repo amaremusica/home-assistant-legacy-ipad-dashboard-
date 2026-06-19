@@ -1,30 +1,18 @@
 /**
- * Kamery iPad Pro — MJPEG na kafelkach (jak legacy iPad), WebRTC/HLS w modalu
+ * Kamery — płynny MJPEG na kafelkach (EZVIZ), WebRTC/HLS w modalu
  */
 import { wsSend, cameraSnapshotUrl, cameraStreamUrl, getState, getBase } from './ha.js?v=1.1.3';
 
 const QUALITY = { full: { w: 3840, h: 2160 } };
-const MJPEG_TIMEOUT = 18000;
 
 let activePlayer = null;
 let pinchState = null;
 const camLive = new Map();
-const camTimers = new Map();
 
 export function camSnapshot(entityId, tier = 'grid') {
   if (tier === 'full') {
     const q = QUALITY.full;
     return cameraSnapshotUrl(entityId, q.w, q.h);
-  }
-  return camSnapUrl(entityId);
-}
-
-export function camSnapUrl(entityId) {
-  const ent = getState(entityId);
-  const pic = ent?.attributes?.entity_picture;
-  if (pic) {
-    const base = pic.startsWith('http') ? pic : getBase() + pic;
-    return base + (base.includes('?') ? '&' : '?') + '_=' + Date.now();
   }
   return cameraSnapshotUrl(entityId);
 }
@@ -37,7 +25,7 @@ export function camLabel(entityId, cfg) {
 function parseCamLabels(raw) {
   const out = {};
   if (!raw) return out;
-  for (const part of raw.split(',')) {
+  for (const part of (raw || '').split(',')) {
     const p = part.trim();
     if (!p) continue;
     const i = p.indexOf(':');
@@ -47,112 +35,66 @@ function parseCamLabels(raw) {
   return out;
 }
 
-function clearCamTimer(entityId) {
-  const t = camTimers.get(entityId);
-  if (t) {
-    clearTimeout(t);
-    camTimers.delete(entityId);
-  }
+function streamUrl(entityId) {
+  return cameraStreamUrl(entityId);
 }
 
-function setCamErr(img, on) {
-  img.classList.toggle('cam-err', on);
+function isLive(entityId, img) {
+  return camLive.get(entityId) === 'mjpeg' && img?.src && img.naturalWidth > 0;
 }
 
-function isImgLive(img, entityId) {
-  const mode = camLive.get(entityId);
-  if ((mode === 'mjpeg' || mode === 'snap') && img.naturalWidth > 0) return true;
-  return img.naturalWidth > 0 && !!img.getAttribute('src');
-}
-
-function snapRefresh(img, entityId, force) {
-  if (!force && camLive.get(entityId) === 'mjpeg' && img.naturalWidth > 0) return;
-  const url = camSnapUrl(entityId);
+function startMjpegOnCard(card, entityId) {
+  if (document.hidden || !entityId) return;
+  const img = card.querySelector('.cam-stream');
+  if (!img) return;
+  const url = streamUrl(entityId);
   if (!url) return;
-  const pre = new Image();
-  pre.onload = () => {
-    if (document.hidden) return;
-    if (!force && camLive.get(entityId) === 'mjpeg' && img.naturalWidth > 0) return;
-    img.src = url;
-    setCamErr(img, false);
-    camLive.set(entityId, 'snap');
-  };
-  pre.onerror = () => setCamErr(img, true);
-  pre.src = url;
-}
+  if (isLive(entityId, img) && img.src.startsWith(url.split('?')[0])) return;
 
-function startMjpeg(img, entityId) {
-  if (document.hidden) return;
-  if (camLive.get(entityId) === 'mjpeg' && img.naturalWidth > 0) return;
-  const url = cameraStreamUrl(entityId);
-  if (!url) return;
-  if (camLive.get(entityId) === 'mjpeg' && img.getAttribute('src') === url && img.naturalWidth > 0) return;
-
-  clearCamTimer(entityId);
-  camTimers.set(
-    entityId,
-    setTimeout(() => {
-      camTimers.delete(entityId);
-      if (camLive.get(entityId) === 'mjpeg' && img.naturalWidth > 0) return;
-      snapRefresh(img, entityId, true);
-    }, MJPEG_TIMEOUT)
-  );
-
-  img.onerror = () => {
-    clearCamTimer(entityId);
-    img.onerror = null;
-    if (camLive.get(entityId) !== 'mjpeg') snapRefresh(img, entityId, true);
-  };
+  const off = card.querySelector('.cam-off');
   img.onload = () => {
-    clearCamTimer(entityId);
-    setCamErr(img, false);
     camLive.set(entityId, 'mjpeg');
+    img.classList.remove('cam-err');
+    if (off) off.style.display = 'none';
   };
-  img.src = url;
-  camLive.set(entityId, 'mjpeg');
-}
-
-function startCardStream(img, entityId) {
-  if (isImgLive(img, entityId)) return;
-  snapRefresh(img, entityId, false);
-  setTimeout(() => {
-    if (document.hidden || isImgLive(img, entityId)) return;
-    startMjpeg(img, entityId);
-  }, 350);
+  img.onerror = () => {
+    if (off) off.style.display = 'flex';
+    img.classList.add('cam-err');
+  };
+  if (img.src !== url) img.src = url;
+  else if (img.complete && img.naturalWidth > 0) camLive.set(entityId, 'mjpeg');
 }
 
 export function attachCamStreams(root) {
   if (!root || document.hidden) return;
-  root.querySelectorAll('.cam-card[data-cam]').forEach((card) => {
-    const entityId = card.dataset.cam;
-    const img = card.querySelector('.cam-thumb');
-    if (!entityId || !img) return;
-    if (isImgLive(img, entityId)) return;
-    startCardStream(img, entityId);
-  });
+  root.querySelectorAll('[data-cam]').forEach((card) => startMjpegOnCard(card, card.dataset.cam));
+}
+
+export function attachDashCam(entityId) {
+  const card = document.getElementById('dash-cam');
+  if (!card || !entityId) return;
+  card.dataset.cam = entityId;
+  startMjpegOnCard(card, entityId);
 }
 
 export function stopCamStreams() {
-  camTimers.forEach((t) => clearTimeout(t));
-  camTimers.clear();
-  document.querySelectorAll('.cam-thumb').forEach((img) => {
-    img.onload = null;
-    img.onerror = null;
-  });
   camLive.clear();
 }
 
 export function resumeCamStreams() {
+  attachCamStreams(document.getElementById('cam-grid'));
   attachCamStreams(document.getElementById('cam-preview'));
-  const grid = document.getElementById('cam-grid');
-  if (grid?.offsetParent) attachCamStreams(grid);
+  const dash = document.getElementById('dash-cam');
+  if (dash?.dataset.cam) startMjpegOnCard(dash, dash.dataset.cam);
 }
 
-export function camCardHtml(entityId, cfg) {
+export function camCardHtml(entityId, cfg, { dash = false } = {}) {
   const label = camLabel(entityId, cfg);
-  return `<article class="cam-card anim-card" data-cam="${entityId}">
+  const cls = dash ? 'camcard glass' : 'cam-card anim-card';
+  return `<article class="${cls}" data-cam="${entityId}">
     <div class="cam-viewport">
-      <img class="cam-thumb" alt="" decoding="async">
+      <img class="cam-stream" alt="">
+      <div class="cam-off">brak obrazu</div>
       <span class="cam-live"><i></i>LIVE</span>
     </div>
     <span class="label">${label}</span>
@@ -160,7 +102,7 @@ export function camCardHtml(entityId, cfg) {
 }
 
 export function bindCamCards(root, onOpen) {
-  root.querySelectorAll('.cam-card').forEach((card) => {
+  root.querySelectorAll('[data-cam]').forEach((card) => {
     card.addEventListener('click', () => onOpen(card.dataset.cam));
   });
 }
@@ -171,14 +113,13 @@ class CameraPlayer {
     this.video = videoEl;
     this.statusEl = statusEl;
     this.pc = null;
-    this.mode = 'idle';
   }
 
   setStatus(text) {
     if (this.statusEl) this.statusEl.textContent = text;
   }
 
-  async start(preferred = 'auto') {
+  async start(preferred = 'mjpeg') {
     await this.stop();
     this.setStatus('Łączenie…');
     if (preferred === 'mjpeg') {
@@ -192,23 +133,15 @@ class CameraPlayer {
 
   async tryWebRtc() {
     if (typeof RTCPeerConnection === 'undefined') return false;
-    const ent = getState(this.entityId);
-    const fst = ent?.attributes?.frontend_stream_type;
-    if (fst === 'hls') return false;
-
     try {
-      const pc = new RTCPeerConnection({
-        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
-      });
+      const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
       pc.addTransceiver('video', { direction: 'recvonly' });
       pc.addTransceiver('audio', { direction: 'recvonly' });
-
       pc.ontrack = (ev) => {
         this.video.src = '';
         this.video.srcObject = ev.streams[0];
         this.video.play().catch(() => {});
       };
-
       pc.onicecandidate = (ev) => {
         if (!ev.candidate) return;
         wsSend({
@@ -219,21 +152,13 @@ class CameraPlayer {
           sdp_m_line_index: ev.candidate.sdpMLineIndex
         }).catch(() => {});
       };
-
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
-
-      const result = await wsSend({
-        type: 'camera/webrtc/offer',
-        entity_id: this.entityId,
-        offer: offer.sdp
-      });
-
+      const result = await wsSend({ type: 'camera/webrtc/offer', entity_id: this.entityId, offer: offer.sdp });
       if (!result?.answer) throw new Error('no answer');
       await pc.setRemoteDescription({ type: 'answer', sdp: result.answer });
       this.pc = pc;
-      this.mode = 'webrtc';
-      this.setStatus('WebRTC · 4K');
+      this.setStatus('WebRTC');
       return true;
     } catch {
       if (this.pc) this.pc.close();
@@ -244,19 +169,14 @@ class CameraPlayer {
 
   async tryHls() {
     try {
-      const result = await wsSend({
-        type: 'camera/stream',
-        entity_id: this.entityId,
-        format: 'hls'
-      });
+      const result = await wsSend({ type: 'camera/stream', entity_id: this.entityId, format: 'hls' });
       const path = result?.url || result?.path;
       if (!path) return false;
       const full = path.startsWith('http') ? path : getBase() + (path.startsWith('/') ? path : `/${path}`);
       this.video.srcObject = null;
       this.video.src = full;
       await this.video.play();
-      this.mode = 'hls';
-      this.setStatus('HLS · HD/4K');
+      this.setStatus('HLS');
       return true;
     } catch {
       return false;
@@ -265,10 +185,9 @@ class CameraPlayer {
 
   startMjpeg() {
     this.video.srcObject = null;
-    this.video.src = cameraStreamUrl(this.entityId);
+    this.video.src = streamUrl(this.entityId);
     this.video.play().catch(() => {});
-    this.mode = 'mjpeg';
-    this.setStatus('MJPEG · stream');
+    this.setStatus('MJPEG · live');
   }
 
   async stop() {
@@ -279,31 +198,24 @@ class CameraPlayer {
     this.video.srcObject = null;
     this.video.removeAttribute('src');
     this.video.load();
-    this.mode = 'idle';
   }
 }
 
 export async function openCameraModal(entityId, cfg) {
   const dlg = document.getElementById('cam-modal');
   const video = document.getElementById('cam-video');
-  const snap = document.getElementById('cam-snap');
   const label = document.getElementById('cam-modal-label');
   const status = document.getElementById('cam-modal-status');
   const viewport = document.getElementById('cam-viewport');
-  const quality = cfg.ha_cam_mode || 'auto';
+  const mode = cfg.ha_cam_mode || 'mjpeg';
 
   if (activePlayer) await activePlayer.stop();
   label.textContent = camLabel(entityId, cfg);
-  video.hidden = false;
-  snap.hidden = true;
-  snap.src = camSnapshot(entityId, 'full');
   viewport.style.transform = 'scale(1)';
-
   activePlayer = new CameraPlayer(entityId, video, status);
   dlg.showModal();
   dlg.classList.add('open');
-
-  await activePlayer.start(quality);
+  await activePlayer.start(mode);
 }
 
 export async function closeCameraModal() {
@@ -311,7 +223,6 @@ export async function closeCameraModal() {
   const video = document.getElementById('cam-video');
   if (activePlayer) await activePlayer.stop();
   activePlayer = null;
-  video.srcObject = null;
   video.removeAttribute('src');
   dlg.classList.remove('open');
   dlg.close();
@@ -319,41 +230,25 @@ export async function closeCameraModal() {
 
 export function bindCameraModal(cfg) {
   document.getElementById('cam-close')?.addEventListener('click', closeCameraModal);
-  document.getElementById('cam-mode-webrtc')?.addEventListener('click', async () => {
-    if (activePlayer) await activePlayer.start('webrtc');
-  });
-  document.getElementById('cam-mode-hls')?.addEventListener('click', async () => {
-    if (activePlayer) await activePlayer.start('4k');
-  });
-  document.getElementById('cam-mode-mjpeg')?.addEventListener('click', async () => {
-    if (activePlayer) await activePlayer.start('mjpeg');
-  });
+  document.getElementById('cam-mode-webrtc')?.addEventListener('click', () => activePlayer?.start('webrtc'));
+  document.getElementById('cam-mode-hls')?.addEventListener('click', () => activePlayer?.start('4k'));
+  document.getElementById('cam-mode-mjpeg')?.addEventListener('click', () => activePlayer?.start('mjpeg'));
 
   const viewport = document.getElementById('cam-viewport');
   if (!viewport) return;
-
   viewport.addEventListener('touchstart', (e) => {
     if (e.touches.length === 2) {
       pinchState = {
-        d: Math.hypot(
-          e.touches[0].pageX - e.touches[1].pageX,
-          e.touches[0].pageY - e.touches[1].pageY
-        ),
+        d: Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY),
         scale: getViewportScale(viewport)
       };
     }
   }, { passive: true });
-
   viewport.addEventListener('touchmove', (e) => {
     if (!pinchState || e.touches.length !== 2) return;
-    const d = Math.hypot(
-      e.touches[0].pageX - e.touches[1].pageX,
-      e.touches[0].pageY - e.touches[1].pageY
-    );
-    const scale = Math.min(3, Math.max(1, pinchState.scale * (d / pinchState.d)));
-    viewport.style.transform = `scale(${scale})`;
+    const d = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
+    viewport.style.transform = `scale(${Math.min(3, Math.max(1, pinchState.scale * (d / pinchState.d)))})`;
   }, { passive: true });
-
   viewport.addEventListener('touchend', () => { pinchState = null; });
 }
 
