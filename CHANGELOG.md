@@ -2,6 +2,11 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.13.3] — 2026-06-18
+
+### Dodane
+- Przycisk **↺** obok wersji — ręczna aktualizacja panelu przez HA (`shell_command.update_ipad_panel` → `git pull` + kopia plików), bez Terminala.
+
 ## [11.13.2] — 2026-06-18
 
 ### Naprawione

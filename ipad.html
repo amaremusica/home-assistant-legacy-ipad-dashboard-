@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.13.2 -->
+<!-- build: v11.13.3 -->
 <title>Dom</title>
 <style>
 :root {
@@ -777,8 +777,8 @@ body.legacy-safari nav{background:var(--glass2);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.13.2</span>
-      <button class="hbtn" onclick="forceReload()" title="Odśwież">↺</button>
+      <span id="ver">v11.13.3</span>
+      <button class="hbtn" id="hbtn-upd" onclick="manualPanelUpdate()" title="Pobierz aktualizację z GitHub (git pull)">↺</button>
     </div>
   </header>
 
@@ -1275,7 +1275,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.13.2';
+var BUILD='11.13.3';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
@@ -1527,6 +1527,49 @@ function forceReload(){
   var base=(HA||sGet('ha_url')||'').replace(/\/$/,'');
   if(base) window.location.href=base+'/local/ipad.html?v='+BUILD+'&_='+Date.now();
   else location.reload(true);
+}
+
+var updManualBusy=false;
+
+function manualPanelUpdate(){
+  if(updManualBusy) return;
+  if(!HA||!TOK){
+    alert('Brak połączenia z HA — nie można zaktualizować panelu.');
+    return;
+  }
+  updManualBusy=true;
+  var btn=document.getElementById('hbtn-upd');
+  var verEl=document.getElementById('ver');
+  if(btn){ btn.style.opacity='0.45'; btn.title='Aktualizuję…'; }
+  if(verEl) verEl.textContent='⏳ Git pull…';
+  sSet('ha_git_pull_ts',String(Date.now()));
+  haPost('shell_command','update_ipad_panel',{},function(err){
+    if(err){
+      updManualBusy=false;
+      if(btn){ btn.style.opacity=''; btn.title='Pobierz aktualizację z GitHub (git pull)'; }
+      if(verEl) verEl.textContent='v'+BUILD;
+      alert('Błąd wywołania update_ipad_panel.\nDodaj shell_command w configuration.yaml (patrz README).');
+      return;
+    }
+    if(verEl) verEl.textContent='⏳ Kopiuję…';
+    setTimeout(function(){
+      var url=HA.replace(/\/$/,'')+'/local/ipad-version.json?nocache='+Date.now();
+      var x=new XMLHttpRequest();
+      x.open('GET',url,true);
+      x.timeout=12000;
+      x.onload=function(){
+        var remote=BUILD;
+        if(x.status===200){
+          try{ remote=String(JSON.parse(x.responseText).version||BUILD).replace(/^v/i,''); }catch(e){}
+        }
+        var base=HA.replace(/\/$/,'');
+        window.location.href=base+'/local/ipad.html?v='+remote+'&_='+Date.now();
+      };
+      x.onerror=function(){ updManualBusy=false; if(btn){ btn.style.opacity=''; } if(verEl) verEl.textContent='v'+BUILD; forceReload(); };
+      x.ontimeout=x.onerror;
+      x.send(null);
+    },6500);
+  });
 }
 
 function verParts(v){
