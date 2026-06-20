@@ -1,9 +1,9 @@
 /**
  * Music Assistant — Discover UI (jak MA web / legacy iPad)
  */
-import { getState, callService, browseMedia, entityPicture } from './ha.js?v=1.2.2';
-import { MA_SPEAKERS } from './config.js?v=1.2.2';
-import { esc, lazyImages } from './ui.js?v=1.2.2';
+import { getState, callService, browseMedia, entityPicture } from './ha.js?v=1.2.3';
+import { MA_SPEAKERS } from './config.js?v=1.2.3';
+import { esc, lazyImages } from './ui.js?v=1.2.3';
 
 let cfg = null;
 let activePlayer = '';

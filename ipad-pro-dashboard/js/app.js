@@ -1,18 +1,18 @@
-import { BUILD, loadConfig, saveConfig, exportConfig, importConfigFile, applyConfigObject, PRESET_URL, cameraList, ROOMS, SCENES, WEATHER, ENERGY, DASH_ROOMS, GATES, FRIDGE, AIR, PARCEL, GARDEN, SUN, TV, BEDS, LAUNDRY, K1C } from './config.js?v=1.2.2';
+import { BUILD, loadConfig, saveConfig, exportConfig, importConfigFile, applyConfigObject, PRESET_URL, cameraList, ROOMS, SCENES, WEATHER, ENERGY, DASH_ROOMS, GATES, FRIDGE, AIR, PARCEL, GARDEN, SUN, TV, BEDS, LAUNDRY, K1C } from './config.js?v=1.2.3';
 import {
   initHa, fetchStates, connectWebSocket, onStates, getState, callService,
   entityPicture, checkVersion, triggerPanelUpdate, getHaOrigin
-} from './ha.js?v=1.2.2';
+} from './ha.js?v=1.2.3';
 import {
   camCardHtml, bindCamCards, attachCamStreams, attachDashCam, stopCamStreams, resumeCamStreams,
   openCameraModal, closeCameraModal, bindCameraModal, camLabel, refreshCameras, startCamHealthCheck
-} from './cameras.js?v=1.2.2';
-import { renderWeatherPage } from './weather.js?v=1.2.2';
-import { initDashboard, renderDashboard } from './dashboard.js?v=1.2.2';
-import { loadTrash } from './trash.js?v=1.2.2';
-import { initMusic, renderMaNowPlaying } from './music.js?v=1.2.2';
-import { renderRoomTabs, renderRoomView, renderEnergyView, renderK1cView } from './rooms.js?v=1.2.2';
-import { toast, setOnline, setTab, tickClock, esc } from './ui.js?v=1.2.2';
+} from './cameras.js?v=1.2.3';
+import { renderWeatherPage } from './weather.js?v=1.2.3';
+import { initDashboard, renderDashboard } from './dashboard.js?v=1.2.3';
+import { loadTrash } from './trash.js?v=1.2.3';
+import { initMusic, renderMaNowPlaying } from './music.js?v=1.2.3';
+import { renderRoomTabs, renderRoomView, renderEnergyView, renderK1cView } from './rooms.js?v=1.2.3';
+import { toast, setOnline, setTab, tickClock, esc } from './ui.js?v=1.2.3';
 
 const GIT_PULL_MS = 30 * 60 * 1000;
 const CHECK_MS = 2 * 60 * 1000;
@@ -193,19 +193,51 @@ function fillConfigForm(c) {
   document.getElementById('cfg-trash').value = c.ha_trash || '';
 }
 
-function showConfig() {
+function connectErrorMsg(e) {
+  const m = String(e?.message || e || '');
+  if (m === '401' || m === '403') return 'Odmowa dostępu — wygeneruj nowy token w HA (Profil → Tokeny).';
+  if (m === 'timeout' || m.includes('timeout')) return 'Timeout — HA nie odpowiada pod tym adresem.';
+  if (m === 'ws' || m === 'ws timeout') return 'WebSocket nie połączył się — sprawdź token i zrestartuj HA.';
+  if (m === 'net' || m === 'Failed to fetch') return 'Brak połączenia z HA — sprawdź URL i sieć Wi‑Fi.';
+  return m ? `Błąd: ${m}` : 'Nie udało się połączyć z Home Assistant.';
+}
+
+function openConfigDialog() {
+  const dlg = document.getElementById('cfg');
+  if (!dlg) return;
+  try {
+    if (typeof dlg.showModal === 'function') {
+      if (!dlg.open) dlg.showModal();
+    } else {
+      dlg.setAttribute('open', '');
+    }
+  } catch {
+    dlg.setAttribute('open', '');
+  }
+}
+
+function closeConfigDialog() {
+  const dlg = document.getElementById('cfg');
+  if (!dlg) return;
+  try {
+    if (typeof dlg.close === 'function') dlg.close();
+    else dlg.removeAttribute('open');
+  } catch {
+    dlg.removeAttribute('open');
+  }
+}
+
+function showConfig(errorMsg = '') {
   cfg = loadConfig();
   fillConfigForm(cfg);
   document.getElementById('app')?.classList.remove('hidden');
   hideBootStatus();
-  const dlg = document.getElementById('cfg');
-  if (!dlg) return;
-  try {
-    if (typeof dlg.showModal === 'function') dlg.showModal();
-    else dlg.setAttribute('open', '');
-  } catch {
-    dlg.setAttribute('open', '');
+  const errEl = document.getElementById('cfg-error');
+  if (errEl) {
+    errEl.textContent = errorMsg;
+    errEl.hidden = !errorMsg;
   }
+  openConfigDialog();
 }
 
 async function loadPresetFromHa() {
@@ -246,27 +278,27 @@ async function connect() {
   cfg = ensureHaUrl(loadConfig());
   if (!cfg.ha_url || !cfg.ha_token) {
     fillConfigForm(cfg);
-    showConfig();
-    return;
+    showConfig('Uzupełnij URL Home Assistant i token.');
+    return false;
   }
 
   setBootStatus('Łączenie z Home Assistant…');
   initHa(cfg);
 
   try {
-    await fetchStates(allEntityIds());
-    await connectWebSocket();
+    await withTimeout(fetchStates(allEntityIds()), 20000);
+    await withTimeout(connectWebSocket(), 12000);
     setOnline(true);
-  } catch {
+  } catch (e) {
     setOnline(false);
-    toast('Błąd połączenia — sprawdź URL i token');
-    showConfig();
-    return;
+    showConfig(connectErrorMsg(e));
+    return false;
   }
 
   document.getElementById('ver').textContent = 'v' + BUILD;
   document.getElementById('app').classList.remove('hidden');
   hideBootStatus();
+  closeConfigDialog();
   toast('Połączono · WebSocket aktywny');
 
   try {
@@ -288,6 +320,7 @@ async function connect() {
     setBootStatus(`Błąd panelu: ${e?.message || e}`, true);
     throw e;
   }
+  return true;
 }
 
 function initDashCam() {
@@ -416,8 +449,15 @@ function renderCamGrid() {
   attachCamStreams(el);
 }
 
-document.getElementById('cfg-form')?.addEventListener('submit', (e) => {
+document.getElementById('cfg-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
+  const btn = document.getElementById('cfg-connect');
+  const errEl = document.getElementById('cfg-error');
+  if (errEl) {
+    errEl.hidden = true;
+    errEl.textContent = '';
+  }
+
   saveConfig({
     ha_url: document.getElementById('cfg-url').value.trim(),
     ha_token: document.getElementById('cfg-token').value.trim(),
@@ -428,9 +468,22 @@ document.getElementById('cfg-form')?.addEventListener('submit', (e) => {
     ha_cam_mode: document.getElementById('cfg-cam-mode').value,
     ha_trash: document.getElementById('cfg-trash').value.trim()
   });
-  document.getElementById('cfg').close();
-  loadTrash(document.getElementById('cfg-trash').value.trim(), { force: true });
-  connect();
+
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Łączenie…';
+  }
+  closeConfigDialog();
+  setBootStatus('Łączenie z Home Assistant…');
+
+  try {
+    await connect();
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = 'Połącz';
+    }
+  }
 });
 
 document.getElementById('btn-menu')?.addEventListener('click', showConfig);

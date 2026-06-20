@@ -232,6 +232,11 @@ body { position: fixed; inset: 0; }
 .cfg-card h2 { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
 .cfg-card h2 span { color: var(--accent); }
 .cfg-sub { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+.cfg-error {
+  margin-bottom: 12px; padding: 10px 12px; border-radius: 10px;
+  background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #b91c1c; font-size: 13px; font-weight: 600; line-height: 1.4;
+}
 .cfg-card label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 14px 0 6px; }
 .cfg-card input, .cfg-card select {
   width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--glass-border);

@@ -1,5 +1,5 @@
 /** Kalendarz śmieci — jak legacy iPad (calendar.trash) */
-import { fetchCalendar } from './ha.js?v=1.2.2';
+import { fetchCalendar } from './ha.js?v=1.2.3';
 
 const REFRESH_MS = 30 * 60 * 1000;
 const FAIL_MS = 5 * 60 * 1000;

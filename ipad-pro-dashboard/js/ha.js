@@ -100,11 +100,21 @@ export async function callService(domain, service, data = {}) {
 }
 
 export async function fetchStates(filterIds) {
-  const q = filterIds?.length ? `?filter_entity_id=${filterIds.join(',')}` : '';
-  const list = await apiGet(`states${q}`);
-  for (const e of list) states.set(e.entity_id, e);
-  emit();
-  return list;
+  const apply = (list) => {
+    for (const e of list) states.set(e.entity_id, e);
+    emit();
+    return list;
+  };
+  if (!filterIds?.length) return apply(await apiGet('states'));
+  try {
+    const q = `?filter_entity_id=${filterIds.join(',')}`;
+    return apply(await apiGet(`states${q}`));
+  } catch {
+    const set = new Set(filterIds);
+    const list = await apiGet('states');
+    const picked = list.filter((e) => set.has(e.entity_id));
+    return apply(picked.length ? picked : list);
+  }
 }
 
 export function wsSend(msg) {
@@ -120,11 +130,22 @@ export function wsSend(msg) {
   });
 }
 
-export function connectWebSocket() {
+export function connectWebSocket(timeoutMs = 12000) {
   return new Promise((resolve, reject) => {
     if (ws) {
       try { ws.close(); } catch { /* ignore */ }
     }
+    let settled = false;
+    const finish = (fn, arg) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      fn(arg);
+    };
+    const timer = setTimeout(() => {
+      try { ws?.close(); } catch { /* ignore */ }
+      finish(reject, new Error('ws timeout'));
+    }, timeoutMs);
     const url = base().replace(/^http/, 'ws') + '/api/websocket';
     ws = new WebSocket(url);
     ws.onmessage = (ev) => {
@@ -135,11 +156,11 @@ export function connectWebSocket() {
       }
       if (msg.type === 'auth_ok') {
         ws.send(JSON.stringify({ id: wsId++, type: 'subscribe_events', event_type: 'state_changed' }));
-        resolve();
+        finish(resolve);
         return;
       }
       if (msg.type === 'auth_invalid') {
-        reject(new Error('auth'));
+        finish(reject, new Error('401'));
         return;
       }
       if (msg.type === 'event' && msg.event?.data?.entity_id) {
@@ -156,8 +177,9 @@ export function connectWebSocket() {
         else res(msg.result);
       }
     };
-    ws.onerror = () => reject(new Error('ws'));
+    ws.onerror = () => finish(reject, new Error('ws'));
     ws.onclose = () => {
+      if (!settled) finish(reject, new Error('ws'));
       setTimeout(() => connectWebSocket().catch(() => {}), 5000);
     };
   });

@@ -1,11 +1,11 @@
 /** Ekran Dom — układ jak legacy iPad 4 */
-import { getState, callService, entityPicture, fetchCalendar } from './ha.js?v=1.2.2';
+import { getState, callService, entityPicture, fetchCalendar } from './ha.js?v=1.2.3';
 import {
   WEATHER, ENERGY, AIR, SCENES, DASH_ROOMS, GATES, FRIDGE,
   PARCEL, GARDEN, RUN_CAL, SUN
-} from './config.js?v=1.2.2';
-import { esc } from './ui.js?v=1.2.2';
-import { weatherSvgInner, wSvgSmall } from './weather-svg.js?v=1.2.2';
+} from './config.js?v=1.2.3';
+import { esc } from './ui.js?v=1.2.3';
+import { weatherSvgInner, wSvgSmall } from './weather-svg.js?v=1.2.3';
 
 let fcData = null;
 let fcLast = 0;

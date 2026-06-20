@@ -10,7 +10,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
-  <link rel="stylesheet" href="css/app.css?v=1.2.2">
+  <link rel="stylesheet" href="css/app.css?v=1.2.3">
   <title>Dom</title>
   <style>
     .boot-status {
@@ -71,7 +71,7 @@
       </div>
       <div class="topbar-right">
         <button type="button" class="icon-btn subtle" id="btn-refresh" aria-label="Odśwież panel" title="Aktualizuj z Git">↺</button>
-        <span class="ver" id="ver">v1.2.2</span>
+        <span class="ver" id="ver">v1.2.3</span>
       </div>
     </header>
 
@@ -300,9 +300,10 @@
   </div>
 
   <dialog id="cfg" class="cfg-dialog">
-    <form method="dialog" class="cfg-card glass" id="cfg-form">
+    <form class="cfg-card glass" id="cfg-form">
       <h2>Połącz z <span>Home Assistant</span></h2>
       <p class="cfg-sub">iPad Pro · WebRTC 4K · animacje · WebSocket na żywo</p>
+      <div id="cfg-error" class="cfg-error" hidden role="alert"></div>
       <label>URL Home Assistant</label>
       <input type="url" id="cfg-url" placeholder="https://twoj-ha.example.com" autocomplete="url" required>
       <label>Long-Lived Access Token</label>
@@ -328,7 +329,7 @@
         <button type="button" class="btn ghost" id="cfg-import">Importuj JSON</button>
         <button type="button" class="btn ghost" id="cfg-preset">Preset z HA</button>
         <button type="button" class="btn ghost" id="cfg-export">Eksportuj</button>
-        <button type="submit" class="btn primary">Połącz</button>
+        <button type="submit" class="btn primary" id="cfg-connect">Połącz</button>
       </div>
     </form>
   </dialog>
@@ -371,7 +372,7 @@
     });
   </script>
   <script type="module">
-    import('./js/app.js?v=1.2.2').catch((e) => {
+    import('./js/app.js?v=1.2.3').catch((e) => {
       const s = document.getElementById('boot-status');
       if (s) {
         s.classList.remove('hidden');
