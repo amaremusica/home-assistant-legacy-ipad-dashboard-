@@ -1,10 +1,14 @@
 /** Ekran Dom — układ jak legacy iPad 4 */
-import { getState, callService, entityPicture, fetchCalendar } from './ha.js?v=1.1.6';
+import { getState, callService, entityPicture, fetchCalendar } from './ha.js?v=1.2.0';
 import {
   WEATHER, ENERGY, AIR, SCENES, DASH_ROOMS, GATES, FRIDGE,
   PARCEL, GARDEN, RUN_CAL, SUN
-} from './config.js?v=1.1.6';
-import { esc } from './ui.js?v=1.1.6';
+} from './config.js?v=1.2.0';
+import { esc } from './ui.js?v=1.2.0';
+import { weatherSvgInner, wSvgSmall } from './weather-svg.js?v=1.2.0';
+
+let fcData = null;
+let fcLast = 0;
 
 const WICON = {
   'clear-night': '🌙', cloudy: '☁️', fog: '🌫️', hail: '🌨️', lightning: '⛈️',
@@ -85,6 +89,7 @@ export function initDashboard(cfg, onScene, onRoomLight, onGate) {
 
 export function renderDashboard(cfg) {
   renderDashWeather();
+  loadForecast().then(() => renderMiniForecast());
   renderDashAir();
   renderDashRooms();
   renderDashEnergy();
@@ -106,7 +111,9 @@ function renderDashWeather() {
   tx('wd-hum', fmt(a.humidity, 0));
   tx('wd-wind', fmt(a.wind_speed, 1));
   const icon = document.getElementById('wd-icon');
-  if (icon) icon.textContent = WICON[w.state] || '🌤️';
+  const svg = document.getElementById('wsvg');
+  if (svg) svg.innerHTML = weatherSvgInner(w.state);
+  else if (icon) icon.textContent = WICON[w.state] || '🌤️';
 
   const aqi = getState(AIR.index)?.state;
   const badge = aqBadge(aqi);
@@ -121,19 +128,45 @@ function renderDashWeather() {
   renderMiniForecast(a);
 }
 
+async function loadForecast() {
+  const now = Date.now();
+  if (fcData && now - fcLast < 900000) return fcData;
+  try {
+    const resp = await callService('weather', 'get_forecasts', { type: 'daily', entity_id: WEATHER });
+    const sr = resp?.service_response || resp;
+    for (const k of Object.keys(sr || {})) {
+      if (sr[k]?.forecast?.length) {
+        fcData = sr[k].forecast;
+        fcLast = Date.now();
+        return fcData;
+      }
+    }
+  } catch { /* fallback below */ }
+  const w = getState(WEATHER);
+  if (w?.attributes?.forecast?.length) {
+    fcData = w.attributes.forecast;
+    fcLast = Date.now();
+  }
+  return fcData;
+}
+
 function renderMiniForecast(attrs) {
   const box = document.getElementById('wfc');
   if (!box) return;
-  const fc = attrs?.forecast;
+  const fc = fcData || attrs?.forecast;
   if (!Array.isArray(fc) || !fc.length) {
     box.innerHTML = '';
     return;
   }
-  box.innerHTML = fc.slice(0, 5).map((d) => {
+  const dni = ['Nd', 'Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'So'];
+  box.innerHTML = fc.slice(0, 5).map((d, i) => {
     const dt = d.datetime ? new Date(d.datetime) : null;
-    const day = dt ? ['Nd', 'Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'So'][dt.getDay()] : '—';
-    const ic = FC_ICONS[d.condition] || WICON[d.condition] || '🌤️';
-    return `<div class="wfc-day"><span class="wfc-d">${day}</span><span class="wfc-i">${ic}</span><span class="wfc-t">${fmt(d.templow, 0)}/${fmt(d.temperature, 0)}°</span></div>`;
+    const day = dt ? dni[dt.getDay()] : `+${i}`;
+    const cond = d.condition || 'cloudy';
+    const hi = fmt(d.temperature, 0);
+    const lo = fmt(d.templow, 0);
+    const pp = d.precipitation_probability != null ? `${Math.round(d.precipitation_probability)}%` : '';
+    return `<div class="wfd"><div class="wdn">${day}</div><svg class="wfi" viewBox="0 0 36 36">${wSvgSmall(cond)}</svg><div class="wft">${hi}<span class="wflo">${lo}°</span></div>${pp ? `<div class="wfp">${pp}</div>` : ''}</div>`;
   }).join('');
 }
 

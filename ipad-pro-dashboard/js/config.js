@@ -1,4 +1,4 @@
-export const BUILD = '1.1.6';
+export const BUILD = '1.2.0';
 
 export const CFG_KEYS = [
   'ha_url', 'ha_token', 'ha_spotify', 'ha_ma', 'ha_cams', 'ha_cam_labels', 'ha_cam_mode',
@@ -90,6 +90,11 @@ export function cameraList(cfg) {
 export const ROOMS = {
   salon: {
     label: 'Salon',
+    sensors: [
+      { id: 'sensor.termometr_salon_temperatura', label: 'Temp', unit: '°', dec: 1 },
+      { id: 'sensor.termometr_salon_wilgotnosc', label: 'Wilgotność', unit: '%', dec: 0 },
+      { id: 'sensor.termometr_salon_cisnienie', label: 'Ciśnienie', unit: ' hPa', dec: 0 }
+    ],
     lights: [
       { id: 'light.swiatlo_salon_swiatlo', name: 'Salon 1' },
       { id: 'light.swiatlo_salon_swiatlo_2', name: 'Salon 2' },
@@ -100,6 +105,7 @@ export const ROOMS = {
   },
   kuchnia: {
     label: 'Kuchnia',
+    sensors: [{ id: 'sensor.swiatlo_kuchnia_temperatura_urzadzenia', label: 'Temp', unit: '°', dec: 1 }],
     lights: [
       { id: 'light.swiatlo_kuchnia_swiatlo_2', name: 'Blat' },
       { id: 'light.swiatlo_kuchnia_swiatlo_3', name: 'Sufit' },
@@ -109,6 +115,10 @@ export const ROOMS = {
   },
   sypialnia: {
     label: 'Sypialnia',
+    sensors: [
+      { id: 'sensor.termometr_sypialnia_temperatura', label: 'Temp', unit: '°', dec: 1 },
+      { id: 'sensor.termometr_sypialnia_wilgotnosc', label: 'Wilgotność', unit: '%', dec: 0 }
+    ],
     lights: [
       { id: 'light.swiatlo_sypialnia_swiatlo', name: 'Sypialnia' },
       { id: 'switch.marcin_sypialnia', name: 'Marcin' },
@@ -117,6 +127,10 @@ export const ROOMS = {
   },
   lazienka_dol: {
     label: 'Łazienka dół',
+    sensors: [
+      { id: 'sensor.termometr_lazienka_temperatura', label: 'Temp', unit: '°', dec: 1 },
+      { id: 'sensor.termometr_lazienka_wilgotnosc', label: 'Wilgotność', unit: '%', dec: 0 }
+    ],
     lights: [
       { id: 'light.swiatlo_lazienka_swiatlo', name: 'Łaz. 1' },
       { id: 'light.swiatlo_lazienka_swiatlo_2', name: 'Łaz. 2' },
@@ -140,6 +154,10 @@ export const ROOMS = {
   },
   garderoba: {
     label: 'Garderoba',
+    sensors: [
+      { id: 'sensor.temperatura_garderoba_temperatura', label: 'Temp', unit: '°', dec: 1 },
+      { id: 'sensor.temperatura_garderoba_wilgotnosc', label: 'Wilgotność', unit: '%', dec: 0 }
+    ],
     lights: [
       { id: 'light.swiatlo_garderoba_swiatlo', name: 'Garderoba 1' },
       { id: 'light.swiatlo_garderoba_swiatlo_2', name: 'Garderoba 2' },
@@ -153,8 +171,25 @@ export const ROOMS = {
   },
   ogrod: {
     label: 'Ogród',
+    sensors: [
+      { id: 'sensor.termometr_ogrod_temperatura', label: 'Temp', unit: '°', dec: 1 },
+      { id: 'sensor.termometr_ogrod_wilgotnosc', label: 'Wilgotność', unit: '%', dec: 0 },
+      { id: 'sensor.termometr_ogrod_cisnienie', label: 'Ciśnienie', unit: ' hPa', dec: 0 }
+    ],
     lights: [{ id: 'switch.smart_switch_b78c', name: 'Brama' }]
   }
+};
+
+export const TV = 'media_player.samsung_q70aa_85_tv_qe85q70aatxxh';
+
+export const BEDS = [
+  { id: 'switch.marcin_sypialnia', name: 'Marcin', icon: '🛏️' },
+  { id: 'switch.marzenka_sypialnia', name: 'Marzenka', icon: '🛏️' }
+];
+
+export const LAUNDRY = {
+  washer: 'sensor.pralka_current_status',
+  dryer: 'sensor.szuszarka_current_status'
 };
 
 export const SCENES = [

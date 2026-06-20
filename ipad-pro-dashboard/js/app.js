@@ -1,16 +1,18 @@
-import { BUILD, loadConfig, saveConfig, exportConfig, importConfigFile, applyConfigObject, PRESET_URL, cameraList, ROOMS, SCENES, WEATHER, ENERGY, DASH_ROOMS, GATES, FRIDGE, AIR, PARCEL, GARDEN, SUN } from './config.js?v=1.1.6';
+import { BUILD, loadConfig, saveConfig, exportConfig, importConfigFile, applyConfigObject, PRESET_URL, cameraList, ROOMS, SCENES, WEATHER, ENERGY, DASH_ROOMS, GATES, FRIDGE, AIR, PARCEL, GARDEN, SUN, TV, BEDS, LAUNDRY, K1C } from './config.js?v=1.2.0';
 import {
   initHa, fetchStates, connectWebSocket, onStates, getState, callService,
-  browseMedia, maSearch, entityPicture, checkVersion, triggerPanelUpdate, getHaOrigin
-} from './ha.js?v=1.1.6';
+  entityPicture, checkVersion, triggerPanelUpdate, getHaOrigin
+} from './ha.js?v=1.2.0';
 import {
   camCardHtml, bindCamCards, attachCamStreams, attachDashCam, stopCamStreams, resumeCamStreams,
   openCameraModal, closeCameraModal, bindCameraModal, camLabel, refreshCameras, startCamHealthCheck
-} from './cameras.js?v=1.1.6';
-import { renderWeatherPage } from './weather.js?v=1.1.6';
-import { initDashboard, renderDashboard } from './dashboard.js?v=1.1.6';
-import { loadTrash } from './trash.js?v=1.1.6';
-import { toast, setOnline, setTab, tickClock, esc, lazyImages } from './ui.js?v=1.1.6';
+} from './cameras.js?v=1.2.0';
+import { renderWeatherPage } from './weather.js?v=1.2.0';
+import { initDashboard, renderDashboard } from './dashboard.js?v=1.2.0';
+import { loadTrash } from './trash.js?v=1.2.0';
+import { initMusic, renderMaNowPlaying } from './music.js?v=1.2.0';
+import { renderRoomTabs, renderRoomView, renderEnergyView, renderK1cView } from './rooms.js?v=1.2.0';
+import { toast, setOnline, setTab, tickClock, esc } from './ui.js?v=1.2.0';
 
 const GIT_PULL_MS = 30 * 60 * 1000;
 const CHECK_MS = 2 * 60 * 1000;
@@ -21,12 +23,6 @@ const RELOAD_GUARD_MS = 15000;
 let cfg = loadConfig();
 let pollTimer = null;
 let activeRoom = 'salon';
-let mediaEntity = '';
-let progressTimer = null;
-
-const PLACEHOLDER = 'data:image/svg+xml,' + encodeURIComponent(
-  '<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>'
-);
 
 function hideBootStatus() {
   document.getElementById('boot-status')?.classList.add('hidden');
@@ -163,6 +159,13 @@ function allEntityIds() {
   Object.values(PARCEL).forEach((id) => ids.add(id));
   Object.values(GARDEN).forEach((id) => ids.add(id));
   ids.add(SUN);
+  ids.add(TV);
+  BEDS.forEach((b) => ids.add(b.id));
+  Object.values(LAUNDRY).forEach((id) => ids.add(id));
+  Object.values(K1C).forEach((id) => ids.add(id));
+  for (const r of Object.values(ROOMS)) {
+    for (const s of r.sensors || []) ids.add(s.id);
+  }
   for (const s of SCENES) {
     const id = cfg[s.key];
     if (id) ids.add(id);
@@ -258,8 +261,7 @@ async function connect() {
   loadTrash(cfg.ha_trash);
   setInterval(() => loadTrash(cfg.ha_trash), 30 * 60 * 1000);
   startCamHealthCheck();
-  loadMusicHome();
-  bindProgress();
+  initMusic(cfg, () => renderMaNowPlaying());
   bindCameraModal(cfg);
   bindDashSpotify();
 }
@@ -327,12 +329,14 @@ function bindTabNav() {
     if (room) {
       activeRoom = room;
       setTab('rooms');
-      renderRoomTabs();
-      renderRoom(document.getElementById('room-grid'), ROOMS[activeRoom]);
+      onRoomSelect(room);
     } else {
       setTab(tab);
       if (tab === 'cameras') renderCamGrid();
       if (tab === 'weather') renderWeatherPage();
+      if (tab === 'energy') renderEnergyView();
+      if (tab === 'k1c') renderK1cView();
+      if (tab === 'music') renderMaNowPlaying();
       if (tab === 'home' || tab === 'cameras') refreshCameras(true);
     }
     document.querySelectorAll('#tabnav .tb').forEach((b) => b.classList.toggle('active', b === btn));
@@ -344,11 +348,18 @@ function bindTabNav() {
   });
 }
 
+function onRoomSelect(room) {
+  activeRoom = room;
+  renderRoomTabs(activeRoom, onRoomSelect);
+  renderRoomView(activeRoom);
+}
+
 function renderAll() {
   renderDashboard(cfg);
-  renderRoomTabs();
-  renderRoom(document.getElementById('room-grid'), ROOMS[activeRoom]);
-  renderNowPlaying();
+  refreshCameras(false);
+  renderRoomTabs(activeRoom, onRoomSelect);
+  renderRoomView(activeRoom);
+  renderMaNowPlaying();
 }
 
 function renderCamPreviews() {
@@ -379,200 +390,6 @@ function renderCamGrid() {
   el.innerHTML = cams.map((c) => camCardHtml(c, cfg)).join('');
   bindCamCards(el, (id) => openCameraModal(id, cfg));
   attachCamStreams(el);
-}
-
-function renderRoom(container, room) {
-  if (!container || !room) return;
-  container.innerHTML = room.lights
-    .map((l) => {
-      const st = getState(l.id)?.state || 'off';
-      const on = st === 'on';
-      return `<button type="button" class="light-tile${on ? ' on' : ''}" data-light="${esc(l.id)}">
-        <div>💡</div>
-        <div class="name">${esc(l.name)}</div>
-        <div class="state">${on ? 'on' : 'off'}</div>
-      </button>`;
-    })
-    .join('');
-  container.querySelectorAll('.light-tile').forEach((tile) => {
-    tile.addEventListener('click', () => toggleLight(tile.dataset.light, tile));
-  });
-}
-
-async function toggleLight(id, tile) {
-  const on = getState(id)?.state === 'on';
-  const domain = id.startsWith('switch.') ? 'switch' : 'light';
-  tile.classList.toggle('on', !on);
-  tile.querySelector('.state').textContent = on ? 'off' : 'on';
-  await callService(domain, on ? 'turn_off' : 'turn_on', { entity_id: id });
-}
-
-function renderRoomTabs() {
-  const el = document.getElementById('room-tabs');
-  if (!el) return;
-  el.innerHTML = Object.entries(ROOMS)
-    .map(([k, r]) => `<button type="button" class="room-tab${k === activeRoom ? ' active' : ''}" data-room="${k}">${esc(r.label)}</button>`)
-    .join('');
-  el.querySelectorAll('.room-tab').forEach((tab) => {
-    tab.addEventListener('click', () => {
-      activeRoom = tab.dataset.room;
-      renderRoomTabs();
-      renderRoom(document.getElementById('room-grid'), ROOMS[activeRoom]);
-    });
-  });
-}
-
-async function loadMusicHome() {
-  const el = document.getElementById('music-home');
-  const eid = cfg.ha_spotify;
-  if (!el || !eid) {
-    el.innerHTML = '<p class="muted">Skonfiguruj encję Spotify w ☰</p>';
-    return;
-  }
-  el.innerHTML = '<p class="muted">Ładowanie…</p>';
-  try {
-    const root = await browseMedia(eid, '', '');
-    const cats = (root?.children || []).slice(0, 6);
-    let html = '';
-    for (const cat of cats) {
-      const data = await browseMedia(eid, cat.media_content_type, cat.media_content_id);
-      const items = (data?.children || []).slice(0, 12);
-      if (!items.length) continue;
-      html += `<h3 class="section-title">${esc(cat.title)}</h3><div class="music-row">`;
-      html += items
-        .map((item) => {
-          const thumb = item.thumbnail
-            ? `<img data-src="${esc(entityPicture(item.thumbnail))}" src="${PLACEHOLDER}" alt="">`
-            : '<div class="ph">♪</div>';
-          return `<div class="music-card" data-uri="${esc(item.media_content_id)}" data-type="${esc(item.media_content_type || 'playlist')}">${thumb}<div class="t">${esc(item.title)}</div></div>`;
-        })
-        .join('');
-      html += '</div>';
-    }
-    el.innerHTML = html || '<p class="muted">Brak propozycji</p>';
-    lazyImages(el);
-    el.querySelectorAll('.music-card').forEach((card) => {
-      card.addEventListener('click', () => playMedia(card.dataset.type, card.dataset.uri));
-    });
-  } catch {
-    el.innerHTML = '<p class="muted">Nie udało się wczytać Spotify</p>';
-  }
-}
-
-async function playMedia(type, uri) {
-  if (!uri || !cfg.ha_spotify) return;
-  await callService('media_player', 'play_media', {
-    entity_id: cfg.ha_spotify,
-    media_content_type: type || 'playlist',
-    media_content_id: uri
-  });
-  toast('Odtwarzam…');
-  setTimeout(renderNowPlaying, 800);
-}
-
-async function searchMa() {
-  const q = document.getElementById('ma-query')?.value?.trim();
-  const el = document.getElementById('ma-results');
-  if (!q || !el) return;
-  el.innerHTML = '<p class="muted">Szukam…</p>';
-  try {
-    const resp = await maSearch(q);
-    const tracks = resp?.tracks || resp?.[0]?.tracks || [];
-    if (!tracks.length) {
-      el.innerHTML = '<p class="muted">Brak wyników</p>';
-      return;
-    }
-    el.innerHTML = tracks
-      .slice(0, 15)
-      .map(
-        (t, i) => `<div class="ma-row" data-i="${i}">
-      ${t.image_url ? `<img data-src="${esc(t.image_url)}" src="${PLACEHOLDER}" alt="">` : '<div class="ph">♪</div>'}
-      <div class="meta"><div class="t">${esc(t.name)}</div><div class="s">${esc((t.artists || []).map((a) => a.name).join(', '))}</div></div>
-      <button type="button" class="btn primary ma-play">▶</button></div>`
-      )
-      .join('');
-    window._maTracks = tracks;
-    lazyImages(el);
-    el.querySelectorAll('.ma-row').forEach((row) => {
-      row.addEventListener('click', () => playMaTrack(+row.dataset.i));
-    });
-  } catch {
-    el.innerHTML = '<p class="muted">Błąd MA — sprawdź integrację w HA</p>';
-  }
-}
-
-async function playMaTrack(idx) {
-  const t = window._maTracks?.[idx];
-  const player = cfg.ha_ma || cfg.ha_spotify;
-  if (!t?.uri || !player) return;
-  await callService('music_assistant', 'play_media', {
-    entity_id: player,
-    media_id: t.uri,
-    media_type: 'track'
-  });
-  toast('Odtwarzam przez MA');
-  setTimeout(renderNowPlaying, 800);
-}
-
-function renderNowPlaying() {
-  const e = getState(mediaEntity);
-  const title = document.getElementById('np-title');
-  const artist = document.getElementById('np-artist');
-  const art = document.getElementById('np-art');
-  const bar = document.getElementById('np-bar');
-  const playBtn = document.getElementById('np-play');
-  if (!e?.attributes) {
-    title.textContent = 'Nic nie gra';
-    artist.textContent = '—';
-    art.style.backgroundImage = '';
-    bar.style.width = '0%';
-    playBtn.textContent = '▶';
-    return;
-  }
-  const a = e.attributes;
-  title.textContent = a.media_title || '—';
-  artist.textContent = a.media_artist || a.media_album_name || '—';
-  if (a.entity_picture) art.style.backgroundImage = `url("${entityPicture(a.entity_picture)}")`;
-  playBtn.textContent = e.state === 'playing' ? '⏸' : '▶';
-  const dur = a.media_duration || 0;
-  const pos = a.media_position || 0;
-  const pct = dur > 0 ? `${(pos / dur) * 100}%` : '0%';
-  bar.style.width = pct;
-  const spBar = document.getElementById('sp-pf');
-  if (spBar) spBar.style.width = pct;
-  const spPlay = document.getElementById('sp-play');
-  if (spPlay) spPlay.textContent = e.state === 'playing' ? '⏸' : '▶';
-}
-
-function bindProgress() {
-  if (progressTimer) clearInterval(progressTimer);
-  progressTimer = setInterval(renderNowPlaying, 1000);
-}
-
-function bindMusicChips() {
-  document.getElementById('music-chips')?.addEventListener('click', (e) => {
-    const chip = e.target.closest('.chip');
-    if (!chip) return;
-    document.querySelectorAll('#music-chips .chip').forEach((c) => c.classList.remove('on'));
-    chip.classList.add('on');
-    const mode = chip.dataset.music;
-    document.getElementById('music-home').classList.toggle('hidden', mode !== 'home');
-    document.getElementById('music-search').classList.toggle('hidden', mode !== 'search');
-  });
-}
-
-function bindMediaControls() {
-  document.getElementById('np-play')?.addEventListener('click', () => {
-    const e = getState(mediaEntity);
-    const svc = e?.state === 'playing' ? 'media_pause' : 'media_play';
-    callService('media_player', svc, { entity_id: mediaEntity });
-  });
-  document.getElementById('np-prev')?.addEventListener('click', () =>
-    callService('media_player', 'media_previous_track', { entity_id: mediaEntity })
-  );
-  document.getElementById('np-next')?.addEventListener('click', () =>
-    callService('media_player', 'media_next_track', { entity_id: mediaEntity })
-  );
 }
 
 document.getElementById('cfg-form')?.addEventListener('submit', (e) => {
@@ -607,18 +424,11 @@ document.getElementById('btn-refresh')?.addEventListener('click', async () => {
   }
 });
 
-document.getElementById('ma-search-btn')?.addEventListener('click', searchMa);
-document.getElementById('ma-query')?.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') searchMa();
-});
-
 bindTabNav();
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) stopCamStreams();
   else resumeCamStreams();
 });
-bindMusicChips();
-bindMediaControls();
 tickClock();
 setInterval(tickClock, 30000);
 

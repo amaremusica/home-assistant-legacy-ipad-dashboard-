@@ -584,3 +584,120 @@ body.theme-light .tabnav.tile {
 .camcard-dash-nav:active { opacity: 0.92; }
 
 .trash-card.gcard { display: flex; align-items: center; justify-content: flex-start; text-align: left; }
+
+/* ——— Pogoda legacy ——— */
+.wcard {
+  position: relative; padding: 0; overflow: hidden; border-radius: 20px;
+  background: radial-gradient(circle at 22% 28%, rgba(255,255,255,0.95), transparent 22%),
+    radial-gradient(circle at 72% 68%, rgba(255,255,255,0.88), transparent 26%),
+    linear-gradient(150deg, #9cc6ef 0%, #bcd8f2 42%, #e9f1fa 100%);
+  border: 1px solid rgba(255,255,255,0.55);
+  box-shadow: 0 4px 24px rgba(15,23,42,0.1);
+  color: #0b2034;
+}
+.wglow { position: absolute; top: 50%; left: 50%; width: 260px; height: 260px; margin: -130px 0 0 -130px; border-radius: 50%; background: radial-gradient(circle at 50% 36%, rgba(255,255,255,0.75), transparent 66%); pointer-events: none; z-index: 0; }
+.wsun { position: absolute; top: 8%; left: 50%; width: 120px; height: 120px; margin-left: -60px; border-radius: 50%; background: radial-gradient(circle, rgba(251,191,36,0.28), transparent 62%); pointer-events: none; z-index: 0; }
+.wc-inner { position: relative; z-index: 1; padding: 14px 16px; display: flex; flex-direction: column; min-height: 100%; }
+.wcard-nav { cursor: pointer; }
+.wsvg { width: 72px; height: 72px; flex-shrink: 0; filter: drop-shadow(0 6px 14px rgba(0,0,0,0.2)); }
+.wcond { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+.wtemp { font-size: 58px; font-weight: 400; letter-spacing: -0.04em; line-height: 1; text-align: center; margin: 8px 0 10px; }
+.wfd { flex: 1; min-width: 0; text-align: center; padding: 7px 2px; border-radius: 12px; background: rgba(255,255,255,0.45); border: 1px solid rgba(15,23,42,0.08); }
+.wfd .wdn { font-size: 9px; color: rgba(11,32,52,0.55); text-transform: uppercase; font-weight: 700; }
+.wfd .wft { font-size: 13px; font-weight: 700; margin-top: 4px; }
+.wfd .wflo { font-size: 11px; color: rgba(11,32,52,0.45); margin-left: 2px; }
+.wfd .wfi { width: 22px; height: 22px; margin: 4px auto 0; display: block; }
+.wfd .wfp { font-size: 9px; font-weight: 700; color: #2563eb; margin-top: 2px; }
+
+/* ——— Music Assistant Discover ——— */
+.ma-view { background: #0f0f12; color: #f4f4f5; padding: 0 !important; display: flex; flex-direction: column; }
+.ma-view.active { display: flex !important; }
+.ma-head { padding: 12px 16px 8px; flex-shrink: 0; }
+.ma-logo { font-size: 28px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 2px; }
+.ma-sub { font-size: 13px; color: rgba(255,255,255,0.45); margin-bottom: 12px; }
+.ma-chips { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 14px; padding-bottom: 4px; }
+.ma-chip { flex: 0 0 auto; padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.06); color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
+.ma-chip.on { background: #2563eb; border-color: #2563eb; }
+.ma-players-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.45); margin-bottom: 8px; font-weight: 700; }
+.ma-players { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; }
+.ma-player { flex: 0 0 auto; min-width: 140px; padding: 10px 12px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.06); color: #fff; text-align: left; cursor: pointer; }
+.ma-player.on { border-color: #2563eb; background: rgba(37,99,235,0.25); }
+.ma-player.playing { box-shadow: 0 0 0 1px rgba(37,99,235,0.4); }
+.ma-player-name { display: block; font-size: 13px; font-weight: 700; }
+.ma-player-track { display: block; font-size: 10px; color: rgba(255,255,255,0.5); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
+.ma-body { flex: 1; min-height: 0; overflow-y: auto; padding: 0 16px 100px; -webkit-overflow-scrolling: touch; }
+.ma-panel.hidden { display: none; }
+.ma-muted { color: rgba(255,255,255,0.45); padding: 16px 0; }
+.ma-sec-title { font-size: 22px; font-weight: 800; margin: 18px 0 12px; letter-spacing: -0.02em; }
+.ma-hero { display: grid; grid-template-columns: 1.1fr 1fr; gap: 16px; align-items: end; margin-bottom: 16px; cursor: pointer; }
+.ma-hero img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.45); }
+.ma-hero-ph { aspect-ratio: 1; border-radius: 16px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 48px; }
+.ma-hero-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.5); font-weight: 700; }
+.ma-hero-title { font-size: 28px; font-weight: 800; margin: 6px 0; letter-spacing: -0.03em; line-height: 1.1; }
+.ma-hero-sub { font-size: 14px; color: rgba(255,255,255,0.55); margin-bottom: 12px; }
+.ma-play-btn { border: none; border-radius: 999px; padding: 10px 18px; background: #2563eb; color: #fff; font-weight: 700; cursor: pointer; }
+.ma-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 8px; }
+.ma-tile { cursor: pointer; }
+.ma-tile img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 12px; display: block; }
+.ma-tile-ph { aspect-ratio: 1; border-radius: 12px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 28px; }
+.ma-tile-t { font-size: 12px; font-weight: 700; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ma-stations { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
+.ma-station { flex: 0 0 120px; cursor: pointer; }
+.ma-station img { width: 120px; height: 120px; object-fit: cover; border-radius: 12px; display: block; }
+.ma-station-ph { width: 120px; height: 120px; border-radius: 12px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 32px; }
+.ma-station-t { font-size: 11px; font-weight: 700; margin-top: 6px; text-align: center; }
+.ma-search-bar { display: flex; gap: 10px; margin-bottom: 12px; padding: 10px; border-radius: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); }
+.ma-search-bar input { flex: 1; border: none; background: transparent; color: #fff; font-size: 16px; outline: none; }
+.ma-row { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; cursor: pointer; margin-bottom: 4px; }
+.ma-row:hover { background: rgba(255,255,255,0.06); }
+.ma-row img, .ma-row .ph { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; background: rgba(255,255,255,0.08); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.ma-row .meta { flex: 1; min-width: 0; }
+.ma-row .t { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ma-row .s { font-size: 12px; color: rgba(255,255,255,0.5); }
+.btn.sm { padding: 8px 12px; font-size: 12px; }
+.ma-sp-row { display: flex; gap: 12px; overflow-x: auto; margin-bottom: 16px; }
+.ma-sp-card { flex: 0 0 132px; cursor: pointer; }
+.ma-sp-card img, .ma-sp-card .ph { width: 132px; height: 132px; border-radius: 10px; object-fit: cover; display: block; background: rgba(255,255,255,0.08); }
+.ma-sp-card .t { font-size: 12px; font-weight: 700; margin-top: 6px; }
+.ma-playerbar {
+  position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px calc(12px + var(--safe-b)); background: rgba(18,18,22,0.95); border-top: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(16px); z-index: 5;
+}
+.ma-view .np-art { width: 52px; height: 52px; border-radius: 8px; background: rgba(255,255,255,0.08); background-size: cover; flex-shrink: 0; }
+.ma-view .np-eq { display: flex; align-items: flex-end; gap: 2px; height: 16px; }
+.ma-view .np-eq span { width: 3px; height: 6px; background: #2563eb; border-radius: 2px; }
+.ma-view .np-eq.playing span { animation: wave 0.8s ease-in-out infinite alternate; }
+.ma-view .np-meta { flex: 1; min-width: 0; }
+.ma-view .np-title { font-weight: 800; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ma-view .np-artist { font-size: 12px; color: rgba(255,255,255,0.5); }
+.ma-view .np-progress { height: 4px; background: rgba(255,255,255,0.12); border-radius: 4px; margin-top: 6px; overflow: hidden; }
+.ma-view .np-bar { height: 100%; background: #2563eb; width: 0; }
+.ma-view .np-vol { display: flex; align-items: center; gap: 8px; min-width: 100px; }
+.ma-view .np-vol-bar { flex: 1; height: 5px; background: rgba(255,255,255,0.12); border-radius: 5px; overflow: hidden; cursor: pointer; }
+.ma-view .np-vol-bar div { height: 100%; background: #2563eb; width: 0; }
+.ma-view .np-vol span { font-size: 10px; color: rgba(255,255,255,0.5); width: 32px; text-align: right; }
+
+/* ——— Pokoje rozszerzone ——— */
+.room-extra { margin-top: 14px; display: flex; flex-direction: column; gap: 12px; }
+.room-sensors { display: flex; flex-wrap: wrap; gap: 16px; padding: 14px 16px; }
+.rs { min-width: 80px; }
+.rs-l { display: block; font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 700; }
+.rs b { font-size: 20px; font-weight: 600; }
+.room-media { padding: 14px 16px; }
+.rm-h { font-weight: 800; margin-bottom: 6px; }
+.rm-t { font-size: 14px; margin-bottom: 10px; }
+.rm-ctrl { display: flex; gap: 10px; }
+.room-beds { display: flex; gap: 10px; flex-wrap: wrap; }
+.bed-tile { flex: 1; min-width: 120px; padding: 14px; text-align: center; cursor: pointer; border: 1px solid var(--glass-border); }
+.bed-tile.on { background: var(--accent-soft); border-color: rgba(var(--accent-rgb), 0.45); }
+.bed-st { display: block; font-size: 11px; color: var(--muted); margin-top: 4px; font-weight: 700; }
+.energy-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding-bottom: 24px; }
+.en-tile { padding: 16px; text-align: center; }
+.en-tile span { display: block; font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 700; }
+.en-tile b { display: block; font-size: 28px; font-weight: 300; margin: 6px 0; }
+.en-tile small { color: var(--muted); }
+.k1c-card { padding: 20px; text-align: center; }
+.k1c-st { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+.k1c-prog { font-size: 48px; font-weight: 300; margin-bottom: 16px; }
+.k1c-ctrl { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
