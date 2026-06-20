@@ -10,14 +10,15 @@
   <link rel="manifest" href="manifest.webmanifest">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
-  <link rel="stylesheet" href="css/app.css?v=1.2.0">
+  <link rel="stylesheet" href="css/app.css?v=1.2.2">
   <title>Dom</title>
   <style>
     .boot-status {
       position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center;
-      color: rgba(255,255,255,0.85); font: 600 15px/1.4 system-ui, sans-serif; pointer-events: none;
+      color: #334155; font: 600 15px/1.4 system-ui, sans-serif; pointer-events: none;
+      background: #d4dce8;
     }
-    .boot-status.err { color: #fca5a5; padding: 24px; text-align: center; max-width: 420px; margin: auto; }
+    .boot-status.err { color: #b91c1c; padding: 24px; text-align: center; max-width: 420px; margin: auto; }
     .boot-status.hidden { display: none; }
     /* krytyczny layout — działa nawet gdy Safari trzyma stary app.css */
     body.theme-light { background: #d4dce8; color: #0f172a; }
@@ -70,7 +71,7 @@
       </div>
       <div class="topbar-right">
         <button type="button" class="icon-btn subtle" id="btn-refresh" aria-label="Odśwież panel" title="Aktualizuj z Git">↺</button>
-        <span class="ver" id="ver">v1.2.0</span>
+        <span class="ver" id="ver">v1.2.2</span>
       </div>
     </header>
 
@@ -355,12 +356,27 @@
 
   <div id="toast" class="toast" role="status"></div>
 
+  <script>
+    window.addEventListener('error', (e) => {
+      const s = document.getElementById('boot-status');
+      if (!s || s.classList.contains('hidden')) return;
+      s.classList.add('err');
+      s.textContent = 'Błąd JS: ' + (e.message || 'unknown') + '. Wyczyść cache Safari i odśwież.';
+    });
+    window.addEventListener('unhandledrejection', (e) => {
+      const s = document.getElementById('boot-status');
+      if (!s || s.classList.contains('hidden')) return;
+      s.classList.add('err');
+      s.textContent = 'Błąd: ' + (e.reason?.message || e.reason || 'unknown');
+    });
+  </script>
   <script type="module">
-    import('./js/app.js?v=1.2.0').catch(() => {
+    import('./js/app.js?v=1.2.2').catch((e) => {
       const s = document.getElementById('boot-status');
       if (s) {
+        s.classList.remove('hidden');
         s.classList.add('err');
-        s.textContent = 'Błąd ładowania JS — w Safari: Ustawienia → Safari → Wyczyść historię, potem odśwież stronę.';
+        s.textContent = `Błąd ładowania JS: ${e?.message || e}. W Safari: wyczyść cache i odśwież.`;
       }
     });
   </script>

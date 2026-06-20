@@ -1,7 +1,7 @@
 /** Widoki pokoi — światła + czujniki + dodatki jak legacy iPad */
-import { getState, callService } from './ha.js?v=1.2.0';
-import { ROOMS, TV, BEDS, LAUNDRY, K1C } from './config.js?v=1.2.0';
-import { esc } from './ui.js?v=1.2.0';
+import { getState, callService } from './ha.js?v=1.2.2';
+import { ROOMS, TV, BEDS, LAUNDRY, K1C } from './config.js?v=1.2.2';
+import { esc } from './ui.js?v=1.2.2';
 
 function fmt(v, d = 1) {
   const n = parseFloat(v);

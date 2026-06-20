@@ -1,18 +1,18 @@
-import { BUILD, loadConfig, saveConfig, exportConfig, importConfigFile, applyConfigObject, PRESET_URL, cameraList, ROOMS, SCENES, WEATHER, ENERGY, DASH_ROOMS, GATES, FRIDGE, AIR, PARCEL, GARDEN, SUN, TV, BEDS, LAUNDRY, K1C } from './config.js?v=1.2.0';
+import { BUILD, loadConfig, saveConfig, exportConfig, importConfigFile, applyConfigObject, PRESET_URL, cameraList, ROOMS, SCENES, WEATHER, ENERGY, DASH_ROOMS, GATES, FRIDGE, AIR, PARCEL, GARDEN, SUN, TV, BEDS, LAUNDRY, K1C } from './config.js?v=1.2.2';
 import {
   initHa, fetchStates, connectWebSocket, onStates, getState, callService,
   entityPicture, checkVersion, triggerPanelUpdate, getHaOrigin
-} from './ha.js?v=1.2.0';
+} from './ha.js?v=1.2.2';
 import {
   camCardHtml, bindCamCards, attachCamStreams, attachDashCam, stopCamStreams, resumeCamStreams,
   openCameraModal, closeCameraModal, bindCameraModal, camLabel, refreshCameras, startCamHealthCheck
-} from './cameras.js?v=1.2.0';
-import { renderWeatherPage } from './weather.js?v=1.2.0';
-import { initDashboard, renderDashboard } from './dashboard.js?v=1.2.0';
-import { loadTrash } from './trash.js?v=1.2.0';
-import { initMusic, renderMaNowPlaying } from './music.js?v=1.2.0';
-import { renderRoomTabs, renderRoomView, renderEnergyView, renderK1cView } from './rooms.js?v=1.2.0';
-import { toast, setOnline, setTab, tickClock, esc } from './ui.js?v=1.2.0';
+} from './cameras.js?v=1.2.2';
+import { renderWeatherPage } from './weather.js?v=1.2.2';
+import { initDashboard, renderDashboard } from './dashboard.js?v=1.2.2';
+import { loadTrash } from './trash.js?v=1.2.2';
+import { initMusic, renderMaNowPlaying } from './music.js?v=1.2.2';
+import { renderRoomTabs, renderRoomView, renderEnergyView, renderK1cView } from './rooms.js?v=1.2.2';
+import { toast, setOnline, setTab, tickClock, esc } from './ui.js?v=1.2.2';
 
 const GIT_PULL_MS = 30 * 60 * 1000;
 const CHECK_MS = 2 * 60 * 1000;
@@ -23,6 +23,14 @@ const RELOAD_GUARD_MS = 15000;
 let cfg = loadConfig();
 let pollTimer = null;
 let activeRoom = 'salon';
+
+function setBootStatus(msg, isErr = false) {
+  const s = document.getElementById('boot-status');
+  if (!s) return;
+  s.classList.remove('hidden');
+  s.classList.toggle('err', isErr);
+  s.textContent = msg;
+}
 
 function hideBootStatus() {
   document.getElementById('boot-status')?.classList.add('hidden');
@@ -188,7 +196,16 @@ function fillConfigForm(c) {
 function showConfig() {
   cfg = loadConfig();
   fillConfigForm(cfg);
-  document.getElementById('cfg').showModal();
+  document.getElementById('app')?.classList.remove('hidden');
+  hideBootStatus();
+  const dlg = document.getElementById('cfg');
+  if (!dlg) return;
+  try {
+    if (typeof dlg.showModal === 'function') dlg.showModal();
+    else dlg.setAttribute('open', '');
+  } catch {
+    dlg.setAttribute('open', '');
+  }
 }
 
 async function loadPresetFromHa() {
@@ -227,22 +244,19 @@ function pickImportFile() {
 
 async function connect() {
   cfg = ensureHaUrl(loadConfig());
-  hideBootStatus();
   if (!cfg.ha_url || !cfg.ha_token) {
     fillConfigForm(cfg);
     showConfig();
     return;
   }
+
+  setBootStatus('Łączenie z Home Assistant…');
   initHa(cfg);
-  mediaEntity = cfg.ha_ma || cfg.ha_spotify;
-  document.getElementById('ver').textContent = 'v' + BUILD;
-  document.getElementById('app').classList.remove('hidden');
 
   try {
     await fetchStates(allEntityIds());
     await connectWebSocket();
     setOnline(true);
-    toast('Połączono · WebSocket aktywny');
   } catch {
     setOnline(false);
     toast('Błąd połączenia — sprawdź URL i token');
@@ -250,20 +264,30 @@ async function connect() {
     return;
   }
 
-  renderAll();
-  onStates(renderAll);
-  if (pollTimer) clearInterval(pollTimer);
-  pollTimer = setInterval(() => fetchStates(allEntityIds()).catch(() => setOnline(false)), 45000);
-  initDashboard(cfg, runScene, toggleDashLight, toggleGate);
-  renderCamGrid();
-  renderCamPreviews();
-  initDashCam();
-  loadTrash(cfg.ha_trash);
-  setInterval(() => loadTrash(cfg.ha_trash), 30 * 60 * 1000);
-  startCamHealthCheck();
-  initMusic(cfg, () => renderMaNowPlaying());
-  bindCameraModal(cfg);
-  bindDashSpotify();
+  document.getElementById('ver').textContent = 'v' + BUILD;
+  document.getElementById('app').classList.remove('hidden');
+  hideBootStatus();
+  toast('Połączono · WebSocket aktywny');
+
+  try {
+    renderAll();
+    onStates(renderAll);
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(() => fetchStates(allEntityIds()).catch(() => setOnline(false)), 45000);
+    initDashboard(cfg, runScene, toggleDashLight, toggleGate);
+    renderCamGrid();
+    renderCamPreviews();
+    initDashCam();
+    loadTrash(cfg.ha_trash);
+    setInterval(() => loadTrash(cfg.ha_trash), 30 * 60 * 1000);
+    startCamHealthCheck();
+    initMusic(cfg, () => renderMaNowPlaying());
+    bindCameraModal(cfg);
+    bindDashSpotify();
+  } catch (e) {
+    setBootStatus(`Błąd panelu: ${e?.message || e}`, true);
+    throw e;
+  }
 }
 
 function initDashCam() {
@@ -433,11 +457,20 @@ tickClock();
 setInterval(tickClock, 30000);
 
 async function boot() {
-  cfg = loadConfig();
-  connect();
-  if (cfg.ha_url && cfg.ha_token) {
-    startAutoUpdate(cfg);
-    autoUpdateOnRefresh(cfg).catch(() => {});
+  try {
+    cfg = loadConfig();
+    await connect();
+    if (cfg.ha_url && cfg.ha_token) {
+      startAutoUpdate(cfg);
+      autoUpdateOnRefresh(cfg).catch(() => {});
+    }
+  } catch (e) {
+    const s = document.getElementById('boot-status');
+    if (s) {
+      s.classList.remove('hidden');
+      s.classList.add('err');
+      s.textContent = `Błąd panelu: ${e?.message || e}. Odśwież stronę lub wyczyść cache Safari.`;
+    }
   }
 }
 

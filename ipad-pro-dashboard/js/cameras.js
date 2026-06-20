@@ -1,7 +1,7 @@
 /**
  * Kamery — stabilny MJPEG jak legacy iPad (snap → stream → health check)
  */
-import { wsSend, cameraSnapshotUrl, cameraStreamUrl, getState, getBase } from './ha.js?v=1.2.0';
+import { wsSend, cameraSnapshotUrl, cameraStreamUrl, getState, getBase } from './ha.js?v=1.2.2';
 
 const QUALITY = { full: { w: 3840, h: 2160 } };
 const MJPEG_TIMEOUT = 18000;

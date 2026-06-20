@@ -1,4 +1,4 @@
-export const BUILD = '1.2.0';
+export const BUILD = '1.2.2';
 
 export const CFG_KEYS = [
   'ha_url', 'ha_token', 'ha_spotify', 'ha_ma', 'ha_cams', 'ha_cam_labels', 'ha_cam_mode',
@@ -22,19 +22,31 @@ const DEFAULTS = {
   accent: 'emerald'
 };
 
+function storageGet(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
 export function loadConfig() {
   const cfg = { ...DEFAULTS };
   for (const k of CFG_KEYS) {
-    const v = localStorage.getItem(k);
+    const v = storageGet(k);
     if (v != null && v !== '') cfg[k] = v;
   }
   return cfg;
 }
 
 export function saveConfig(partial) {
-  for (const [k, v] of Object.entries(partial)) {
-    if (v == null || v === '') localStorage.removeItem(k);
-    else localStorage.setItem(k, String(v));
+  try {
+    for (const [k, v] of Object.entries(partial)) {
+      if (v == null || v === '') localStorage.removeItem(k);
+      else localStorage.setItem(k, String(v));
+    }
+  } catch {
+    /* Safari private mode — ignoruj */
   }
 }
 
