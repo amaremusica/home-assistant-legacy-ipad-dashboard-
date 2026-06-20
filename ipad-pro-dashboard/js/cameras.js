@@ -1,13 +1,18 @@
 /**
- * Kamery — płynny MJPEG na kafelkach (EZVIZ), WebRTC/HLS w modalu
+ * Kamery — stabilny MJPEG jak legacy iPad (snap → stream → health check)
  */
-import { wsSend, cameraSnapshotUrl, cameraStreamUrl, getState, getBase } from './ha.js?v=1.1.5';
+import { wsSend, cameraSnapshotUrl, cameraStreamUrl, getState, getBase } from './ha.js?v=1.1.6';
 
 const QUALITY = { full: { w: 3840, h: 2160 } };
+const MJPEG_TIMEOUT = 18000;
+const HEALTH_MS = 22000;
 
 let activePlayer = null;
 let pinchState = null;
 const camLive = new Map();
+const camTimers = new Map();
+const camHealthMiss = new Map();
+let healthTimer = null;
 
 export function camSnapshot(entityId, tier = 'grid') {
   if (tier === 'full') {
@@ -39,58 +44,167 @@ function streamUrl(entityId) {
   return cameraStreamUrl(entityId);
 }
 
-function isLive(entityId, img) {
-  return camLive.get(entityId) === 'mjpeg' && img?.src && img.naturalWidth > 0;
+function clearCamTimer(entityId) {
+  const t = camTimers.get(entityId);
+  if (t) {
+    clearTimeout(t);
+    camTimers.delete(entityId);
+  }
 }
 
-function startMjpegOnCard(card, entityId) {
+function showCamOff(card, show) {
+  const off = card?.querySelector('.cam-off');
+  if (off) off.style.display = show ? 'flex' : 'none';
+}
+
+function isMjpegLive(entityId, img) {
+  return camLive.get(entityId) === 'mjpeg' && img?.src?.includes('camera_proxy_stream') && img.naturalWidth > 0;
+}
+
+function snapRefresh(card, entityId, force = false) {
   if (document.hidden || !entityId) return;
+  const img = card.querySelector('.cam-stream');
+  if (!img) return;
+  const url = camSnapshot(entityId);
+  if (!url) return;
+  if (!force && isMjpegLive(entityId, img)) return;
+
+  const pre = new Image();
+  pre.onload = () => {
+    if (!force && isMjpegLive(entityId, img)) return;
+    img.src = url;
+    img.style.display = 'block';
+    showCamOff(card, false);
+    if (camLive.get(entityId) !== 'mjpeg') camLive.set(entityId, 'snap');
+  };
+  pre.onerror = () => {
+    if (!isMjpegLive(entityId, img)) showCamOff(card, true);
+  };
+  pre.src = url;
+}
+
+function startMjpegOnCard(card, entityId, force = false) {
+  if (document.hidden || !entityId || !card) return;
   const img = card.querySelector('.cam-stream');
   if (!img) return;
   const url = streamUrl(entityId);
   if (!url) return;
-  if (isLive(entityId, img) && img.src.startsWith(url.split('?')[0])) return;
+  if (!force && isMjpegLive(entityId, img)) return;
 
-  const off = card.querySelector('.cam-off');
+  clearCamTimer(entityId);
+  camTimers.set(entityId, setTimeout(() => {
+    camTimers.delete(entityId);
+    if (isMjpegLive(entityId, img)) return;
+    snapRefresh(card, entityId, true);
+    if (!isMjpegLive(entityId, img)) showCamOff(card, true);
+  }, MJPEG_TIMEOUT));
+
+  img.onerror = () => {
+    clearCamTimer(entityId);
+    if (isMjpegLive(entityId, img)) return;
+    snapRefresh(card, entityId, true);
+  };
   img.onload = () => {
+    clearCamTimer(entityId);
     camLive.set(entityId, 'mjpeg');
     img.classList.remove('cam-err');
-    if (off) off.style.display = 'none';
+    showCamOff(card, false);
+    camHealthMiss.set(entityId, 0);
   };
-  img.onerror = () => {
-    if (off) off.style.display = 'flex';
-    img.classList.add('cam-err');
-  };
-  if (img.src !== url) img.src = url;
-  else if (img.complete && img.naturalWidth > 0) camLive.set(entityId, 'mjpeg');
+  img.src = url;
+  img.style.display = 'block';
+  showCamOff(card, false);
+}
+
+function camStart(card, entityId, force = false) {
+  if (!card || !entityId) return;
+  snapRefresh(card, entityId, force);
+  setTimeout(() => {
+    if (document.hidden) return;
+    if (!force && isMjpegLive(entityId, card.querySelector('.cam-stream'))) return;
+    startMjpegOnCard(card, entityId, force);
+  }, 350);
+}
+
+function cardByEntity(entityId) {
+  return document.querySelector(`[data-cam="${entityId}"]`);
+}
+
+function isHomeActive() {
+  return document.getElementById('view-home')?.classList.contains('active');
+}
+
+function isCamerasActive() {
+  return document.getElementById('view-cameras')?.classList.contains('active');
+}
+
+export function refreshCameras(force = false) {
+  if (document.hidden) return;
+  document.querySelectorAll('[data-cam]').forEach((card) => {
+    const eid = card.dataset.cam;
+    if (!eid) return;
+    const onDash = card.id === 'dash-cam';
+    const visible = onDash ? isHomeActive() : isCamerasActive();
+    if (!visible) return;
+    const img = card.querySelector('.cam-stream');
+    if (!force && isMjpegLive(eid, img)) return;
+    camStart(card, eid, force);
+  });
+}
+
+export function startCamHealthCheck() {
+  if (healthTimer) clearInterval(healthTimer);
+  healthTimer = setInterval(() => {
+    if (document.hidden) return;
+    document.querySelectorAll('[data-cam]').forEach((card) => {
+      const eid = card.dataset.cam;
+      if (!eid) return;
+      const onDash = card.id === 'dash-cam';
+      const visible = onDash ? isHomeActive() : isCamerasActive();
+      if (!visible) return;
+      const img = card.querySelector('.cam-stream');
+      if (isMjpegLive(eid, img)) {
+        camHealthMiss.set(eid, 0);
+        return;
+      }
+      const miss = (camHealthMiss.get(eid) || 0) + 1;
+      camHealthMiss.set(eid, miss);
+      if (miss >= 2) {
+        camHealthMiss.set(eid, 0);
+        camLive.delete(eid);
+        camStart(card, eid, true);
+      }
+    });
+  }, HEALTH_MS);
 }
 
 export function attachCamStreams(root) {
   if (!root || document.hidden) return;
-  root.querySelectorAll('[data-cam]').forEach((card) => startMjpegOnCard(card, card.dataset.cam));
+  root.querySelectorAll('[data-cam]').forEach((card) => {
+    if (card.dataset.cam) camStart(card, card.dataset.cam);
+  });
 }
 
 export function attachDashCam(entityId) {
   const card = document.getElementById('dash-cam');
   if (!card || !entityId) return;
   card.dataset.cam = entityId;
-  startMjpegOnCard(card, entityId);
+  camStart(card, entityId);
 }
 
 export function stopCamStreams() {
   camLive.clear();
+  for (const t of camTimers.values()) clearTimeout(t);
+  camTimers.clear();
 }
 
 export function resumeCamStreams() {
-  attachCamStreams(document.getElementById('cam-grid'));
-  attachCamStreams(document.getElementById('cam-preview'));
-  const dash = document.getElementById('dash-cam');
-  if (dash?.dataset.cam) startMjpegOnCard(dash, dash.dataset.cam);
+  refreshCameras(true);
 }
 
 export function camCardHtml(entityId, cfg, { dash = false } = {}) {
   const label = camLabel(entityId, cfg);
-  const cls = dash ? 'camcard glass' : 'cam-card anim-card';
+  const cls = dash ? 'camcard tile' : 'cam-card anim-card tile';
   return `<article class="${cls}" data-cam="${entityId}">
     <div class="cam-viewport">
       <img class="cam-stream" alt="">

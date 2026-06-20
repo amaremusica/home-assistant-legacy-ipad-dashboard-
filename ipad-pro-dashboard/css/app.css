@@ -450,10 +450,10 @@ body.theme-light .tabnav.tile {
 
 .scenerow { display: flex; gap: 6px; flex-shrink: 0; }
 .scenebtn {
-  flex: 1; padding: 10px 8px; border-radius: 12px; border: 1px solid var(--glass-border);
-  background: var(--glass-strong); font-size: 12px; font-weight: 700; cursor: pointer; color: var(--text);
+  flex: 1; padding: 10px 8px; border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer; color: var(--text);
+  border: 1px solid var(--glass-border); background: var(--glass-strong);
 }
-.scenebtn:disabled { opacity: 0.35; }
+.scenebtn:disabled { opacity: 0.35; pointer-events: none; }
 
 .ecard {
   flex: 1; padding: 12px 14px; min-height: 0;
@@ -518,3 +518,69 @@ body.theme-light .tabnav.tile {
 .sc-emerald.on .scstate { color: var(--accent); }
 
 .now-playing { bottom: calc(16px + var(--safe-b)); }
+
+/* ——— Dolny rząd jak legacy iPad ——— */
+.dash-b {
+  flex-shrink: 0; display: flex; gap: 12px; margin-top: 10px; min-height: 0;
+}
+.aqcard { flex: 1.3; padding: 10px 14px; min-width: 0; }
+.aqtitle { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; font-weight: 700; }
+.aqgrid { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.aqitem { font-size: 10px; color: var(--muted); }
+.aqitem b { font-size: 16px; font-weight: 600; color: var(--text); display: block; margin-top: 2px; }
+.aqb { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+.aq-g { background: rgba(16, 122, 86, 0.14); color: #0a7a52; }
+.aq-m { background: rgba(180, 83, 9, 0.14); color: #b45309; }
+.aq-b { background: rgba(185, 28, 28, 0.12); color: #b91c1c; }
+
+.glance { flex: 1; display: flex; gap: 10px; min-width: 0; }
+.gcard { flex: 1; padding: 10px 12px; min-width: 0; }
+.gtitle { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; font-weight: 700; }
+.grow { display: flex; justify-content: space-between; gap: 6px; }
+.gi { text-align: center; flex: 1; min-width: 0; }
+.gi .gl { font-size: 9px; color: var(--muted); }
+.gi .gv { font-size: 15px; font-weight: 500; margin-top: 2px; }
+
+.waqline { margin-top: 6px; }
+.wfc { display: flex; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--glass-border); }
+.wfc-day { flex: 1; text-align: center; font-size: 10px; min-width: 0; }
+.wfc-d { display: block; color: var(--muted); font-weight: 700; }
+.wfc-i { display: block; font-size: 16px; margin: 2px 0; }
+.wfc-t { display: block; font-weight: 600; font-size: 10px; }
+
+.mid-split { display: flex; gap: 10px; flex-shrink: 0; }
+.mid-split .runcard, .mid-split .kcard { flex: 1; min-width: 0; }
+.runcard { padding: 10px 12px; }
+.run-h { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.run-t { font-size: 11px; font-weight: 800; }
+.run-date { font-size: 10px; color: var(--muted); }
+.run-body { font-size: 12px; }
+.run-ev { display: flex; justify-content: space-between; gap: 8px; padding: 4px 0; }
+.run-sum { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.run-time { color: var(--muted); flex-shrink: 0; }
+.run-empty { color: var(--muted); font-size: 11px; }
+
+/* Spotify wave + volume */
+.wave { display: flex; align-items: flex-end; justify-content: center; gap: 3px; height: 18px; margin: 6px 0; opacity: 0.35; }
+.wave span { width: 3px; height: 6px; border-radius: 2px; background: var(--accent); }
+.wave.playing span { animation: wave 0.8s ease-in-out infinite alternate; }
+.wave.playing span:nth-child(2) { animation-delay: 0.1s; }
+.wave.playing span:nth-child(3) { animation-delay: 0.2s; }
+.wave.playing span:nth-child(4) { animation-delay: 0.15s; }
+.wave.playing span:nth-child(5) { animation-delay: 0.25s; }
+.wave.playing span:nth-child(6) { animation-delay: 0.05s; }
+.wave.playing span:nth-child(7) { animation-delay: 0.18s; }
+.wave.playing span:nth-child(8) { animation-delay: 0.12s; }
+@keyframes wave { from { height: 4px; } to { height: 16px; } }
+.spprog { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.sppt { font-size: 10px; color: var(--muted); font-weight: 600; min-width: 32px; }
+.sppt:last-child { text-align: right; }
+.volr { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.volbw { flex: 1; height: 6px; background: rgba(127,127,127,0.2); border-radius: 6px; overflow: hidden; cursor: pointer; }
+.volb { height: 100%; background: linear-gradient(90deg, #34d399, var(--accent)); border-radius: 6px; width: 0; }
+.volv { font-size: 10px; color: var(--muted); width: 32px; text-align: right; font-weight: 600; }
+
+.camcard-dash-nav { cursor: pointer; }
+.camcard-dash-nav:active { opacity: 0.92; }
+
+.trash-card.gcard { display: flex; align-items: center; justify-content: flex-start; text-align: left; }

@@ -1,6 +1,6 @@
-import { getState, callService } from './ha.js?v=1.1.5';
-import { WEATHER } from './config.js?v=1.1.5';
-import { esc } from './ui.js?v=1.1.5';
+import { getState, callService } from './ha.js?v=1.1.6';
+import { WEATHER } from './config.js?v=1.1.6';
+import { esc } from './ui.js?v=1.1.6';
 
 const ICONS = {
   'clear-night': '🌙', cloudy: '☁️', exceptional: '⚠️', fog: '🌫️', hail: '🌨️',

@@ -1,9 +1,12 @@
 /** Kalendarz śmieci — jak legacy iPad (calendar.trash) */
-import { fetchCalendar } from './ha.js?v=1.1.5';
+import { fetchCalendar } from './ha.js?v=1.1.6';
 
 const REFRESH_MS = 30 * 60 * 1000;
+const FAIL_MS = 5 * 60 * 1000;
 let lastFetch = 0;
+let lastFail = 0;
 let cached = null;
+let loading = false;
 
 function pad2(n) {
   return n < 10 ? `0${n}` : String(n);
@@ -63,21 +66,35 @@ function applyTrash(when, what, color, soon) {
   if (card) card.style.setProperty('--trash-accent', color);
 }
 
-export async function loadTrash(entityId) {
+function trashError(status) {
+  if (status === '404') return 'Zła encja (☰)';
+  if (status === '401' || status === '403') return 'Brak uprawnień';
+  if (status === 'timeout') return 'Timeout HA';
+  if (status === 'net') return 'Brak połączenia';
+  return status ? `Błąd ${status}` : 'Błąd kalendarza';
+}
+
+export async function loadTrash(entityId, { force = false } = {}) {
   if (!entityId) {
     applyTrash('--', 'Ustaw kalendarz w ☰', '#94a3b8', false);
     return;
   }
   const now = Date.now();
-  if (now - lastFetch < REFRESH_MS && cached) {
+  if (!force && now - lastFetch < REFRESH_MS && cached) {
     applyTrash(cached.when, cached.what, cached.color, cached.soon);
     return;
   }
+  if (!force && now - lastFail < FAIL_MS && !cached) {
+    return;
+  }
+  if (loading) return;
+  loading = true;
 
-  applyTrash('--', 'sprawdzam…', '#94a3b8', false);
+  if (!cached) applyTrash('--', 'sprawdzam…', '#94a3b8', false);
   try {
     const data = await fetchCalendar(entityId, trashStart(), trashEnd());
     lastFetch = Date.now();
+    lastFail = 0;
     if (!data?.length) {
       cached = { when: 'Brak', what: 'najbliższe 3 tyg.', color: '#94a3b8', soon: false };
       applyTrash(cached.when, cached.what, cached.color, false);
@@ -110,12 +127,9 @@ export async function loadTrash(entityId) {
     cached = { when: whenTxt, what: ty.label, color: ty.color, soon: days <= 1 };
     applyTrash(cached.when, cached.what, cached.color, cached.soon);
   } catch (e) {
-    const msg = String(e?.message || '');
-    applyTrash(
-      '--',
-      msg === '404' ? 'Zła encja (☰)' : msg === '401' ? 'Brak uprawnień' : 'Błąd kalendarza',
-      '#ef4444',
-      false
-    );
+    lastFail = Date.now();
+    applyTrash('--', trashError(String(e?.message || '')), '#ef4444', false);
+  } finally {
+    loading = false;
   }
 }

@@ -1,4 +1,4 @@
-export const BUILD = '1.1.5';
+export const BUILD = '1.1.6';
 
 export const CFG_KEYS = [
   'ha_url', 'ha_token', 'ha_spotify', 'ha_ma', 'ha_cams', 'ha_cam_labels', 'ha_cam_mode',
@@ -180,8 +180,24 @@ export const ENERGY = {
 export const AIR = {
   index: 'sensor.parcel_locker_wol02bapp_polish_air_quality_index',
   pm25: 'sensor.parcel_locker_wol02bapp_pm_2_5',
-  pm10: 'sensor.parcel_locker_wol02bapp_pm_10'
+  pm10: 'sensor.parcel_locker_wol02bapp_pm_10',
+  pm25n: 'sensor.parcel_locker_wol02bapp_norma_pm_2_5',
+  pm10n: 'sensor.parcel_locker_wol02bapp_norma_pm_10'
 };
+
+export const PARCEL = {
+  temp: 'sensor.parcel_locker_wol02bapp_temperatura',
+  hum: 'sensor.parcel_locker_wol02bapp_wilgotnosc',
+  pres: 'sensor.parcel_locker_wol02bapp_cisnienie'
+};
+
+export const GARDEN = {
+  temp: 'sensor.termometr_ogrod_temperatura',
+  hum: 'sensor.termometr_ogrod_wilgotnosc',
+  pres: 'sensor.termometr_ogrod_cisnienie'
+};
+
+export const RUN_CAL = 'calendar.bieganie';
 
 export const FRIDGE = {
   fridge: 'sensor.lodowka_fridge_temperature',

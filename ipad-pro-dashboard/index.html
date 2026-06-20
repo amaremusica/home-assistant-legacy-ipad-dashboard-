@@ -10,7 +10,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
-  <link rel="stylesheet" href="css/app.css?v=1.1.5">
+  <link rel="stylesheet" href="css/app.css?v=1.1.6">
   <title>Dom</title>
   <style>
     .boot-status {
@@ -24,31 +24,22 @@
     body.theme-light #ambient { display: none; }
     #view-home { overflow: hidden; display: flex; flex-direction: column; }
     .dash { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-    .dash-cols {
-      flex: 1; min-height: 0; display: grid;
-      grid-template-columns: minmax(180px, 27%) minmax(220px, 1fr) minmax(180px, 25%);
-      gap: 12px; align-items: stretch;
-    }
+    .dash-cols { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(180px, 27%) minmax(220px, 1fr) minmax(180px, 25%); gap: 12px; align-items: stretch; }
     .dash-col { display: flex; flex-direction: column; gap: 10px; min-height: 0; overflow: hidden; }
-    .tile {
-      background: rgba(255,255,255,0.94);
-      border: 1px solid rgba(15,23,42,0.08);
-      box-shadow: 0 2px 14px rgba(15,23,42,0.06);
-      border-radius: 16px;
-    }
-    .wcard {
-      flex: 1; min-height: 120px; display: flex; flex-direction: column;
-      padding: 16px 18px; border-radius: 20px; cursor: pointer;
-      background: linear-gradient(150deg, #9cc6ef, #bcd8f2 42%, #e9f1fa);
-      border: 1px solid rgba(255,255,255,0.55); color: #0b2034;
-      box-shadow: 0 4px 20px rgba(15,23,42,0.08);
-    }
+    .tile { background: rgba(255,255,255,0.94); border: 1px solid rgba(15,23,42,0.08); box-shadow: 0 2px 14px rgba(15,23,42,0.06); border-radius: 16px; }
+    .wcard { flex: 1; min-height: 120px; display: flex; flex-direction: column; padding: 16px 18px; border-radius: 20px; cursor: pointer; background: linear-gradient(150deg, #9cc6ef, #bcd8f2 42%, #e9f1fa); border: 1px solid rgba(255,255,255,0.55); color: #0b2034; box-shadow: 0 4px 20px rgba(15,23,42,0.08); }
     .gauge { flex-shrink: 0; padding: 12px; text-align: center; }
     .gauge-svg { width: 72px; height: 72px; max-width: 72px; max-height: 72px; display: block; margin: 0 auto; }
-    .trash-card {
-      flex-shrink: 0; display: flex; align-items: center; gap: 12px; padding: 12px 14px;
-      border-left: 4px solid var(--trash-accent, #94a3b8);
-    }
+    .dash-b { flex-shrink: 0; display: flex; gap: 12px; margin-top: 10px; }
+    .aqcard { flex: 1.3; padding: 10px 14px; }
+    .glance { flex: 1; display: flex; gap: 10px; }
+    .gcard { flex: 1; padding: 10px 12px; }
+    .mid-split { display: flex; gap: 10px; flex-shrink: 0; }
+    .mid-split .runcard, .mid-split .kcard { flex: 1; min-width: 0; }
+    .wfc { display: flex; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(15,23,42,0.08); }
+    .wfc-day { flex: 1; text-align: center; font-size: 10px; }
+    .wfc-i { display: block; font-size: 16px; margin: 2px 0; }
+    .trash-card { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-left: 4px solid var(--trash-accent, #94a3b8); }
     .trash-ic { width: 28px; height: 28px; flex-shrink: 0; fill: none; stroke: var(--trash-accent, #94a3b8); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
     .trash-when { font-size: 16px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
     .trash-when.soon { color: #ca8a04; }
@@ -79,7 +70,7 @@
       </div>
       <div class="topbar-right">
         <button type="button" class="icon-btn subtle" id="btn-refresh" aria-label="Odśwież panel" title="Aktualizuj z Git">↺</button>
-        <span class="ver" id="ver">v1.1.5</span>
+        <span class="ver" id="ver">v1.1.6</span>
       </div>
     </header>
 
@@ -114,7 +105,9 @@
                   <div class="wst"><b id="wd-hum">--</b><span>%</span></div>
                   <div class="wst"><b id="wd-wind">--</b><span>km/h</span></div>
                 </div>
+                <div class="waqline" id="wd-aq"></div>
                 <div class="wsunline" id="wd-sun"></div>
+                <div class="wfc" id="wfc"></div>
               </div>
               <div class="gauge tile">
                 <svg class="gauge-svg" viewBox="0 0 120 120" width="72" height="72" aria-hidden="true">
@@ -124,13 +117,6 @@
                 </svg>
                 <div class="gauge-lbl">Jakość powietrza</div>
                 <div class="gauge-val" id="gauge-lab">--</div>
-              </div>
-              <div class="trash-card tile" id="trash-card">
-                <svg class="trash-ic" id="trash-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13M10 11v6M14 11v6"/></svg>
-                <div class="trash-info">
-                  <div class="trash-when" id="trash-when">--</div>
-                  <div class="trash-what" id="trash-what">sprawdzam…</div>
-                </div>
               </div>
             </div>
             <div class="dash-col dash-mid">
@@ -147,11 +133,17 @@
                   <div class="eph"><span>L3</span><div class="eph-bar"><i id="e-b3"></i></div><b id="e-pp3">--</b> W</div>
                 </div>
               </div>
-              <div class="kcard tile">
-                <div class="kc-h">❄️ Lodówka</div>
-                <div class="ktemps">
-                  <div><span>🧊 Lodówka</span><b id="ft2">--</b>°</div>
-                  <div><span>❄️ Zamrażarka</span><b id="fzt">--</b>°</div>
+              <div class="mid-split">
+                <div class="runcard tile" id="runcard">
+                  <div class="run-h"><span class="run-t">🏃 Bieganie dziś</span><span class="run-date" id="run-date">--</span></div>
+                  <div class="run-body" id="run-body"><div class="run-empty">Sprawdzam plan…</div></div>
+                </div>
+                <div class="kcard tile">
+                  <div class="kc-h">❄️ Lodówka</div>
+                  <div class="ktemps">
+                    <div><span>🧊 Lodówka</span><b id="ft2">--</b>°</div>
+                    <div><span>❄️ Zamrażarka</span><b id="fzt">--</b>°</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -162,14 +154,16 @@
                   <div class="spro-art" id="sp-art"></div>
                   <div><div class="spro-track" id="sp-t">--</div><div class="spro-artist" id="sp-a">--</div></div>
                 </div>
-                <div class="spprog"><div class="sppbar"><div class="sppfill" id="sp-pf"></div></div></div>
+                <div class="wave" id="sp-wave"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                <div class="spprog"><span class="sppt" id="sp-pos">0:00</span><div class="sppbar"><div class="sppfill" id="sp-pf"></div></div><span class="sppt" id="sp-dur">0:00</span></div>
                 <div class="mctrl">
                   <button type="button" class="mbtn" id="sp-prev">⏮</button>
                   <button type="button" class="mbtn play" id="sp-play">▶</button>
                   <button type="button" class="mbtn" id="sp-next">⏭</button>
                 </div>
+                <div class="volr"><div class="volbw volset" id="sp-vbw"><div class="volb" id="sp-vb"></div></div><div class="volv" id="sp-vv">0%</div></div>
               </div>
-              <div class="camcard tile" id="dash-cam" data-cam="">
+              <div class="camcard tile camcard-dash-nav" id="dash-cam" data-cam="" title="Kamery">
                 <div class="cam-viewport">
                   <img class="cam-stream" alt="">
                   <div class="cam-off">brak obrazu</div>
@@ -178,6 +172,43 @@
                 <span class="label">Front</span>
               </div>
               <div class="ctlrow" id="dash-gates"></div>
+            </div>
+          </div>
+          <div class="dash-b">
+            <div class="aqcard tile">
+              <div class="aqtitle">Jakość powietrza</div>
+              <div class="aqgrid">
+                <div class="aqitem">PM2.5<b><span id="pm25">--</span></b></div>
+                <div class="aqitem">PM10<b><span id="pm10">--</span></b></div>
+                <div class="aqitem">Norma PM2.5<b><span id="pm25n">--</span>%</b></div>
+                <div class="aqitem">Norma PM10<b><span id="pm10n">--</span>%</b></div>
+                <div class="aqitem" id="waq2"></div>
+              </div>
+            </div>
+            <div class="glance">
+              <div class="gcard tile">
+                <div class="gtitle">Paczkomat</div>
+                <div class="grow">
+                  <div class="gi"><div class="gl">Temp</div><div class="gv"><span id="pk-t">--</span>°</div></div>
+                  <div class="gi"><div class="gl">Wilg.</div><div class="gv"><span id="pk-h">--</span>%</div></div>
+                  <div class="gi"><div class="gl">Ciśn.</div><div class="gv"><span id="pk-p">--</span></div></div>
+                </div>
+              </div>
+              <div class="gcard tile">
+                <div class="gtitle">Ogród</div>
+                <div class="grow">
+                  <div class="gi"><div class="gl">Temp</div><div class="gv"><span id="og-t">--</span>°</div></div>
+                  <div class="gi"><div class="gl">Wilg.</div><div class="gv"><span id="og-h">--</span>%</div></div>
+                  <div class="gi"><div class="gl">Ciśn.</div><div class="gv"><span id="og-p">--</span></div></div>
+                </div>
+              </div>
+              <div class="gcard tile trash-card" id="trash-card">
+                <svg class="trash-ic" id="trash-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13M10 11v6M14 11v6"/></svg>
+                <div class="trash-info">
+                  <div class="trash-when" id="trash-when">--</div>
+                  <div class="trash-what" id="trash-what">sprawdzam…</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -295,7 +326,7 @@
   <div id="toast" class="toast" role="status"></div>
 
   <script type="module">
-    import('./js/app.js?v=1.1.5').catch(() => {
+    import('./js/app.js?v=1.1.6').catch(() => {
       const s = document.getElementById('boot-status');
       if (s) {
         s.classList.add('err');

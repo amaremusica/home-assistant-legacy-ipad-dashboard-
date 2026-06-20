@@ -67,9 +67,22 @@ export async function apiGet(path) {
 
 export async function fetchCalendar(entityId, start, end) {
   const id = encodeURIComponent(entityId);
-  return apiGet(
-    `calendars/${id}?start=${encodeURIComponent(start.toISOString())}&end=${encodeURIComponent(end.toISOString())}`
-  );
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 8000);
+  try {
+    const r = await fetch(
+      `${base()}/api/calendars/${id}?start=${encodeURIComponent(start.toISOString())}&end=${encodeURIComponent(end.toISOString())}`,
+      { headers: headers(), signal: ctrl.signal }
+    );
+    if (!r.ok) throw new Error(String(r.status));
+    return r.json();
+  } catch (e) {
+    if (e?.name === 'AbortError') throw new Error('timeout');
+    if (e?.message === 'Failed to fetch') throw new Error('net');
+    throw e;
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 export async function callService(domain, service, data = {}) {

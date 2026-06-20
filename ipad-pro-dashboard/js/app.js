@@ -1,16 +1,16 @@
-import { BUILD, loadConfig, saveConfig, exportConfig, importConfigFile, applyConfigObject, PRESET_URL, cameraList, ROOMS, SCENES, WEATHER, ENERGY, DASH_ROOMS, GATES, FRIDGE, AIR } from './config.js?v=1.1.5';
+import { BUILD, loadConfig, saveConfig, exportConfig, importConfigFile, applyConfigObject, PRESET_URL, cameraList, ROOMS, SCENES, WEATHER, ENERGY, DASH_ROOMS, GATES, FRIDGE, AIR, PARCEL, GARDEN, SUN } from './config.js?v=1.1.6';
 import {
   initHa, fetchStates, connectWebSocket, onStates, getState, callService,
   browseMedia, maSearch, entityPicture, checkVersion, triggerPanelUpdate, getHaOrigin
-} from './ha.js?v=1.1.5';
+} from './ha.js?v=1.1.6';
 import {
   camCardHtml, bindCamCards, attachCamStreams, attachDashCam, stopCamStreams, resumeCamStreams,
-  openCameraModal, closeCameraModal, bindCameraModal, camLabel
-} from './cameras.js?v=1.1.5';
-import { renderWeatherPage } from './weather.js?v=1.1.5';
-import { initDashboard, renderDashboard } from './dashboard.js?v=1.1.5';
-import { loadTrash } from './trash.js?v=1.1.5';
-import { toast, setOnline, setTab, tickClock, esc, lazyImages } from './ui.js?v=1.1.5';
+  openCameraModal, closeCameraModal, bindCameraModal, camLabel, refreshCameras, startCamHealthCheck
+} from './cameras.js?v=1.1.6';
+import { renderWeatherPage } from './weather.js?v=1.1.6';
+import { initDashboard, renderDashboard } from './dashboard.js?v=1.1.6';
+import { loadTrash } from './trash.js?v=1.1.6';
+import { toast, setOnline, setTab, tickClock, esc, lazyImages } from './ui.js?v=1.1.6';
 
 const GIT_PULL_MS = 30 * 60 * 1000;
 const CHECK_MS = 2 * 60 * 1000;
@@ -160,6 +160,9 @@ function allEntityIds() {
   ids.add(FRIDGE.fridge);
   ids.add(FRIDGE.freezer);
   Object.values(AIR).forEach((id) => ids.add(id));
+  Object.values(PARCEL).forEach((id) => ids.add(id));
+  Object.values(GARDEN).forEach((id) => ids.add(id));
+  ids.add(SUN);
   for (const s of SCENES) {
     const id = cfg[s.key];
     if (id) ids.add(id);
@@ -253,6 +256,8 @@ async function connect() {
   renderCamPreviews();
   initDashCam();
   loadTrash(cfg.ha_trash);
+  setInterval(() => loadTrash(cfg.ha_trash), 30 * 60 * 1000);
+  startCamHealthCheck();
   loadMusicHome();
   bindProgress();
   bindCameraModal(cfg);
@@ -264,8 +269,12 @@ function initDashCam() {
   if (!cams.length) return;
   const dash = document.getElementById('dash-cam');
   if (dash) {
-    dash.querySelector('.label').textContent = camLabel(cams[0], cfg);
-    dash.onclick = () => openCameraModal(cams[0], cfg);
+    dash.querySelector('.label').textContent = `📷 ${camLabel(cams[0], cfg)}`;
+    dash.onclick = () => {
+      setTab('cameras');
+      renderCamGrid();
+      document.querySelectorAll('#tabnav .tb').forEach((b) => b.classList.toggle('active', b.dataset.tab === 'cameras'));
+    };
   }
   attachDashCam(cams[0]);
 }
@@ -301,6 +310,12 @@ function bindDashSpotify() {
   document.getElementById('sp-next')?.addEventListener('click', () =>
     callService('media_player', 'media_next_track', { entity_id: cfg.ha_spotify })
   );
+  document.getElementById('sp-vbw')?.addEventListener('click', (e) => {
+    const bar = e.currentTarget;
+    const rect = bar.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    callService('media_player', 'volume_set', { entity_id: cfg.ha_spotify, volume_level: pct });
+  });
 }
 
 function bindTabNav() {
@@ -318,6 +333,7 @@ function bindTabNav() {
       setTab(tab);
       if (tab === 'cameras') renderCamGrid();
       if (tab === 'weather') renderWeatherPage();
+      if (tab === 'home' || tab === 'cameras') refreshCameras(true);
     }
     document.querySelectorAll('#tabnav .tb').forEach((b) => b.classList.toggle('active', b === btn));
   });
@@ -330,7 +346,6 @@ function bindTabNav() {
 
 function renderAll() {
   renderDashboard(cfg);
-  loadTrash(cfg.ha_trash);
   renderRoomTabs();
   renderRoom(document.getElementById('room-grid'), ROOMS[activeRoom]);
   renderNowPlaying();
@@ -573,6 +588,7 @@ document.getElementById('cfg-form')?.addEventListener('submit', (e) => {
     ha_trash: document.getElementById('cfg-trash').value.trim()
   });
   document.getElementById('cfg').close();
+  loadTrash(document.getElementById('cfg-trash').value.trim(), { force: true });
   connect();
 });
 

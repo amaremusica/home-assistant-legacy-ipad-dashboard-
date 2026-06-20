@@ -1,7 +1,10 @@
-/** Ekran Dom — układ 3 kolumny jak legacy iPad, nowoczesny styl */
-import { getState, callService, entityPicture } from './ha.js?v=1.1.5';
-import { WEATHER, ENERGY, AIR, SCENES, DASH_ROOMS, GATES, FRIDGE } from './config.js?v=1.1.5';
-import { esc } from './ui.js?v=1.1.5';
+/** Ekran Dom — układ jak legacy iPad 4 */
+import { getState, callService, entityPicture, fetchCalendar } from './ha.js?v=1.1.6';
+import {
+  WEATHER, ENERGY, AIR, SCENES, DASH_ROOMS, GATES, FRIDGE,
+  PARCEL, GARDEN, RUN_CAL, SUN
+} from './config.js?v=1.1.6';
+import { esc } from './ui.js?v=1.1.6';
 
 const WICON = {
   'clear-night': '🌙', cloudy: '☁️', fog: '🌫️', hail: '🌨️', lightning: '⛈️',
@@ -10,6 +13,10 @@ const WICON = {
 };
 
 const AQ_LABELS = ['Bardzo dobry', 'Dobry', 'Umiarkowany', 'Dostateczny', 'Zły', 'Bardzo zły'];
+const FC_ICONS = { sunny: '☀️', cloudy: '☁️', rainy: '🌧️', 'partlycloudy': '⛅', snowy: '❄️' };
+
+let runBusy = false;
+let runLast = 0;
 
 function fmt(v, d = 1) {
   const n = parseFloat(v);
@@ -19,6 +26,14 @@ function fmt(v, d = 1) {
 function tx(id, val) {
   const el = document.getElementById(id);
   if (el) el.textContent = val;
+}
+
+function aqBadge(aqi) {
+  const n = parseFloat(aqi);
+  if (!Number.isFinite(n)) return { label: '--', cls: '' };
+  const label = AQ_LABELS[Math.min(AQ_LABELS.length - 1, Math.floor(n))] || '--';
+  const cls = n <= 1 ? 'aq-g' : n <= 3 ? 'aq-m' : 'aq-b';
+  return { label, cls };
 }
 
 export function initDashboard(cfg, onScene, onRoomLight, onGate) {
@@ -45,7 +60,7 @@ export function initDashboard(cfg, onScene, onRoomLight, onGate) {
   if (scenes && !scenes.dataset.ready) {
     scenes.innerHTML = SCENES.map((s) => {
       const id = cfg[s.key];
-      return `<button type="button" class="scenebtn" data-scene="${esc(id)}" ${id ? '' : 'disabled'}>${s.icon} ${s.label}</button>`;
+      return `<button type="button" class="scenebtn tile" data-scene="${esc(id)}" ${id ? '' : 'disabled'}>${s.icon} ${s.label}</button>`;
     }).join('');
     scenes.querySelectorAll('.scenebtn').forEach((btn) => {
       btn.addEventListener('click', () => onScene(btn.dataset.scene));
@@ -76,6 +91,8 @@ export function renderDashboard(cfg) {
   renderDashFridge();
   renderDashSpotify(cfg);
   renderDashGates();
+  renderDashBottom();
+  loadRunToday();
 }
 
 function renderDashWeather() {
@@ -90,28 +107,78 @@ function renderDashWeather() {
   tx('wd-wind', fmt(a.wind_speed, 1));
   const icon = document.getElementById('wd-icon');
   if (icon) icon.textContent = WICON[w.state] || '🌤️';
-  const sun = a.sunrise && a.sunset
-    ? `☀️ ${new Date(a.sunrise).toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' })} · 🌙 ${new Date(a.sunset).toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' })}`
-    : '';
-  tx('wd-sun', sun);
+
+  const aqi = getState(AIR.index)?.state;
+  const badge = aqBadge(aqi);
+  const waq = document.getElementById('wd-aq');
+  if (waq) waq.innerHTML = badge.label !== '--' ? `<span class="aqb ${badge.cls}">${badge.label}</span>` : '';
+
+  const sun = getState(SUN)?.attributes || {};
+  const sr = sun.next_rising ? new Date(sun.next_rising).toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' }) : '--';
+  const ss = sun.next_setting ? new Date(sun.next_setting).toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' }) : '--';
+  tx('wd-sun', sr !== '--' || ss !== '--' ? `☀️ ${sr} · 🌙 ${ss}` : '');
+
+  renderMiniForecast(a);
+}
+
+function renderMiniForecast(attrs) {
+  const box = document.getElementById('wfc');
+  if (!box) return;
+  const fc = attrs?.forecast;
+  if (!Array.isArray(fc) || !fc.length) {
+    box.innerHTML = '';
+    return;
+  }
+  box.innerHTML = fc.slice(0, 5).map((d) => {
+    const dt = d.datetime ? new Date(d.datetime) : null;
+    const day = dt ? ['Nd', 'Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'So'][dt.getDay()] : '—';
+    const ic = FC_ICONS[d.condition] || WICON[d.condition] || '🌤️';
+    return `<div class="wfc-day"><span class="wfc-d">${day}</span><span class="wfc-i">${ic}</span><span class="wfc-t">${fmt(d.templow, 0)}/${fmt(d.temperature, 0)}°</span></div>`;
+  }).join('');
 }
 
 function renderDashAir() {
   const pm = parseFloat(getState(AIR.pm25)?.state);
+  const pm10 = parseFloat(getState(AIR.pm10)?.state);
+  const pm25n = parseFloat(getState(AIR.pm25n)?.state);
+  const pm10n = parseFloat(getState(AIR.pm10n)?.state);
   const aqi = parseFloat(getState(AIR.index)?.state);
+
   let pct = 50;
   let lab = '--';
-  if (Number.isFinite(pm)) {
+  if (Number.isFinite(pm25n)) {
+    pct = Math.max(8, Math.min(92, pm25n));
+    lab = pm25n <= 50 ? 'Bardzo dobry' : pm25n <= 100 ? 'Dobry' : pm25n <= 150 ? 'Umiarkowany' : 'Słaby';
+  } else if (Number.isFinite(pm)) {
     pct = Math.max(8, Math.min(92, 100 - pm * 4));
     lab = pm <= 13 ? 'Bardzo dobry' : pm <= 25 ? 'Dobry' : pm <= 50 ? 'Umiarkowany' : 'Słaby';
   } else if (Number.isFinite(aqi)) {
     pct = Math.max(8, Math.min(92, 100 - aqi * 8));
     lab = AQ_LABELS[Math.min(AQ_LABELS.length - 1, Math.floor(aqi))] || '--';
   }
-  tx('gauge-pct', Number.isFinite(pm) ? `${Math.round(pm)}` : (Number.isFinite(aqi) ? `${Math.round(aqi * 10)}%` : '--'));
+
+  tx('gauge-pct', Number.isFinite(pm25n) ? `${Math.round(pm25n)}%` : Number.isFinite(pm) ? `${Math.round(pm)}` : '--');
   tx('gauge-lab', lab);
   const arc = document.getElementById('gauge-arc');
   if (arc) arc.setAttribute('stroke-dashoffset', String(327 - (327 * pct) / 100));
+}
+
+function renderDashBottom() {
+  tx('pm25', fmt(getState(AIR.pm25)?.state, 1));
+  tx('pm10', fmt(getState(AIR.pm10)?.state, 1));
+  tx('pm25n', fmt(getState(AIR.pm25n)?.state, 0));
+  tx('pm10n', fmt(getState(AIR.pm10n)?.state, 0));
+
+  const badge = aqBadge(getState(AIR.index)?.state);
+  const waq2 = document.getElementById('waq2');
+  if (waq2) waq2.innerHTML = badge.label !== '--' ? `<span class="aqb ${badge.cls}">Indeks PL: ${badge.label}</span>` : '';
+
+  tx('pk-t', fmt(getState(PARCEL.temp)?.state, 1));
+  tx('pk-h', fmt(getState(PARCEL.hum)?.state, 0));
+  tx('pk-p', fmt(getState(PARCEL.pres)?.state, 0));
+  tx('og-t', fmt(getState(GARDEN.temp)?.state, 1));
+  tx('og-h', fmt(getState(GARDEN.hum)?.state, 0));
+  tx('og-p', fmt(getState(GARDEN.pres)?.state, 0));
 }
 
 function renderDashRooms() {
@@ -142,11 +209,20 @@ function renderDashFridge() {
   tx('fzt', fmt(getState(FRIDGE.freezer)?.state, 1));
 }
 
+function fmtTime(sec) {
+  if (!Number.isFinite(sec) || sec < 0) return '0:00';
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60);
+  return `${m}:${s < 10 ? '0' : ''}${s}`;
+}
+
 function renderDashSpotify(cfg) {
   const e = getState(cfg.ha_spotify || cfg.ha_ma);
   if (!e?.attributes) {
     tx('sp-t', 'Nic nie gra');
     tx('sp-a', '—');
+    tx('sp-pos', '0:00');
+    tx('sp-dur', '0:00');
     return;
   }
   const a = e.attributes;
@@ -158,6 +234,14 @@ function renderDashSpotify(cfg) {
   const pos = a.media_position || 0;
   const bar = document.getElementById('sp-pf');
   if (bar) bar.style.width = dur > 0 ? `${(pos / dur) * 100}%` : '0%';
+  tx('sp-pos', fmtTime(pos));
+  tx('sp-dur', fmtTime(dur));
+  const vol = Math.round((a.volume_level || 0) * 100);
+  tx('sp-vv', `${vol}%`);
+  const vb = document.getElementById('sp-vb');
+  if (vb) vb.style.width = `${vol}%`;
+  const wave = document.getElementById('sp-wave');
+  if (wave) wave.classList.toggle('playing', e.state === 'playing');
   const play = document.getElementById('sp-play');
   if (play) play.textContent = e.state === 'playing' ? '⏸' : '▶';
 }
@@ -169,5 +253,38 @@ function renderDashGates() {
     const card = document.getElementById(`sc-${g.key}`);
     if (el) el.textContent = st === 'on' ? g.onLabel : g.offLabel;
     if (card) card.classList.toggle('on', st === 'on');
+  }
+}
+
+async function loadRunToday() {
+  const body = document.getElementById('run-body');
+  if (!body || runBusy) return;
+  const now = Date.now();
+  if (now - runLast < 15 * 60 * 1000 && body.dataset.loaded) return;
+  runBusy = true;
+  try {
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(start);
+    end.setDate(end.getDate() + 1);
+    const data = await fetchCalendar(RUN_CAL, start, end);
+    runLast = Date.now();
+    body.dataset.loaded = '1';
+    const dateEl = document.getElementById('run-date');
+    if (dateEl) dateEl.textContent = start.toLocaleDateString('pl-PL', { weekday: 'short', day: 'numeric', month: 'short' });
+    if (!data?.length) {
+      body.innerHTML = '<div class="run-empty">Brak treningu dziś</div>';
+      return;
+    }
+    body.innerHTML = data.slice(0, 3).map((ev) => {
+      const sum = esc(ev.summary || ev.title || 'Bieg');
+      const st = ev.start?.dateTime || ev.start?.date || '';
+      const t = st ? new Date(String(st).replace(' ', 'T')).toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' }) : '';
+      return `<div class="run-ev"><span class="run-sum">${sum}</span>${t ? `<span class="run-time">${t}</span>` : ''}</div>`;
+    }).join('');
+  } catch {
+    if (!body.dataset.loaded) body.innerHTML = '<div class="run-empty">Plan niedostępny</div>';
+  } finally {
+    runBusy = false;
   }
 }
