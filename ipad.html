@@ -699,6 +699,9 @@ body.legacy-safari #cfg{background:#262119;background:var(--bg);}
 body.legacy-safari nav{background:var(--glass2);}
 #err-bar{display:none;position:fixed;left:14px;right:14px;top:62px;z-index:850;padding:12px 16px;border-radius:var(--r);background:var(--glass2);border:1px solid rgba(248,113,113,0.35);box-shadow:var(--shadow);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);}
 #err-bar.show{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;}
+.cfg-block{margin:16px 0 18px;padding:14px 16px;border-radius:var(--rsm);background:var(--glass2);border:1px solid var(--glass-b);}
+.cfg-block-t{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:4px;}
+.cfg-block-h{font-size:12px;color:var(--dim);line-height:1.45;margin-bottom:10px;}
 .cfg-row{display:-webkit-flex;display:flex;margin-top:10px;}
 .cfg-row>*{-webkit-flex:1;flex:1;}
 .cfg-row>*+*{margin-left:8px;}
@@ -717,8 +720,12 @@ body.legacy-safari nav{background:var(--glass2);}
     <p>Dane zapisują się automatycznie.</p>
     <div class="cf"><label>Adres HA</label><input type="url" id="cu" placeholder="http://homeassistant.local:8123" autocorrect="off" autocapitalize="off"></div>
     <div class="cf"><label>Access Token</label><input type="password" id="ct" placeholder="eyJ0eXAi..." autocomplete="off"><div id="cts" class="csaved">✓ Token zapisany</div></div>
-    <div class="cf"><label>Czas ściemnienia (sek)</label><input type="number" id="cd" value="45" min="10" max="600"></div>
-    <div class="cf"><label>Czujnik ruchu (entity_id)</label><input type="text" id="cm" placeholder="binary_sensor.motion" autocorrect="off" autocapitalize="off"></div>
+    <div class="cfg-block">
+      <div class="cfg-block-t">Ściemnianie ekranu</div>
+      <p class="cfg-block-h">Po bezruchu panel gaśnie (warstwa na ekranie). Wybudzenie: dotyk lub ruch z czujnika HA.</p>
+      <div class="cf"><label>Czas bez ruchu (sek)</label><input type="number" id="cd" value="45" min="10" max="600"></div>
+      <div class="cf"><label>Czujnik ruchu (entity_id)</label><input type="text" id="cm" placeholder="binary_sensor.czujnik_garderoba" value="binary_sensor.czujnik_garderoba" autocorrect="off" autocapitalize="off"></div>
+    </div>
     <div class="cf"><label>Spotify (entity_id)</label><input type="text" id="csp" placeholder="media_player.spotify" autocorrect="off" autocapitalize="off"></div>
     <div class="cf"><label>Spotify — domyślne wyjście</label><input type="text" id="css" placeholder="Wzmacniacz" autocorrect="off" autocapitalize="off"></div>
     <div class="cf"><label>Music Assistant URL</label><input type="url" id="cma" placeholder="Opcjonalnie — tylko LAN (Nabu Casa → przez HA)" autocorrect="off" autocapitalize="off"></div>
@@ -1283,14 +1290,14 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.13.4';
+var BUILD='11.13.5';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
 var appStarted=false;
 var ENT_JSON=null;
 var pollFilter='';
-var MOTION='binary_sensor.motion';
+var MOTION='binary_sensor.czujnik_garderoba';
 var SP_EID='media_player.spotify';
 var SP_SOURCE='Wzmacniacz';
 var MA_URL='';
@@ -1468,6 +1475,7 @@ function saveConfig(){
   var tok=t||TOK; if(!tok){alert('Podaj token.');return;}
   sSet('ha_url',u); sSet('ha_token',tok); sSet('ha_dim',d);
   if(mo){ sSet('ha_motion',mo); MOTION=mo; }
+  else { try{localStorage.removeItem('ha_motion');}catch(e){} delete _st.ha_motion; MOTION='binary_sensor.czujnik_garderoba'; }
   if(sp){ sSet('ha_spotify',sp); SP_EID=sp; }
   if(ss){ sSet('ha_spotify_src',ss); SP_SOURCE=ss; }
   if(tr){ sSet('ha_trash',tr); TRASH_ENT=tr; }
@@ -4387,6 +4395,7 @@ function prefillDefaults(){
   var ctr=document.getElementById('ctr');
   var ctv=document.getElementById('ctv');
   if(t&&!t.value&&!TOK) t.placeholder='eyJ0eXAi...';
+  if(cm&&!cm.value&&!sGet('ha_motion')) cm.value='binary_sensor.czujnik_garderoba';
 }
 
 loadConfig(); syncVerLabels(); tick(); loadTheme();
