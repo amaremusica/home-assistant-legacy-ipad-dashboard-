@@ -2,7 +2,13 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
-## [11.13.4] — 2026-06-19
+## [11.13.6] — 2026-06-24
+
+### Naprawione
+- **Bieganie dziś** — konfigurowalna encja kalendarza w ☰ (`ha_run`), auto-wykrywanie `calendar.*` z „bieg/run/trening”, lepsze komunikaty błędów, godzina treningu.
+- **Radio MA przez HA** — poprawne wywołania `music_assistant.search` / `play_media` (bez `return_response` w body).
+
+## [11.13.5] — 2026-06-19
 
 ### Naprawione — zakładka Muzyka (iPad 4)
 - **Mini-player** — przyklejony na dole (flex), treść przewija się osobno; koniec z „dziwnym” przewijaniem playera.

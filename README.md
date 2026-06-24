@@ -1,6 +1,6 @@
 # Home Assistant Dashboard for iPad 4 (iOS 10.3.3)
 
-**Aktualna wersja:** `v11.13.3` — [`ipad.html`](ipad.html) (samodzielny, CSS wbudowany) · [CHANGELOG](CHANGELOG.md)
+**Aktualna wersja:** `v11.13.6` — [`ipad.html`](ipad.html) (samodzielny, CSS wbudowany) · [CHANGELOG](CHANGELOG.md)
 
 ![Panel — widok Dom](IMG_5484.jpeg)
 

@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.13.4 -->
+<!-- build: v11.13.6 -->
 <title>Dom</title>
 <style>
 :root {
@@ -732,6 +732,7 @@ body.legacy-safari nav{background:var(--glass2);}
     <div class="cf"><label>MA Token (opcjonalnie)</label><input type="password" id="cmat" placeholder="Bearer token z MA ≥2.7" autocomplete="off"></div>
     <div class="cf"><label>MA Player — encja HA</label><input type="text" id="cmae" placeholder="media_player.wzmacniacz" autocorrect="off" autocapitalize="off"></div>
     <div class="cf"><label>Kalendarz śmieci</label><input type="text" id="ctr" placeholder="calendar.trash" autocorrect="off" autocapitalize="off"></div>
+    <div class="cf"><label>Kalendarz biegania</label><input type="text" id="crun" placeholder="calendar.bieganie" autocorrect="off" autocapitalize="off"></div>
     <div class="cf"><label>Telewizor (entity_id)</label><input type="text" id="ctv" placeholder="media_player.living_room_tv" autocorrect="off" autocapitalize="off"></div>
     <div class="cfg-row2">
       <div class="cf"><label>Łóżko 1 — encja</label><input type="text" id="cb1" placeholder="switch.bed_1" autocorrect="off" autocapitalize="off"></div>
@@ -790,7 +791,7 @@ body.legacy-safari nav{background:var(--glass2);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.13.4</span>
+      <span id="ver">v11.13.6</span>
       <button class="hbtn" id="hbtn-upd" onclick="manualPanelUpdate()" title="Pobierz aktualizację z GitHub (git pull)">↺</button>
     </div>
   </header>
@@ -1290,7 +1291,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.13.5';
+var BUILD='11.13.6';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
@@ -1308,6 +1309,7 @@ var MU_SOURCE='';
 var MA_CFG_ENTRY='';
 var TV_EID='media_player.living_room_tv';
 var TRASH_ENT='calendar.trash';
+var RUN_ENT='calendar.bieganie';
 var BED1_EID='switch.bed_1';
 var BED2_EID='switch.bed_2';
 var BED1_LBL='Osoba 1';
@@ -1316,14 +1318,14 @@ var SCENE_EVE='';
 var SCENE_LEAVE='';
 var SCENE_OFF='';
 var SUN='sun.sun';
-var CFG_KEYS=['ha_url','ha_token','ha_dim','ha_motion','ha_spotify','ha_spotify_src','ha_ma_url','ha_ma_token','ha_ma_eid','ha_ma_player','ha_trash','ha_tv','ha_bed1','ha_bed2','ha_bed1_lbl','ha_bed2_lbl','ha_scene_eve','ha_scene_leave','ha_scene_off','theme','accent','bg_level'];
+var CFG_KEYS=['ha_url','ha_token','ha_dim','ha_motion','ha_spotify','ha_spotify_src','ha_ma_url','ha_ma_token','ha_ma_eid','ha_ma_player','ha_trash','ha_run','ha_tv','ha_bed1','ha_bed2','ha_bed1_lbl','ha_bed2_lbl','ha_scene_eve','ha_scene_leave','ha_scene_off','theme','accent','bg_level'];
 var POLL_IDS=['binary_sensor.lodowka_freezer_door','binary_sensor.lodowka_fridge_door','button.k1c_creality_pause_print','button.k1c_creality_resume_print','button.k1c_creality_stop_print','calendar.bieganie','camera.front','camera.tyl','light.lazienka_gora_swiatlo_swiatlo','light.lazienka_gora_swiatlo_swiatlo_2','light.lazienka_gora_swiatlo_swiatlo_3','light.led_kuchnia','light.led_kuchnia_i','light.led_salon_okno','light.led_tv_2','light.swiatlo_garderoba_swiatlo','light.swiatlo_garderoba_swiatlo_2','light.swiatlo_garderoba_swiatlo_3','light.swiatlo_kuchnia_swiatlo_2','light.swiatlo_kuchnia_swiatlo_3','light.swiatlo_lazienka_swiatlo','light.swiatlo_lazienka_swiatlo_2','light.swiatlo_lazienka_swiatlo_3','light.swiatlo_salon_swiatlo','light.swiatlo_salon_swiatlo_2','light.swiatlo_salon_swiatlo_3','light.swiatlo_sypialnia_swiatlo','light.wiatrolap_gorne_swiatlo','light.wiatrolap_gorne_swiatlo_2','sensor.k1c_creality_bed_temperature','sensor.k1c_creality_current_object','sensor.k1c_creality_nozzle_temperature','sensor.k1c_creality_position_x','sensor.k1c_creality_position_y','sensor.k1c_creality_print_job_time','sensor.k1c_creality_print_progress','sensor.k1c_creality_print_status','sensor.k1c_creality_print_time_left','sensor.k1c_creality_total_layers','sensor.k1c_creality_working_layer','sensor.lodowka_freezer_temperature','sensor.lodowka_fridge_temperature','sensor.lodowka_moc','sensor.parcel_locker_wol02bapp_cisnienie','sensor.parcel_locker_wol02bapp_norma_pm_10','sensor.parcel_locker_wol02bapp_norma_pm_2_5','sensor.parcel_locker_wol02bapp_pm_10','sensor.parcel_locker_wol02bapp_pm_2_5','sensor.parcel_locker_wol02bapp_polish_air_quality_index','sensor.parcel_locker_wol02bapp_temperatura','sensor.parcel_locker_wol02bapp_wilgotnosc','sensor.pobor_mocy_3_fazy','sensor.pralka_current_status','sensor.swiatlo_kuchnia_temperatura_urzadzenia','sensor.szuszarka_current_status','sensor.temperatura_garderoba_temperatura','sensor.temperatura_garderoba_wilgotnosc','sensor.termometr_lazienka_bateria','sensor.termometr_lazienka_temperatura','sensor.termometr_lazienka_wilgotnosc','sensor.termometr_ogrod_cisnienie','sensor.termometr_ogrod_temperatura','sensor.termometr_ogrod_wilgotnosc','sensor.termometr_salon_cisnienie','sensor.termometr_salon_temperatura','sensor.termometr_salon_wilgotnosc','sensor.termometr_sypialnia_cisnienie','sensor.termometr_sypialnia_temperatura','sensor.termometr_sypialnia_wilgotnosc','sensor.zamel_mew_01_electricity_meter_power_active_phase_1','sensor.zamel_mew_01_electricity_meter_power_active_phase_2','sensor.zamel_mew_01_electricity_meter_power_active_phase_3','sensor.zamel_mew_01_electricity_meter_total_forward_active_energy','sensor.zamel_mew_01_electricity_meter_voltage_phase_1','sensor.zamel_mew_01_electricity_meter_voltage_phase_2','sensor.zamel_mew_01_electricity_meter_voltage_phase_3','sun.sun','switch.furtka','switch.smart_switch_b78c','weather.forecast_dom'];
 
 function rebuildPollFilter(){
   var map={}, list=POLL_IDS.slice(0), extras=[], i, id, dyn, k, out=[];
   if(ENT_JSON&&ENT_JSON.poll&&ENT_JSON.poll.length) extras=ENT_JSON.poll;
   for(i=0;i<extras.length;i++){ id=extras[i]; if(id) list.push(id); }
-  dyn=[MOTION,SP_EID,TV_EID,TRASH_ENT,BED1_EID,BED2_EID,SCENE_EVE,SCENE_LEAVE,SCENE_OFF,SUN,MA_EID];
+  dyn=[MOTION,SP_EID,TV_EID,TRASH_ENT,RUN_ENT,BED1_EID,BED2_EID,SCENE_EVE,SCENE_LEAVE,SCENE_OFF,SUN,MA_EID];
   for(i=0;i<dyn.length;i++){ id=dyn[i]; if(id) list.push(id); }
   for(i=0;i<list.length;i++){ id=list[i]; if(id) map[id]=1; }
   for(k in map) if(map.hasOwnProperty(k)) out.push(k);
@@ -1395,6 +1397,7 @@ function loadEntConfig(){
   var map=sGet('ha_ma_player'); if(map) MA_PLAYER=map;
   var tv=sGet('ha_tv'); if(tv) TV_EID=tv;
   var tr=sGet('ha_trash'); if(tr) TRASH_ENT=tr;
+  var rn=sGet('ha_run'); if(rn) RUN_ENT=rn;
   var b1=sGet('ha_bed1'); if(b1) BED1_EID=b1;
   var b2=sGet('ha_bed2'); if(b2) BED2_EID=b2;
   var b1l=sGet('ha_bed1_lbl'); if(b1l) BED1_LBL=b1l;
@@ -1425,6 +1428,7 @@ function prefillConfigFields(){
   var csp=document.getElementById('csp'); if(csp) csp.value=SP_EID||'';
   var css=document.getElementById('css'); if(css) css.value=SP_SOURCE||'';
   var ctr=document.getElementById('ctr'); if(ctr) ctr.value=TRASH_ENT||'';
+  var crun=document.getElementById('crun'); if(crun) crun.value=RUN_ENT||'';
   var ctv=document.getElementById('ctv'); if(ctv) ctv.value=TV_EID||'';
   var cb1=document.getElementById('cb1'); if(cb1) cb1.value=BED1_EID||'';
   var cb2=document.getElementById('cb2'); if(cb2) cb2.value=BED2_EID||'';
@@ -1463,6 +1467,7 @@ function saveConfig(){
   var sp=document.getElementById('csp').value.trim();
   var ss=document.getElementById('css').value.trim();
   var tr=document.getElementById('ctr').value.trim();
+  var rn=document.getElementById('crun').value.trim();
   var tv=document.getElementById('ctv').value.trim();
   var b1=document.getElementById('cb1').value.trim();
   var b2=document.getElementById('cb2').value.trim();
@@ -1479,6 +1484,7 @@ function saveConfig(){
   if(sp){ sSet('ha_spotify',sp); SP_EID=sp; }
   if(ss){ sSet('ha_spotify_src',ss); SP_SOURCE=ss; }
   if(tr){ sSet('ha_trash',tr); TRASH_ENT=tr; }
+  if(rn){ sSet('ha_run',rn); RUN_ENT=rn; }
   if(tv){ sSet('ha_tv',tv); TV_EID=tv; }
   if(b1){ sSet('ha_bed1',b1); BED1_EID=b1; }
   if(b2){ sSet('ha_bed2',b2); BED2_EID=b2; }
@@ -1791,26 +1797,73 @@ var CAL_ENT='calendar.bieganie';
 var RUNLAST=0;
 var TRASHLAST=0;
 function pad2(n){return (n<10?'0':'')+n;}
-function loadRunToday(){
+function runCalEntity(){
+  var r=sGet('ha_run'); if(r) return r;
+  return RUN_ENT||CAL_ENT;
+}
+function discoverRunCalendar(){
+  var id,e,a,nm;
+  for(id in E){
+    if(id.indexOf('calendar.')!==0) continue;
+    e=E[id]; if(!e||e.state==='unavailable') continue;
+    nm=(id+' '+(e.attributes&&e.attributes.friendly_name||'')).toLowerCase();
+    if(nm.indexOf('bieg')>=0||nm.indexOf('run')>=0||nm.indexOf('trening')>=0) return id;
+  }
+  return '';
+}
+function runTimeLabel(ev){
+  var stStr=evStart(ev); if(!stStr) return '';
+  if(String(stStr).length===10) return 'cały dzień';
+  var t=new Date(String(stStr).replace(' ','T'));
+  if(isNaN(t.getTime())) return '';
+  return pad2(t.getHours())+':'+pad2(t.getMinutes());
+}
+function runErrMsg(err){
+  if(!err) return 'błąd kalendarza';
+  if(err.message==='404'||err.message===404) return 'Zła encja kalendarza (☰)';
+  if(err.message==='timeout') return 'timeout HA';
+  if(err.message==='net') return 'brak połączenia';
+  return 'błąd '+err.message;
+}
+function loadRunToday(retry){
   if(typeof HA==='undefined'||!HA||!TOK)return;
-  var now=Date.now(); if(now-RUNLAST<1800000&&RUNLAST)return; RUNLAST=now;
+  var now=Date.now(); if(!retry&&now-RUNLAST<900000&&RUNLAST)return;
+  var ent=runCalEntity();
+  if(ent==='calendar.bieganie'&&!sGet('ha_run')){
+    var auto=discoverRunCalendar();
+    if(auto) ent=auto;
+  }
+  if(!ent){
+    var b0=document.getElementById('run-body');
+    if(b0) b0.innerHTML='<div class="run-empty">Ustaw kalendarz w ☰</div>';
+    return;
+  }
   var d=new Date();
   var s=new Date(d.getFullYear(),d.getMonth(),d.getDate(),0,0,0);
   var e=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1,0,0,0);
   var dn=document.getElementById('run-date'); if(dn){var dni=['Niedz.','Pon.','Wt.','Śr.','Czw.','Pt.','Sob.'];dn.textContent=dni[d.getDay()]+' '+pad2(d.getDate())+'.'+pad2(d.getMonth()+1);}
-  haGet('calendars/'+CAL_ENT+'?start='+encodeURIComponent(s.toISOString())+'&end='+encodeURIComponent(e.toISOString()),function(err,data){
-    var body=document.getElementById('run-body'); if(!body)return;
-    if(err){ body.innerHTML='<div class="run-empty">Brak połączenia z kalendarzem</div>'; return; }
+  var body=document.getElementById('run-body'); if(body&&!RUNLAST) body.innerHTML='<div class="run-empty">Sprawdzam plan…</div>';
+  haGet('calendars/'+encodeURIComponent(ent)+'?start='+encodeURIComponent(s.toISOString())+'&end='+encodeURIComponent(e.toISOString()),function(err,data){
+    body=document.getElementById('run-body'); if(!body)return;
+    if(err){
+      if(!retry&&(err.message==='404'||err.message===404)&&!sGet('ha_run')){
+        var alt=discoverRunCalendar();
+        if(alt&&alt!==ent){ RUN_ENT=alt; sSet('ha_run',alt); loadRunToday(true); return; }
+      }
+      body.innerHTML='<div class="run-empty">'+runErrMsg(err)+'</div>';
+      return;
+    }
+    RUNLAST=Date.now();
     if(!data||!data.length){ body.innerHTML='<div class="run-empty">Dziś brak treningu 💤</div>'; return; }
-    var h='',i,ev,sum;
-    for(i=0;i<data.length&&i<1;i++){
+    var h='',i,ev,sum,tm;
+    for(i=0;i<data.length&&i<3;i++){
       ev=data[i]; sum=ev.summary||ev.message||'Trening';
-      h+='<div class="run-ev"><span class="run-sum">'+sum+'</span></div>';
+      tm=runTimeLabel(ev);
+      h+='<div class="run-ev">'+(tm?'<span class="run-time">'+tm+'</span>':'')+'<span class="run-sum">'+sum+'</span></div>';
     }
     body.innerHTML=h;
   });
 }
-var RUNLAST=0;
 function evStart(ev){
   var s=ev.start;
   if(!s) return ev.start_time||ev.startTime||null;
@@ -2723,6 +2776,8 @@ function maViaHa(){ return !!(HA&&TOK); }
 
 function maLoadCfgEntry(cb){
   if(MA_CFG_ENTRY){ if(cb) cb(); return; }
+  var cached=sGet('ha_ma_cfg_entry');
+  if(cached){ MA_CFG_ENTRY=cached; if(cb) cb(); return; }
   haGet('config/config_entries/entry',function(err,entries){
     if(!err&&entries&&entries.length){
       var i,e;
@@ -2730,6 +2785,7 @@ function maLoadCfgEntry(cb){
         e=entries[i];
         if(e&&e.domain==='music_assistant'&&e.entry_id){
           MA_CFG_ENTRY=e.entry_id;
+          sSet('ha_ma_cfg_entry',MA_CFG_ENTRY);
           break;
         }
       }
@@ -2738,16 +2794,34 @@ function maLoadCfgEntry(cb){
   });
 }
 
+function maHaNeedsResponse(svc){
+  return svc==='search'||svc==='get_library'||svc==='get_queue';
+}
+
+function maHaUnwrapResp(resp){
+  if(!resp||typeof resp!=='object') return resp;
+  if(resp.radio||resp.tracks||resp.albums||resp.artists||resp.items||resp.current_item) return resp;
+  var k,v;
+  for(k in resp){
+    if(!resp.hasOwnProperty(k)) continue;
+    v=resp[k];
+    if(v&&typeof v==='object'&&(v.radio||v.tracks||v.items||v.current_item)) return v;
+  }
+  return resp;
+}
+
 function haMaService(svc,data,cb){
   if(!HA||!TOK){ if(cb) cb('Brak HA'); return; }
   var payload={}, k;
   if(data){ for(k in data){ if(data.hasOwnProperty(k)) payload[k]=data[k]; } }
-  payload.return_response=true;
-  if(MA_CFG_ENTRY&&!payload.config_entry_id&&(svc==='search'||svc==='get_library')){
-    payload.config_entry_id=MA_CFG_ENTRY;
+  if((svc==='search'||svc==='get_library')&&!payload.config_entry_id){
+    if(MA_CFG_ENTRY) payload.config_entry_id=MA_CFG_ENTRY;
+    else{ if(cb) cb('Brak config_entry_id MA'); return; }
   }
+  var url=HA.replace(/\/$/,'')+'/api/services/music_assistant/'+svc;
+  if(maHaNeedsResponse(svc)) url+='?return_response';
   var x=new XMLHttpRequest();
-  x.open('POST',HA.replace(/\/$/,'')+'/api/services/music_assistant/'+svc+'?return_response',true);
+  x.open('POST',url,true);
   x.setRequestHeader('Authorization','Bearer '+TOK);
   x.setRequestHeader('Content-Type','application/json');
   x.timeout=15000;
@@ -2755,7 +2829,11 @@ function haMaService(svc,data,cb){
     if(x.status<200||x.status>=300){ cb('HTTP '+x.status); return; }
     var r=null;
     try{ r=JSON.parse(x.responseText); }catch(e){ cb('parse'); return; }
-    var resp=r.service_response||r.response||r;
+    var resp;
+    if(maHaNeedsResponse(svc)){
+      resp=(r&&r.service_response!==undefined)?r.service_response:(r.response||r);
+      resp=maHaUnwrapResp(resp);
+    }
     cb(null,resp);
   };
   x.onerror=function(){ cb('network'); };
