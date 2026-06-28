@@ -11,4 +11,5 @@ git pull origin main
 cp "$REPO/ipad.html" "$WWW/ipad.html"
 cp "$REPO/ipad.css" "$WWW/ipad.css"
 cp "$REPO/ipad-version.json" "$WWW/ipad-version.json"
+cp "$REPO/paula-icon.png" "$WWW/paula-icon.png"
 echo "OK: panel zaktualizowany ($(cat "$WWW/ipad-version.json"))"

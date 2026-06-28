@@ -148,6 +148,7 @@ nav>*+*{margin-left:2px;}
 nav::-webkit-scrollbar{display:none;}
 .tb{-webkit-flex-shrink:0;flex-shrink:0;padding:8px 14px;background:transparent;border:none;border-radius:999px;color:var(--dim);font-size:11px;font-weight:600;letter-spacing:.02em;cursor:pointer;white-space:nowrap;-webkit-transition:background .2s,color .2s;transition:background .2s,color .2s;}
 .tbi{font-size:12px;margin-right:5px;-webkit-filter:grayscale(0.2);filter:grayscale(0.2);}
+.tbi-img{width:16px;height:16px;border-radius:50%;vertical-align:-3px;margin-right:5px;object-fit:cover;display:inline-block;background:#111;box-shadow:0 0 0 1px rgba(255,255,255,0.12);}
 .tb.a{color:var(--bright);background:var(--glass2);box-shadow:0 2px 14px rgba(0,0,0,0.18);}
 body.light .tb.a{box-shadow:0 2px 12px rgba(15,23,42,0.08);}
 
@@ -447,11 +448,14 @@ body.light .wst b{color:#0b1220;}
 .rcell.lit{background:rgba(var(--accent-rgb),0.16);border-color:rgba(var(--accent-rgb),0.45);-webkit-box-shadow:0 0 22px rgba(var(--accent-rgb),0.35),inset 0 0 18px rgba(var(--accent-rgb),0.12);box-shadow:0 0 22px rgba(var(--accent-rgb),0.35),inset 0 0 18px rgba(var(--accent-rgb),0.12);}
 .rcell.lit .rcell-name{color:var(--accent);}
 .ricon{font-size:22px;line-height:1;text-align:center;margin:0 0 2px;}
+.ricon-img{width:28px;height:28px;border-radius:50%;display:block;margin:0 auto 2px;object-fit:cover;background:#111;box-shadow:0 1px 6px rgba(0,0,0,0.28);}
+.room-av{width:18px;height:18px;border-radius:50%;vertical-align:-3px;margin-right:6px;object-fit:cover;display:inline-block;background:#111;}
 .rcell .rtval{font-size:20px;font-weight:400;color:var(--bright);line-height:1;letter-spacing:-0.02em;text-align:center;}
 /* Garderoba + Ogród mniejsze (~30%) by zmieściła się kuchnia */
 .rgrid .rcell:nth-child(4),.rgrid .rcell:nth-child(5),.rgrid .rcell:nth-child(6),.rgrid .rcell:nth-child(7){padding:8px 11px 7px;}
 .rgrid .rcell:nth-child(4) .rcell-h,.rgrid .rcell:nth-child(5) .rcell-h,.rgrid .rcell:nth-child(6) .rcell-h,.rgrid .rcell:nth-child(7) .rcell-h{margin-bottom:2px;}
 .rgrid .rcell:nth-child(4) .ricon,.rgrid .rcell:nth-child(5) .ricon,.rgrid .rcell:nth-child(6) .ricon,.rgrid .rcell:nth-child(7) .ricon{font-size:20px;margin:0 0 2px;}
+.rgrid .rcell:nth-child(4) .ricon-img,.rgrid .rcell:nth-child(5) .ricon-img,.rgrid .rcell:nth-child(6) .ricon-img,.rgrid .rcell:nth-child(7) .ricon-img{width:24px;height:24px;}
 .rgrid .rcell:nth-child(4) .rtval,.rgrid .rcell:nth-child(5) .rtval,.rgrid .rcell:nth-child(6) .rtval,.rgrid .rcell:nth-child(7) .rtval{font-size:18px;}
 .rgrid .rcell:nth-child(4) .rthum,.rgrid .rcell:nth-child(5) .rthum,.rgrid .rcell:nth-child(6) .rthum,.rgrid .rcell:nth-child(7) .rthum{font-size:10px;}
 .rcell .rthum{font-size:10px;color:var(--dim);margin-top:2px;text-align:center;}
@@ -819,7 +823,7 @@ body.legacy-safari nav{background:var(--glass2);}
     <button class="tb a" onclick="sv('dom',this)"><span class="tbi">🏠</span>Dom</button>
     <button class="tb" onclick="sv('salon',this)"><span class="tbi">🛋️</span>Salon</button>
     <button class="tb" onclick="sv('sypialnia',this)"><span class="tbi">🛏️</span>Sypialnia</button>
-    <button class="tb" onclick="sv('paula',this)"><span class="tbi">👩</span>Paula</button>
+    <button class="tb" onclick="sv('paula',this)"><img class="tbi-img" src="paula-icon.png?v=11.13.9" alt="">Paula</button>
     <button class="tb" onclick="sv('poddasze',this)"><span class="tbi">🏚️</span>Poddasze</button>
     <button class="tb" onclick="sv('kuchnia',this)"><span class="tbi">🍳</span>Kuchnia</button>
     <button class="tb" onclick="sv('lazienki',this)"><span class="tbi">🛁</span>Łazienki</button>
@@ -912,7 +916,7 @@ body.legacy-safari nav{background:var(--glass2);}
               </div>
               <div class="rcell glass" onclick="goTab('paula')" title="Sypialnia Paula">
                 <div class="rcell-h"><span class="rcell-name">Paula</span></div>
-                <div class="ricon">👩</div>
+                <div class="ricon"><img class="ricon-img" src="paula-icon.png?v=11.13.9" alt="Paula"></div>
                 <div class="rtval"><span id="rt-pa">--</span>°</div>
                 <div class="rthum"><span id="rh-pa">--</span>%</div>
               </div>
@@ -1141,7 +1145,7 @@ body.legacy-safari nav{background:var(--glass2);}
 
     <!-- SYPIALNIA PAULA -->
     <div id="view-paula" class="view">
-      <div class="st">Sypialnia Paula</div>
+      <div class="st"><img class="room-av" src="paula-icon.png?v=11.13.9" alt="">Sypialnia Paula</div>
       <div class="g2">
         <div class="card"><div class="slabel">Temperatura</div><div class="sval"><span id="spa-t">--</span><span class="sunit">°C</span></div></div>
         <div class="card"><div class="slabel">Wilgotność</div><div class="sval"><span id="spa-h">--</span><span class="sunit">%</span></div></div>
@@ -1323,7 +1327,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.13.8';
+var BUILD='11.13.9';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
