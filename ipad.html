@@ -164,8 +164,8 @@ body.light .tb.a{box-shadow:0 2px 12px rgba(15,23,42,0.08);}
 .dash-b{-webkit-flex:0 0 auto;flex:0 0 auto;}
 .dash-row{display:-webkit-flex;display:flex;width:100%;}
 .dash-row>*+*{margin-left:14px;}
-#view-salon,#view-sypialnia,#view-kuchnia,#view-lazienki,#view-ogrod,#view-energia,#view-drukarka,#view-kamery,#view-zero,#view-pogoda,#view-spotify{display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;position:absolute;top:0;left:0;right:0;bottom:0;padding:10px 12px;}
-#view-salon.active,#view-sypialnia.active,#view-kuchnia.active,#view-lazienki.active,#view-ogrod.active,#view-energia.active,#view-drukarka.active,#view-kamery.active,#view-pogoda.active,#view-spotify.active{display:block;}
+#view-salon,#view-sypialnia,#view-paula,#view-poddasze,#view-kuchnia,#view-lazienki,#view-ogrod,#view-energia,#view-drukarka,#view-kamery,#view-zero,#view-pogoda,#view-spotify{display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;position:absolute;top:0;left:0;right:0;bottom:0;padding:10px 12px;}
+#view-salon.active,#view-sypialnia.active,#view-paula.active,#view-poddasze.active,#view-kuchnia.active,#view-lazienki.active,#view-ogrod.active,#view-energia.active,#view-drukarka.active,#view-kamery.active,#view-pogoda.active,#view-spotify.active{display:block;}
 /* Spotify — układ jak aplikacja, kolory z motywu panelu (--accent, --glass…) */
 #view-spotify{padding:0;background:transparent;overflow:hidden;}
 #view-spotify.active{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;}
@@ -449,11 +449,11 @@ body.light .wst b{color:#0b1220;}
 .ricon{font-size:22px;line-height:1;text-align:center;margin:0 0 2px;}
 .rcell .rtval{font-size:20px;font-weight:400;color:var(--bright);line-height:1;letter-spacing:-0.02em;text-align:center;}
 /* Garderoba + Ogród mniejsze (~30%) by zmieściła się kuchnia */
-.rgrid .rcell:nth-child(4),.rgrid .rcell:nth-child(5){padding:8px 11px 7px;}
-.rgrid .rcell:nth-child(4) .rcell-h,.rgrid .rcell:nth-child(5) .rcell-h{margin-bottom:2px;}
-.rgrid .rcell:nth-child(4) .ricon,.rgrid .rcell:nth-child(5) .ricon{font-size:20px;margin:0 0 2px;}
-.rgrid .rcell:nth-child(4) .rtval,.rgrid .rcell:nth-child(5) .rtval{font-size:18px;}
-.rgrid .rcell:nth-child(4) .rthum,.rgrid .rcell:nth-child(5) .rthum{font-size:10px;}
+.rgrid .rcell:nth-child(4),.rgrid .rcell:nth-child(5),.rgrid .rcell:nth-child(6),.rgrid .rcell:nth-child(7){padding:8px 11px 7px;}
+.rgrid .rcell:nth-child(4) .rcell-h,.rgrid .rcell:nth-child(5) .rcell-h,.rgrid .rcell:nth-child(6) .rcell-h,.rgrid .rcell:nth-child(7) .rcell-h{margin-bottom:2px;}
+.rgrid .rcell:nth-child(4) .ricon,.rgrid .rcell:nth-child(5) .ricon,.rgrid .rcell:nth-child(6) .ricon,.rgrid .rcell:nth-child(7) .ricon{font-size:20px;margin:0 0 2px;}
+.rgrid .rcell:nth-child(4) .rtval,.rgrid .rcell:nth-child(5) .rtval,.rgrid .rcell:nth-child(6) .rtval,.rgrid .rcell:nth-child(7) .rtval{font-size:18px;}
+.rgrid .rcell:nth-child(4) .rthum,.rgrid .rcell:nth-child(5) .rthum,.rgrid .rcell:nth-child(6) .rthum,.rgrid .rcell:nth-child(7) .rthum{font-size:10px;}
 .rcell .rthum{font-size:10px;color:var(--dim);margin-top:2px;text-align:center;}
 
 /* Wiersz kontrolek (Schody / Brama) */
@@ -724,7 +724,7 @@ body.legacy-safari nav{background:var(--glass2);}
       <div class="cfg-block-t">Ściemnianie ekranu</div>
       <p class="cfg-block-h">Po bezruchu panel gaśnie (warstwa na ekranie). Wybudzenie: dotyk lub ruch z czujnika HA.</p>
       <div class="cf"><label>Czas bez ruchu (sek)</label><input type="number" id="cd" value="45" min="10" max="600"></div>
-      <div class="cf"><label>Czujnik ruchu (entity_id)</label><input type="text" id="cm" placeholder="binary_sensor.czujnik_garderoba" value="binary_sensor.czujnik_garderoba" autocorrect="off" autocapitalize="off"></div>
+      <div class="cf"><label>Czujnik ruchu (entity_id)</label><input type="text" id="cm" placeholder="binary_sensor.hobeian_zg_204z" value="binary_sensor.hobeian_zg_204z" autocorrect="off" autocapitalize="off"></div>
     </div>
     <div class="cf"><label>Spotify (entity_id)</label><input type="text" id="csp" placeholder="media_player.spotify" autocorrect="off" autocapitalize="off"></div>
     <div class="cf"><label>Spotify — domyślne wyjście</label><input type="text" id="css" placeholder="Wzmacniacz" autocorrect="off" autocapitalize="off"></div>
@@ -819,6 +819,8 @@ body.legacy-safari nav{background:var(--glass2);}
     <button class="tb a" onclick="sv('dom',this)"><span class="tbi">🏠</span>Dom</button>
     <button class="tb" onclick="sv('salon',this)"><span class="tbi">🛋️</span>Salon</button>
     <button class="tb" onclick="sv('sypialnia',this)"><span class="tbi">🛏️</span>Sypialnia</button>
+    <button class="tb" onclick="sv('paula',this)"><span class="tbi">👧</span>Paula</button>
+    <button class="tb" onclick="sv('poddasze',this)"><span class="tbi">🏚️</span>Poddasze</button>
     <button class="tb" onclick="sv('kuchnia',this)"><span class="tbi">🍳</span>Kuchnia</button>
     <button class="tb" onclick="sv('lazienki',this)"><span class="tbi">🛁</span>Łazienki</button>
     <button class="tb" onclick="sv('ogrod',this)"><span class="tbi">🌳</span>Ogród</button>
@@ -907,6 +909,18 @@ body.legacy-safari nav{background:var(--glass2);}
                 <div class="ricon">🌳</div>
                 <div class="rtval"><span id="rt-o">--</span>°</div>
                 <div class="rthum"><span id="rh-o">--</span>%</div>
+              </div>
+              <div class="rcell glass" onclick="goTab('paula')" title="Sypialnia Paula">
+                <div class="rcell-h"><span class="rcell-name">Paula</span></div>
+                <div class="ricon">👧</div>
+                <div class="rtval"><span id="rt-pa">--</span>°</div>
+                <div class="rthum"><span id="rh-pa">--</span>%</div>
+              </div>
+              <div class="rcell glass" onclick="goTab('poddasze')" title="Poddasze">
+                <div class="rcell-h"><span class="rcell-name">Poddasze</span></div>
+                <div class="ricon">🏚️</div>
+                <div class="rtval"><span id="rt-po">--</span>°</div>
+                <div class="rthum"><span id="rh-po">--</span>%</div>
               </div>
               <div class="scenerow">
                 <button class="scenebtn" id="sc-ev" onclick="runScene(SCENE_EVE)">🌙 Wieczór</button>
@@ -1125,6 +1139,24 @@ body.legacy-safari nav{background:var(--glass2);}
       <div class="card"><div class="sr"><div class="srl">Temperatura</div><div class="srv"><span id="ssy-t">--</span> °C</div></div><div class="sr"><div class="srl">Wilgotność</div><div class="srv"><span id="ssy-h">--</span> %</div></div><div class="sr"><div class="srl">Ciśnienie</div><div class="srv"><span id="ssy-p">--</span> hPa</div></div></div>
     </div>
 
+    <!-- SYPIALNIA PAULA -->
+    <div id="view-paula" class="view">
+      <div class="st">Sypialnia Paula</div>
+      <div class="g2">
+        <div class="card"><div class="slabel">Temperatura</div><div class="sval"><span id="spa-t">--</span><span class="sunit">°C</span></div></div>
+        <div class="card"><div class="slabel">Wilgotność</div><div class="sval"><span id="spa-h">--</span><span class="sunit">%</span></div></div>
+      </div>
+    </div>
+
+    <!-- PODDASZE -->
+    <div id="view-poddasze" class="view">
+      <div class="st">Poddasze</div>
+      <div class="g2">
+        <div class="card"><div class="slabel">Temperatura</div><div class="sval"><span id="spo-t">--</span><span class="sunit">°C</span></div></div>
+        <div class="card"><div class="slabel">Wilgotność</div><div class="sval"><span id="spo-h">--</span><span class="sunit">%</span></div></div>
+      </div>
+    </div>
+
     <!-- KUCHNIA -->
     <div id="view-kuchnia" class="view">
       <div class="st">Oświetlenie</div>
@@ -1291,14 +1323,14 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.13.6';
+var BUILD='11.13.7';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
 var appStarted=false;
 var ENT_JSON=null;
 var pollFilter='';
-var MOTION='binary_sensor.czujnik_garderoba';
+var MOTION='binary_sensor.hobeian_zg_204z';
 var SP_EID='media_player.spotify';
 var SP_SOURCE='Wzmacniacz';
 var MA_URL='';
@@ -1318,8 +1350,12 @@ var SCENE_EVE='';
 var SCENE_LEAVE='';
 var SCENE_OFF='';
 var SUN='sun.sun';
+var SENS_PAULA_T='sensor.timmerflotte_temp_hmd_sensor_temperatura_2';
+var SENS_PAULA_H='sensor.timmerflotte_temp_hmd_sensor_wilgotnosc_2';
+var SENS_POD_T='sensor.timmerflotte_temp_hmd_sensor_temperatura';
+var SENS_POD_H='sensor.timmerflotte_temp_hmd_sensor_wilgotnosc';
 var CFG_KEYS=['ha_url','ha_token','ha_dim','ha_motion','ha_spotify','ha_spotify_src','ha_ma_url','ha_ma_token','ha_ma_eid','ha_ma_player','ha_trash','ha_run','ha_tv','ha_bed1','ha_bed2','ha_bed1_lbl','ha_bed2_lbl','ha_scene_eve','ha_scene_leave','ha_scene_off','theme','accent','bg_level'];
-var POLL_IDS=['binary_sensor.lodowka_freezer_door','binary_sensor.lodowka_fridge_door','button.k1c_creality_pause_print','button.k1c_creality_resume_print','button.k1c_creality_stop_print','calendar.bieganie','camera.front','camera.tyl','light.lazienka_gora_swiatlo_swiatlo','light.lazienka_gora_swiatlo_swiatlo_2','light.lazienka_gora_swiatlo_swiatlo_3','light.led_kuchnia','light.led_kuchnia_i','light.led_salon_okno','light.led_tv_2','light.swiatlo_garderoba_swiatlo','light.swiatlo_garderoba_swiatlo_2','light.swiatlo_garderoba_swiatlo_3','light.swiatlo_kuchnia_swiatlo_2','light.swiatlo_kuchnia_swiatlo_3','light.swiatlo_lazienka_swiatlo','light.swiatlo_lazienka_swiatlo_2','light.swiatlo_lazienka_swiatlo_3','light.swiatlo_salon_swiatlo','light.swiatlo_salon_swiatlo_2','light.swiatlo_salon_swiatlo_3','light.swiatlo_sypialnia_swiatlo','light.wiatrolap_gorne_swiatlo','light.wiatrolap_gorne_swiatlo_2','sensor.k1c_creality_bed_temperature','sensor.k1c_creality_current_object','sensor.k1c_creality_nozzle_temperature','sensor.k1c_creality_position_x','sensor.k1c_creality_position_y','sensor.k1c_creality_print_job_time','sensor.k1c_creality_print_progress','sensor.k1c_creality_print_status','sensor.k1c_creality_print_time_left','sensor.k1c_creality_total_layers','sensor.k1c_creality_working_layer','sensor.lodowka_freezer_temperature','sensor.lodowka_fridge_temperature','sensor.lodowka_moc','sensor.parcel_locker_wol02bapp_cisnienie','sensor.parcel_locker_wol02bapp_norma_pm_10','sensor.parcel_locker_wol02bapp_norma_pm_2_5','sensor.parcel_locker_wol02bapp_pm_10','sensor.parcel_locker_wol02bapp_pm_2_5','sensor.parcel_locker_wol02bapp_polish_air_quality_index','sensor.parcel_locker_wol02bapp_temperatura','sensor.parcel_locker_wol02bapp_wilgotnosc','sensor.pobor_mocy_3_fazy','sensor.pralka_current_status','sensor.swiatlo_kuchnia_temperatura_urzadzenia','sensor.szuszarka_current_status','sensor.temperatura_garderoba_temperatura','sensor.temperatura_garderoba_wilgotnosc','sensor.termometr_lazienka_bateria','sensor.termometr_lazienka_temperatura','sensor.termometr_lazienka_wilgotnosc','sensor.termometr_ogrod_cisnienie','sensor.termometr_ogrod_temperatura','sensor.termometr_ogrod_wilgotnosc','sensor.termometr_salon_cisnienie','sensor.termometr_salon_temperatura','sensor.termometr_salon_wilgotnosc','sensor.termometr_sypialnia_cisnienie','sensor.termometr_sypialnia_temperatura','sensor.termometr_sypialnia_wilgotnosc','sensor.zamel_mew_01_electricity_meter_power_active_phase_1','sensor.zamel_mew_01_electricity_meter_power_active_phase_2','sensor.zamel_mew_01_electricity_meter_power_active_phase_3','sensor.zamel_mew_01_electricity_meter_total_forward_active_energy','sensor.zamel_mew_01_electricity_meter_voltage_phase_1','sensor.zamel_mew_01_electricity_meter_voltage_phase_2','sensor.zamel_mew_01_electricity_meter_voltage_phase_3','sun.sun','switch.furtka','switch.smart_switch_b78c','weather.forecast_dom'];
+var POLL_IDS=['binary_sensor.lodowka_freezer_door','binary_sensor.lodowka_fridge_door','button.k1c_creality_pause_print','button.k1c_creality_resume_print','button.k1c_creality_stop_print','calendar.bieganie','camera.front','camera.tyl','light.lazienka_gora_swiatlo_swiatlo','light.lazienka_gora_swiatlo_swiatlo_2','light.lazienka_gora_swiatlo_swiatlo_3','light.led_kuchnia','light.led_kuchnia_i','light.led_salon_okno','light.led_tv_2','light.swiatlo_garderoba_swiatlo','light.swiatlo_garderoba_swiatlo_2','light.swiatlo_garderoba_swiatlo_3','light.swiatlo_kuchnia_swiatlo_2','light.swiatlo_kuchnia_swiatlo_3','light.swiatlo_lazienka_swiatlo','light.swiatlo_lazienka_swiatlo_2','light.swiatlo_lazienka_swiatlo_3','light.swiatlo_salon_swiatlo','light.swiatlo_salon_swiatlo_2','light.swiatlo_salon_swiatlo_3','light.swiatlo_sypialnia_swiatlo','light.wiatrolap_gorne_swiatlo','light.wiatrolap_gorne_swiatlo_2','sensor.k1c_creality_bed_temperature','sensor.k1c_creality_current_object','sensor.k1c_creality_nozzle_temperature','sensor.k1c_creality_position_x','sensor.k1c_creality_position_y','sensor.k1c_creality_print_job_time','sensor.k1c_creality_print_progress','sensor.k1c_creality_print_status','sensor.k1c_creality_print_time_left','sensor.k1c_creality_total_layers','sensor.k1c_creality_working_layer','sensor.lodowka_freezer_temperature','sensor.lodowka_fridge_temperature','sensor.lodowka_moc','sensor.parcel_locker_wol02bapp_cisnienie','sensor.parcel_locker_wol02bapp_norma_pm_10','sensor.parcel_locker_wol02bapp_norma_pm_2_5','sensor.parcel_locker_wol02bapp_pm_10','sensor.parcel_locker_wol02bapp_pm_2_5','sensor.parcel_locker_wol02bapp_polish_air_quality_index','sensor.parcel_locker_wol02bapp_temperatura','sensor.parcel_locker_wol02bapp_wilgotnosc','sensor.pobor_mocy_3_fazy','sensor.pralka_current_status','sensor.swiatlo_kuchnia_temperatura_urzadzenia','sensor.szuszarka_current_status','sensor.temperatura_garderoba_temperatura','sensor.temperatura_garderoba_wilgotnosc','sensor.termometr_lazienka_bateria','sensor.termometr_lazienka_temperatura','sensor.termometr_lazienka_wilgotnosc','sensor.termometr_ogrod_cisnienie','sensor.termometr_ogrod_temperatura','sensor.termometr_ogrod_wilgotnosc','sensor.termometr_salon_cisnienie','sensor.termometr_salon_temperatura','sensor.termometr_salon_wilgotnosc','sensor.termometr_sypialnia_cisnienie','sensor.termometr_sypialnia_temperatura','sensor.termometr_sypialnia_wilgotnosc','sensor.timmerflotte_temp_hmd_sensor_temperatura','sensor.timmerflotte_temp_hmd_sensor_temperatura_2','sensor.timmerflotte_temp_hmd_sensor_wilgotnosc','sensor.timmerflotte_temp_hmd_sensor_wilgotnosc_2','sensor.zamel_mew_01_electricity_meter_power_active_phase_1','sensor.zamel_mew_01_electricity_meter_power_active_phase_2','sensor.zamel_mew_01_electricity_meter_power_active_phase_3','sensor.zamel_mew_01_electricity_meter_total_forward_active_energy','sensor.zamel_mew_01_electricity_meter_voltage_phase_1','sensor.zamel_mew_01_electricity_meter_voltage_phase_2','sensor.zamel_mew_01_electricity_meter_voltage_phase_3','sun.sun','switch.furtka','switch.smart_switch_b78c','weather.forecast_dom'];
 
 function rebuildPollFilter(){
   var map={}, list=POLL_IDS.slice(0), extras=[], i, id, dyn, k, out=[];
@@ -1480,7 +1516,7 @@ function saveConfig(){
   var tok=t||TOK; if(!tok){alert('Podaj token.');return;}
   sSet('ha_url',u); sSet('ha_token',tok); sSet('ha_dim',d);
   if(mo){ sSet('ha_motion',mo); MOTION=mo; }
-  else { try{localStorage.removeItem('ha_motion');}catch(e){} delete _st.ha_motion; MOTION='binary_sensor.czujnik_garderoba'; }
+  else { try{localStorage.removeItem('ha_motion');}catch(e){} delete _st.ha_motion; MOTION='binary_sensor.hobeian_zg_204z'; }
   if(sp){ sSet('ha_spotify',sp); SP_EID=sp; }
   if(ss){ sSet('ha_spotify_src',ss); SP_SOURCE=ss; }
   if(tr){ sSet('ha_trash',tr); TRASH_ENT=tr; }
@@ -2297,6 +2333,10 @@ function upd(){
   tx('rh-g', fmt1(st('sensor.temperatura_garderoba_wilgotnosc')));
   tx('rt-o', fmt1(st('sensor.termometr_ogrod_temperatura')));
   tx('rh-o', fmt1(st('sensor.termometr_ogrod_wilgotnosc')));
+  tx('rt-pa', fmt1(st(SENS_PAULA_T)));
+  tx('rh-pa', fmt1(st(SENS_PAULA_H)));
+  tx('rt-po', fmt1(st(SENS_POD_T)));
+  tx('rh-po', fmt1(st(SENS_POD_H)));
 
   // ZEWNĘTRZNE
   tx('pk-t', fmt1(st('sensor.parcel_locker_wol02bapp_temperatura')));
@@ -2338,6 +2378,14 @@ function upd(){
   tx('ssy-t',fmt1(st('sensor.termometr_sypialnia_temperatura')));
   tx('ssy-h',fmt1(st('sensor.termometr_sypialnia_wilgotnosc')));
   tx('ssy-p',fmt1(st('sensor.termometr_sypialnia_cisnienie')));
+
+  // SYPIALNIA PAULA
+  tx('spa-t',fmt1(st(SENS_PAULA_T)));
+  tx('spa-h',fmt1(st(SENS_PAULA_H)));
+
+  // PODDASZE
+  tx('spo-t',fmt1(st(SENS_POD_T)));
+  tx('spo-h',fmt1(st(SENS_POD_H)));
 
   // KUCHNIA
   uLC('light.swiatlo_kuchnia_swiatlo_2','lc-k2','ls-k2');
@@ -4473,7 +4521,7 @@ function prefillDefaults(){
   var ctr=document.getElementById('ctr');
   var ctv=document.getElementById('ctv');
   if(t&&!t.value&&!TOK) t.placeholder='eyJ0eXAi...';
-  if(cm&&!cm.value&&!sGet('ha_motion')) cm.value='binary_sensor.czujnik_garderoba';
+  if(cm&&!cm.value&&!sGet('ha_motion')) cm.value='binary_sensor.hobeian_zg_204z';
 }
 
 loadConfig(); syncVerLabels(); tick(); loadTheme();
