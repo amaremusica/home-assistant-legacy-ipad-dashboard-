@@ -149,7 +149,7 @@ nav::-webkit-scrollbar{display:none;}
 .tb{-webkit-flex-shrink:0;flex-shrink:0;padding:8px 14px;background:transparent;border:none;border-radius:999px;color:var(--dim);font-size:11px;font-weight:600;letter-spacing:.02em;cursor:pointer;white-space:nowrap;-webkit-transition:background .2s,color .2s;transition:background .2s,color .2s;}
 .tbi{font-size:12px;margin-right:5px;-webkit-filter:grayscale(0.2);filter:grayscale(0.2);}
 .tbi-img{width:16px;height:16px;border-radius:50%;vertical-align:-3px;margin-right:5px;object-fit:cover;display:inline-block;background:#111;box-shadow:0 0 0 1px rgba(255,255,255,0.12);}
-.tbi-img.paula-av{width:32px;height:32px;vertical-align:-9px;margin-right:3px;object-position:center 10%;}
+.tbi-img.paula-av{width:36px;height:36px;vertical-align:-11px;margin-right:2px;object-position:center 8%;}
 .tb.a{color:var(--bright);background:var(--glass2);box-shadow:0 2px 14px rgba(0,0,0,0.18);}
 body.light .tb.a{box-shadow:0 2px 12px rgba(15,23,42,0.08);}
 
@@ -166,8 +166,8 @@ body.light .tb.a{box-shadow:0 2px 12px rgba(15,23,42,0.08);}
 .dash-b{-webkit-flex:0 0 auto;flex:0 0 auto;}
 .dash-row{display:-webkit-flex;display:flex;width:100%;}
 .dash-row>*+*{margin-left:14px;}
-#view-salon,#view-sypialnia,#view-paula,#view-poddasze,#view-kuchnia,#view-lazienki,#view-ogrod,#view-energia,#view-drukarka,#view-kamery,#view-zero,#view-pogoda,#view-spotify{display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;position:absolute;top:0;left:0;right:0;bottom:0;padding:10px 12px;}
-#view-salon.active,#view-sypialnia.active,#view-paula.active,#view-poddasze.active,#view-kuchnia.active,#view-lazienki.active,#view-ogrod.active,#view-energia.active,#view-drukarka.active,#view-kamery.active,#view-pogoda.active,#view-spotify.active{display:block;}
+#view-salon,#view-sypialnia,#view-paula,#view-poddasze,#view-kuchnia,#view-lazienki,#view-ogrod,#view-energia,#view-kamery,#view-zero,#view-pogoda,#view-spotify{display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;position:absolute;top:0;left:0;right:0;bottom:0;padding:10px 12px;}
+#view-salon.active,#view-sypialnia.active,#view-paula.active,#view-poddasze.active,#view-kuchnia.active,#view-lazienki.active,#view-ogrod.active,#view-energia.active,#view-kamery.active,#view-pogoda.active,#view-spotify.active{display:block;}
 /* Spotify — układ jak aplikacja, kolory z motywu panelu (--accent, --glass…) */
 #view-spotify{padding:0;background:transparent;overflow:hidden;}
 #view-spotify.active{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;}
@@ -450,17 +450,16 @@ body.light .wst b{color:#0b1220;}
 .rcell.lit .rcell-name{color:var(--accent);}
 .ricon{font-size:22px;line-height:1;text-align:center;margin:0 0 2px;}
 .ricon-img{width:28px;height:28px;border-radius:50%;display:block;margin:0 auto 2px;object-fit:cover;background:#111;box-shadow:0 1px 6px rgba(0,0,0,0.28);}
-.ricon-img.paula-av{width:58px;height:58px;margin:0 auto 0;object-position:center 8%;box-shadow:0 0 0 2px rgba(255,255,255,0.14),0 3px 12px rgba(0,0,0,0.4);}
+.rcell-paula .ricon-img.paula-av{width:76px;height:76px;margin:0 auto 0;object-position:center 6%;box-shadow:0 0 0 2px rgba(255,255,255,0.16),0 4px 16px rgba(0,0,0,0.42);}
 .room-av{width:18px;height:18px;border-radius:50%;vertical-align:-3px;margin-right:6px;object-fit:cover;display:inline-block;background:#111;}
-.room-av.paula-av{width:48px;height:48px;vertical-align:-14px;margin-right:8px;object-position:center 8%;}
-.rcell-paula .ricon{min-height:58px;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;margin:0 0 0;}
+.room-av.paula-av{width:56px;height:56px;vertical-align:-17px;margin-right:8px;object-position:center 6%;}
+.rcell-paula .ricon{min-height:76px;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;margin:-2px 0 0;}
 .rcell .rtval{font-size:20px;font-weight:400;color:var(--bright);line-height:1;letter-spacing:-0.02em;text-align:center;}
 /* Garderoba + Ogród mniejsze (~30%) by zmieściła się kuchnia */
 .rgrid .rcell:nth-child(4),.rgrid .rcell:nth-child(5),.rgrid .rcell:nth-child(6),.rgrid .rcell:nth-child(7){padding:8px 11px 7px;}
 .rgrid .rcell:nth-child(4) .rcell-h,.rgrid .rcell:nth-child(5) .rcell-h,.rgrid .rcell:nth-child(6) .rcell-h,.rgrid .rcell:nth-child(7) .rcell-h{margin-bottom:2px;}
 .rgrid .rcell:nth-child(4) .ricon,.rgrid .rcell:nth-child(5) .ricon,.rgrid .rcell:nth-child(6) .ricon,.rgrid .rcell:nth-child(7) .ricon{font-size:20px;margin:0 0 2px;}
 .rgrid .rcell:nth-child(4) .ricon-img,.rgrid .rcell:nth-child(5) .ricon-img,.rgrid .rcell:nth-child(7) .ricon-img{width:24px;height:24px;}
-.rgrid .rcell .ricon-img.paula-av{width:58px;height:58px;}
 .rgrid .rcell:nth-child(4) .rtval,.rgrid .rcell:nth-child(5) .rtval,.rgrid .rcell:nth-child(6) .rtval,.rgrid .rcell:nth-child(7) .rtval{font-size:18px;}
 .rgrid .rcell:nth-child(4) .rthum,.rgrid .rcell:nth-child(5) .rthum,.rgrid .rcell:nth-child(6) .rthum,.rgrid .rcell:nth-child(7) .rthum{font-size:10px;}
 .rcell .rthum{font-size:10px;color:var(--dim);margin-top:2px;text-align:center;}
@@ -828,13 +827,12 @@ body.legacy-safari nav{background:var(--glass2);}
     <button class="tb a" onclick="sv('dom',this)"><span class="tbi">🏠</span>Dom</button>
     <button class="tb" onclick="sv('salon',this)"><span class="tbi">🛋️</span>Salon</button>
     <button class="tb" onclick="sv('sypialnia',this)"><span class="tbi">🛏️</span>Sypialnia</button>
-    <button class="tb" onclick="sv('paula',this)"><img class="tbi-img paula-av" src="paula-icon.png?v=11.13.11" alt="">Paula</button>
-    <button class="tb" onclick="sv('poddasze',this)"><span class="tbi">🏚️</span>Poddasze</button>
+    <button class="tb" onclick="sv('paula',this)"><img class="tbi-img paula-av" src="paula-icon.png?v=11.13.12" alt="">Paula</button>
+    <button class="tb" onclick="sv('poddasze',this)"><span class="tbi">🏚️</span>Poddasze · K1C</button>
     <button class="tb" onclick="sv('kuchnia',this)"><span class="tbi">🍳</span>Kuchnia</button>
     <button class="tb" onclick="sv('lazienki',this)"><span class="tbi">🛁</span>Łazienki</button>
     <button class="tb" onclick="sv('ogrod',this)"><span class="tbi">🌳</span>Ogród</button>
     <button class="tb" onclick="sv('energia',this)"><span class="tbi">⚡</span>Energia</button>
-    <button class="tb" onclick="sv('drukarka',this)"><span class="tbi">🖨️</span>K1C</button>
     <button class="tb" onclick="sv('kamery',this)"><span class="tbi">📷</span>Kamery</button>
     <button class="tb" onclick="sv('spotify',this)"><span class="tbi">♪</span>Muzyka</button>
     <button class="tb" onclick="openZero(this)"><span class="tbi">🌐</span>Zero</button>
@@ -920,16 +918,17 @@ body.legacy-safari nav{background:var(--glass2);}
                 <div class="rthum"><span id="rh-o">--</span>%</div>
               </div>
               <div class="rcell glass rcell-paula" onclick="goTab('paula')" title="Sypialnia Paula">
-                <div class="rcell-h"><span class="rcell-name">Paula</span></div>
-                <div class="ricon"><img class="ricon-img paula-av" src="paula-icon.png?v=11.13.11" alt="Paula"></div>
+                <div class="rcell-h"><span class="rcell-name">Paula</span><div class="rbulb" id="rb-pa" onclick="toggleBulb('light.paula_swiatlo_2','rb-pa')">💡</div></div>
+                <div class="ricon"><img class="ricon-img paula-av" src="paula-icon.png?v=11.13.12" alt="Paula"></div>
                 <div class="rtval"><span id="rt-pa">--</span>°</div>
                 <div class="rthum"><span id="rh-pa">--</span>%</div>
               </div>
-              <div class="rcell glass" onclick="goTab('poddasze')" title="Poddasze">
+              <div class="rcell glass" onclick="goTab('poddasze')" title="Poddasze · drukarka K1C">
                 <div class="rcell-h"><span class="rcell-name">Poddasze</span></div>
                 <div class="ricon">🏚️</div>
                 <div class="rtval"><span id="rt-po">--</span>°</div>
                 <div class="rthum"><span id="rh-po">--</span>%</div>
+                <div class="rk1c" id="rk1c-mini" style="display:none;font-size:9px;color:var(--accent);margin-top:1px;text-align:center;line-height:1.2;"></div>
               </div>
               <div class="scenerow">
                 <button class="scenebtn" id="sc-ev" onclick="runScene(SCENE_EVE)">🌙 Wieczór</button>
@@ -1150,20 +1149,40 @@ body.legacy-safari nav{background:var(--glass2);}
 
     <!-- SYPIALNIA PAULA -->
     <div id="view-paula" class="view">
-      <div class="st"><img class="room-av paula-av" src="paula-icon.png?v=11.13.11" alt="">Sypialnia Paula</div>
+      <div class="st"><img class="room-av paula-av" src="paula-icon.png?v=11.13.12" alt="">Sypialnia Paula</div>
+      <div class="st">Oświetlenie</div>
+      <div class="g3">
+        <div class="card lc" id="lc-pa1" onclick="tLight('light.paula_swiatlo_2','lc-pa1','ls-pa1')"><div class="lsvg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.4-1.4 4.5-3 5.7V17H9v-2.3C7.4 13.5 6 11.4 6 9a6 6 0 0 1 6-6z"/></svg></div><div class="lname">Paula</div><div class="lstate off" id="ls-pa1">off</div></div>
+      </div>
+      <div class="st">Czujniki</div>
       <div class="g2">
         <div class="card"><div class="slabel">Temperatura</div><div class="sval"><span id="spa-t">--</span><span class="sunit">°C</span></div></div>
         <div class="card"><div class="slabel">Wilgotność</div><div class="sval"><span id="spa-h">--</span><span class="sunit">%</span></div></div>
       </div>
     </div>
 
-    <!-- PODDASZE -->
+    <!-- PODDASZE + K1C -->
     <div id="view-poddasze" class="view">
-      <div class="st">Poddasze</div>
+      <div class="st">🏚️ Poddasze</div>
       <div class="g2">
         <div class="card"><div class="slabel">Temperatura</div><div class="sval"><span id="spo-t">--</span><span class="sunit">°C</span></div></div>
         <div class="card"><div class="slabel">Wilgotność</div><div class="sval"><span id="spo-h">--</span><span class="sunit">%</span></div></div>
       </div>
+      <div class="st">🖨️ Drukarka K1C</div>
+      <div class="card"><div class="sr"><div class="srl">Status</div><div class="srv" id="k-st">--</div></div><div class="sr"><div class="srl">Postęp</div><div class="srv"><span id="k-pg">--</span> %</div></div><div class="sr"><div class="srl">Obiekt</div><div class="srv" id="k-ob">--</div></div><div class="sr"><div class="srl">Czas</div><div class="srv" id="k-ti">--</div></div><div class="sr"><div class="srl">Do końca</div><div class="srv" id="k-le">--</div></div></div>
+      <div class="st">Temperatury drukarki</div>
+      <div class="g2">
+        <div class="card"><div class="slabel">Głowica</div><div class="sval"><span id="k-nz">--</span><span class="sunit">°C</span></div></div>
+        <div class="card"><div class="slabel">Stół</div><div class="sval"><span id="k-bd">--</span><span class="sunit">°C</span></div></div>
+      </div>
+      <div class="st">Sterowanie drukarką</div>
+      <div class="g3">
+        <button class="sbtn" style="margin-bottom:0;" onclick="haPost('button','press',{entity_id:'button.k1c_creality_pause_print'})">⏸ Pauza</button>
+        <button class="sbtn" style="margin-bottom:0;" onclick="haPost('button','press',{entity_id:'button.k1c_creality_resume_print'})">▶ Wznów</button>
+        <button class="sbtn" style="margin-bottom:0;border-color:rgba(255,71,87,.3);color:var(--danger);" onclick="haPost('button','press',{entity_id:'button.k1c_creality_stop_print'})">⏹ Stop</button>
+      </div>
+      <div class="st">Pozycja głowicy</div>
+      <div class="card"><div class="sr"><div class="srl">Warstwa</div><div class="srv"><span id="k-lw">--</span> / <span id="k-ls">--</span></div></div><div class="sr"><div class="srl">X / Y</div><div class="srv"><span id="k-x">--</span> / <span id="k-y">--</span></div></div></div>
     </div>
 
     <!-- KUCHNIA -->
@@ -1247,25 +1266,6 @@ body.legacy-safari nav{background:var(--glass2);}
       <div class="card"><div class="slabel">Energia całkowita</div><div class="sval" style="font-size:28px;"><span id="e-kwh">--</span><span class="sunit"> kWh</span></div></div>
     </div>
 
-    <!-- DRUKARKA -->
-    <div id="view-drukarka" class="view">
-      <div class="st">Status</div>
-      <div class="card"><div class="sr"><div class="srl">Status</div><div class="srv" id="k-st">--</div></div><div class="sr"><div class="srl">Postęp</div><div class="srv"><span id="k-pg">--</span> %</div></div><div class="sr"><div class="srl">Obiekt</div><div class="srv" id="k-ob">--</div></div><div class="sr"><div class="srl">Czas</div><div class="srv" id="k-ti">--</div></div><div class="sr"><div class="srl">Do końca</div><div class="srv" id="k-le">--</div></div></div>
-      <div class="st">Temperatury</div>
-      <div class="g2">
-        <div class="card"><div class="slabel">Głowica</div><div class="sval"><span id="k-nz">--</span><span class="sunit">°C</span></div></div>
-        <div class="card"><div class="slabel">Stół</div><div class="sval"><span id="k-bd">--</span><span class="sunit">°C</span></div></div>
-      </div>
-      <div class="st">Sterowanie</div>
-      <div class="g3">
-        <button class="sbtn" style="margin-bottom:0;" onclick="haPost('button','press',{entity_id:'button.k1c_creality_pause_print'})">⏸ Pauza</button>
-        <button class="sbtn" style="margin-bottom:0;" onclick="haPost('button','press',{entity_id:'button.k1c_creality_resume_print'})">▶ Wznów</button>
-        <button class="sbtn" style="margin-bottom:0;border-color:rgba(255,71,87,.3);color:var(--danger);" onclick="haPost('button','press',{entity_id:'button.k1c_creality_stop_print'})">⏹ Stop</button>
-      </div>
-      <div class="st">Pozycja</div>
-      <div class="card"><div class="sr"><div class="srl">Warstwa</div><div class="srv"><span id="k-lw">--</span> / <span id="k-ls">--</span></div></div><div class="sr"><div class="srl">X / Y</div><div class="srv"><span id="k-x">--</span> / <span id="k-y">--</span></div></div></div>
-    </div>
-
     <!-- KAMERY -->
     <div id="view-kamery" class="view">
       <div class="st">Kamery na żywo</div>
@@ -1332,7 +1332,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.13.11';
+var BUILD='11.13.14';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
@@ -1361,10 +1361,11 @@ var SCENE_OFF='';
 var SUN='sun.sun';
 var SENS_PAULA_T='sensor.timmerflotte_temp_hmd_sensor_temperatura_2';
 var SENS_PAULA_H='sensor.timmerflotte_temp_hmd_sensor_wilgotnosc_2';
+var LIGHT_PAULA='light.paula_swiatlo_2';
 var SENS_POD_T='sensor.timmerflotte_temp_hmd_sensor_temperatura';
 var SENS_POD_H='sensor.timmerflotte_temp_hmd_sensor_wilgotnosc';
 var CFG_KEYS=['ha_url','ha_token','ha_dim','ha_motion','ha_spotify','ha_spotify_src','ha_ma_url','ha_ma_token','ha_ma_eid','ha_ma_player','ha_trash','ha_run','ha_tv','ha_bed1','ha_bed2','ha_bed1_lbl','ha_bed2_lbl','ha_scene_eve','ha_scene_leave','ha_scene_off','theme','accent','bg_level'];
-var POLL_IDS=['binary_sensor.lodowka_freezer_door','binary_sensor.lodowka_fridge_door','button.k1c_creality_pause_print','button.k1c_creality_resume_print','button.k1c_creality_stop_print','calendar.bieganie','camera.front','camera.tyl','light.lazienka_gora_swiatlo_swiatlo','light.lazienka_gora_swiatlo_swiatlo_2','light.lazienka_gora_swiatlo_swiatlo_3','light.led_kuchnia','light.led_kuchnia_i','light.led_salon_okno','light.led_tv_2','light.swiatlo_garderoba_swiatlo','light.swiatlo_garderoba_swiatlo_2','light.swiatlo_garderoba_swiatlo_3','light.swiatlo_kuchnia_swiatlo_2','light.swiatlo_kuchnia_swiatlo_3','light.swiatlo_lazienka_swiatlo','light.swiatlo_lazienka_swiatlo_2','light.swiatlo_lazienka_swiatlo_3','light.swiatlo_salon_swiatlo','light.swiatlo_salon_swiatlo_2','light.swiatlo_salon_swiatlo_3','light.swiatlo_sypialnia_swiatlo','light.wiatrolap_gorne_swiatlo','light.wiatrolap_gorne_swiatlo_2','sensor.k1c_creality_bed_temperature','sensor.k1c_creality_current_object','sensor.k1c_creality_nozzle_temperature','sensor.k1c_creality_position_x','sensor.k1c_creality_position_y','sensor.k1c_creality_print_job_time','sensor.k1c_creality_print_progress','sensor.k1c_creality_print_status','sensor.k1c_creality_print_time_left','sensor.k1c_creality_total_layers','sensor.k1c_creality_working_layer','sensor.lodowka_freezer_temperature','sensor.lodowka_fridge_temperature','sensor.lodowka_moc','sensor.parcel_locker_wol02bapp_cisnienie','sensor.parcel_locker_wol02bapp_norma_pm_10','sensor.parcel_locker_wol02bapp_norma_pm_2_5','sensor.parcel_locker_wol02bapp_pm_10','sensor.parcel_locker_wol02bapp_pm_2_5','sensor.parcel_locker_wol02bapp_polish_air_quality_index','sensor.parcel_locker_wol02bapp_temperatura','sensor.parcel_locker_wol02bapp_wilgotnosc','sensor.pobor_mocy_3_fazy','sensor.pralka_current_status','sensor.swiatlo_kuchnia_temperatura_urzadzenia','sensor.szuszarka_current_status','sensor.temperatura_garderoba_temperatura','sensor.temperatura_garderoba_wilgotnosc','sensor.termometr_lazienka_bateria','sensor.termometr_lazienka_temperatura','sensor.termometr_lazienka_wilgotnosc','sensor.termometr_ogrod_cisnienie','sensor.termometr_ogrod_temperatura','sensor.termometr_ogrod_wilgotnosc','sensor.termometr_salon_cisnienie','sensor.termometr_salon_temperatura','sensor.termometr_salon_wilgotnosc','sensor.termometr_sypialnia_cisnienie','sensor.termometr_sypialnia_temperatura','sensor.termometr_sypialnia_wilgotnosc','sensor.timmerflotte_temp_hmd_sensor_temperatura','sensor.timmerflotte_temp_hmd_sensor_temperatura_2','sensor.timmerflotte_temp_hmd_sensor_wilgotnosc','sensor.timmerflotte_temp_hmd_sensor_wilgotnosc_2','sensor.zamel_mew_01_electricity_meter_power_active_phase_1','sensor.zamel_mew_01_electricity_meter_power_active_phase_2','sensor.zamel_mew_01_electricity_meter_power_active_phase_3','sensor.zamel_mew_01_electricity_meter_total_forward_active_energy','sensor.zamel_mew_01_electricity_meter_voltage_phase_1','sensor.zamel_mew_01_electricity_meter_voltage_phase_2','sensor.zamel_mew_01_electricity_meter_voltage_phase_3','sun.sun','switch.furtka','switch.smart_switch_b78c','weather.forecast_dom'];
+var POLL_IDS=['binary_sensor.lodowka_freezer_door','binary_sensor.lodowka_fridge_door','button.k1c_creality_pause_print','button.k1c_creality_resume_print','button.k1c_creality_stop_print','calendar.bieganie','camera.front','camera.tyl','light.lazienka_gora_swiatlo_swiatlo','light.lazienka_gora_swiatlo_swiatlo_2','light.lazienka_gora_swiatlo_swiatlo_3','light.led_kuchnia','light.led_kuchnia_i','light.led_salon_okno','light.led_tv_2','light.paula_swiatlo_2','light.swiatlo_garderoba_swiatlo','light.swiatlo_garderoba_swiatlo_2','light.swiatlo_garderoba_swiatlo_3','light.swiatlo_kuchnia_swiatlo_2','light.swiatlo_kuchnia_swiatlo_3','light.swiatlo_lazienka_swiatlo','light.swiatlo_lazienka_swiatlo_2','light.swiatlo_lazienka_swiatlo_3','light.swiatlo_salon_swiatlo','light.swiatlo_salon_swiatlo_2','light.swiatlo_salon_swiatlo_3','light.swiatlo_sypialnia_swiatlo','light.wiatrolap_gorne_swiatlo','light.wiatrolap_gorne_swiatlo_2','sensor.k1c_creality_bed_temperature','sensor.k1c_creality_current_object','sensor.k1c_creality_nozzle_temperature','sensor.k1c_creality_position_x','sensor.k1c_creality_position_y','sensor.k1c_creality_print_job_time','sensor.k1c_creality_print_progress','sensor.k1c_creality_print_status','sensor.k1c_creality_print_time_left','sensor.k1c_creality_total_layers','sensor.k1c_creality_working_layer','sensor.lodowka_freezer_temperature','sensor.lodowka_fridge_temperature','sensor.lodowka_moc','sensor.parcel_locker_wol02bapp_cisnienie','sensor.parcel_locker_wol02bapp_norma_pm_10','sensor.parcel_locker_wol02bapp_norma_pm_2_5','sensor.parcel_locker_wol02bapp_pm_10','sensor.parcel_locker_wol02bapp_pm_2_5','sensor.parcel_locker_wol02bapp_polish_air_quality_index','sensor.parcel_locker_wol02bapp_temperatura','sensor.parcel_locker_wol02bapp_wilgotnosc','sensor.pobor_mocy_3_fazy','sensor.pralka_current_status','sensor.swiatlo_kuchnia_temperatura_urzadzenia','sensor.szuszarka_current_status','sensor.temperatura_garderoba_temperatura','sensor.temperatura_garderoba_wilgotnosc','sensor.termometr_lazienka_bateria','sensor.termometr_lazienka_temperatura','sensor.termometr_lazienka_wilgotnosc','sensor.termometr_ogrod_cisnienie','sensor.termometr_ogrod_temperatura','sensor.termometr_ogrod_wilgotnosc','sensor.termometr_salon_cisnienie','sensor.termometr_salon_temperatura','sensor.termometr_salon_wilgotnosc','sensor.termometr_sypialnia_cisnienie','sensor.termometr_sypialnia_temperatura','sensor.termometr_sypialnia_wilgotnosc','sensor.timmerflotte_temp_hmd_sensor_temperatura','sensor.timmerflotte_temp_hmd_sensor_temperatura_2','sensor.timmerflotte_temp_hmd_sensor_wilgotnosc','sensor.timmerflotte_temp_hmd_sensor_wilgotnosc_2','sensor.zamel_mew_01_electricity_meter_power_active_phase_1','sensor.zamel_mew_01_electricity_meter_power_active_phase_2','sensor.zamel_mew_01_electricity_meter_power_active_phase_3','sensor.zamel_mew_01_electricity_meter_total_forward_active_energy','sensor.zamel_mew_01_electricity_meter_voltage_phase_1','sensor.zamel_mew_01_electricity_meter_voltage_phase_2','sensor.zamel_mew_01_electricity_meter_voltage_phase_3','sun.sun','switch.furtka','switch.smart_switch_b78c','weather.forecast_dom'];
 
 function rebuildPollFilter(){
   var map={}, list=POLL_IDS.slice(0), extras=[], i, id, dyn, k, out=[];
@@ -1721,6 +1722,7 @@ function openZeroLegacy(ev){
 }
 
 function sv(id,btn){
+  if(id==='drukarka') id='poddasze';
   if(id==='zero'){
     if(btn){var bs=document.querySelectorAll('.tb');for(var k=0;k<bs.length;k++)bs[k].className='tb';btn.className='tb a';}
     var note=document.getElementById('zero-note');
@@ -2369,6 +2371,7 @@ function upd(){
   uBulb('light.swiatlo_lazienka_swiatlo','rb-laz');
   uBulb('light.swiatlo_garderoba_swiatlo','rb-gar');
   uBulb('light.wiatrolap_gorne_swiatlo','rb-ogr');
+  uBulb(LIGHT_PAULA,'rb-pa');
 
   // SALON LIGHTS
   uLC('light.swiatlo_salon_swiatlo','lc-s1','ls-s1');
@@ -2389,6 +2392,7 @@ function upd(){
   tx('ssy-p',fmt1(st('sensor.termometr_sypialnia_cisnienie')));
 
   // SYPIALNIA PAULA
+  uLC(LIGHT_PAULA,'lc-pa1','ls-pa1');
   tx('spa-t',fmt1(st(SENS_PAULA_T)));
   tx('spa-h',fmt1(st(SENS_PAULA_H)));
 
@@ -2442,9 +2446,11 @@ function upd(){
   tx('e-p3',fmt1(st('sensor.zamel_mew_01_electricity_meter_power_active_phase_3')));
   tx('e-kwh',fmt1(st('sensor.zamel_mew_01_electricity_meter_total_forward_active_energy')));
 
-  // K1C
-  tx('k-st',st('sensor.k1c_creality_print_status'));
-  tx('k-pg',fmt1(st('sensor.k1c_creality_print_progress')));
+  // K1C (poddasze)
+  var kSt=st('sensor.k1c_creality_print_status');
+  var kPg=fmt1(st('sensor.k1c_creality_print_progress'));
+  tx('k-st',kSt);
+  tx('k-pg',kPg);
   tx('k-ob',st('sensor.k1c_creality_current_object'));
   tx('k-ti',st('sensor.k1c_creality_print_job_time'));
   tx('k-le',st('sensor.k1c_creality_print_time_left'));
@@ -2454,6 +2460,17 @@ function upd(){
   tx('k-ls',fmt1(st('sensor.k1c_creality_total_layers')));
   tx('k-x',fmt1(st('sensor.k1c_creality_position_x')));
   tx('k-y',fmt1(st('sensor.k1c_creality_position_y')));
+  var kMini=document.getElementById('rk1c-mini');
+  if(kMini){
+    var kBusy=kSt&&kSt!=='idle'&&kSt!=='standby'&&kSt!=='complete'&&kSt!=='unknown'&&kSt!=='unavailable'&&kSt!=='--';
+    if(kBusy){
+      kMini.style.display='block';
+      kMini.textContent='🖨 '+kPg+'%';
+    }else{
+      kMini.style.display='none';
+      kMini.textContent='';
+    }
+  }
 
   uStateCard('switch.smart_switch_b78c','sc-brama','ss-brama','Otwarta','Zamknięta');
   uStateCard('switch.furtka','sc-furtka','ss-furtka','Otwarta','Zamknięta');
