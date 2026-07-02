@@ -1,0 +1,791 @@
+title: Dom
+icon: mdi:home
+theme: Backend-selected
+views:
+  # ================================== HOME ==================================
+  - title: Dom
+    path: dom
+    icon: mdi:home-variant
+    type: sidebar
+    cards:
+      # Pasek: zegar + pogoda
+      - type: grid
+        columns: 1
+        square: false
+        cards:
+          - type: custom:clock-weather-card
+            entity: weather.forecast_dom
+            sun_entity: sun.sun
+            locale: pl
+            number_of_forecasts: 5
+            card_mod:
+              style: |
+                :host {
+                  margin-bottom: 4px;
+                }
+                ha-card {
+                  height: 160px;
+                  padding: 4px 10px;
+                  border-radius: 18px;
+                  background: rgba(24,24,26,.36);
+                  backdrop-filter: blur(18px) saturate(1.25);
+                  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+                  border: 1px solid rgba(255,255,255,.08);
+                }
+
+      # Pokoje — kafelki jak iPad 4 (temp · wilg · światło)
+      - type: grid
+        columns: 3
+        square: false
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Salon
+            secondary: >-
+              {{ states('sensor.termometr_salon_temperatura') | float(0) | round(1) }}°
+              · {{ states('sensor.termometr_salon_wilgotnosc') | float(0) | round(1) }}%
+            icon: mdi:sofa-outline
+            entity: light.swiatlo_salon_swiatlo
+            layout: vertical
+            multiline_secondary: false
+            tap_action:
+              action: navigate
+              navigation_path: salon
+            hold_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 16px;
+                  background: {% if is_state('light.swiatlo_salon_swiatlo', 'on') %}rgba(var(--rgb-state-light-on), 0.14){% else %}rgba(24,24,26,.36){% endif %};
+                  backdrop-filter: blur(18px) saturate(1.25);
+                  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+                  border: 1px solid {% if is_state('light.swiatlo_salon_swiatlo', 'on') %}rgba(var(--rgb-state-light-on), 0.35){% else %}rgba(255,255,255,.08){% endif %};
+                }
+                mushroom-shape-icon { --icon-size: 32px; }
+
+          - type: custom:mushroom-template-card
+            primary: Sypialnia
+            secondary: >-
+              {{ states('sensor.termometr_sypialnia_temperatura') | float(0) | round(1) }}°
+              · {{ states('sensor.termometr_sypialnia_wilgotnosc') | float(0) | round(1) }}%
+            icon: mdi:bed-king-outline
+            entity: light.swiatlo_sypialnia_swiatlo
+            layout: vertical
+            multiline_secondary: false
+            tap_action:
+              action: navigate
+              navigation_path: sypialnia
+            hold_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 16px;
+                  background: {% if is_state('light.swiatlo_sypialnia_swiatlo', 'on') %}rgba(var(--rgb-state-light-on), 0.14){% else %}rgba(24,24,26,.36){% endif %};
+                  backdrop-filter: blur(18px) saturate(1.25);
+                  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+                  border: 1px solid {% if is_state('light.swiatlo_sypialnia_swiatlo', 'on') %}rgba(var(--rgb-state-light-on), 0.35){% else %}rgba(255,255,255,.08){% endif %};
+                }
+                mushroom-shape-icon { --icon-size: 32px; }
+
+          - type: custom:mushroom-template-card
+            primary: Łazienka
+            secondary: >-
+              {{ states('sensor.termometr_lazienka_temperatura') | float(0) | round(1) }}°
+              · {{ states('sensor.termometr_lazienka_wilgotnosc') | float(0) | round(1) }}%
+            icon: mdi:shower-head
+            entity: light.swiatlo_lazienka_swiatlo
+            layout: vertical
+            multiline_secondary: false
+            tap_action:
+              action: navigate
+              navigation_path: lazienka_dol
+            hold_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 16px;
+                  background: {% if is_state('light.swiatlo_lazienka_swiatlo', 'on') %}rgba(var(--rgb-state-light-on), 0.14){% else %}rgba(24,24,26,.36){% endif %};
+                  backdrop-filter: blur(18px) saturate(1.25);
+                  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+                  border: 1px solid {% if is_state('light.swiatlo_lazienka_swiatlo', 'on') %}rgba(var(--rgb-state-light-on), 0.35){% else %}rgba(255,255,255,.08){% endif %};
+                }
+                mushroom-shape-icon { --icon-size: 32px; }
+
+          - type: custom:mushroom-template-card
+            primary: Garderoba
+            secondary: >-
+              {{ states('sensor.temperatura_garderoba_temperatura') | float(0) | round(1) }}°
+              · {{ states('sensor.temperatura_garderoba_wilgotnosc') | float(0) | round(1) }}%
+            icon: mdi:hanger
+            entity: light.swiatlo_garderoba_swiatlo
+            layout: vertical
+            multiline_secondary: false
+            tap_action:
+              action: navigate
+              navigation_path: garderoba
+            hold_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 16px;
+                  background: {% if is_state('light.swiatlo_garderoba_swiatlo', 'on') %}rgba(var(--rgb-state-light-on), 0.14){% else %}rgba(24,24,26,.36){% endif %};
+                  backdrop-filter: blur(18px) saturate(1.25);
+                  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+                  border: 1px solid {% if is_state('light.swiatlo_garderoba_swiatlo', 'on') %}rgba(var(--rgb-state-light-on), 0.35){% else %}rgba(255,255,255,.08){% endif %};
+                }
+                mushroom-shape-icon { --icon-size: 32px; }
+
+          - type: custom:mushroom-template-card
+            primary: Ogród
+            secondary: >-
+              {{ states('sensor.termometr_ogrod_temperatura') | float(0) | round(1) }}°
+              · {{ states('sensor.termometr_ogrod_wilgotnosc') | float(0) | round(1) }}%
+            icon: mdi:tree-outline
+            entity: light.wiatrolap_gorne_swiatlo
+            layout: vertical
+            multiline_secondary: false
+            tap_action:
+              action: navigate
+              navigation_path: ogrod
+            hold_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 16px;
+                  background: {% if is_state('light.wiatrolap_gorne_swiatlo', 'on') %}rgba(var(--rgb-state-light-on), 0.14){% else %}rgba(24,24,26,.36){% endif %};
+                  backdrop-filter: blur(18px) saturate(1.25);
+                  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+                  border: 1px solid {% if is_state('light.wiatrolap_gorne_swiatlo', 'on') %}rgba(var(--rgb-state-light-on), 0.35){% else %}rgba(255,255,255,.08){% endif %};
+                }
+                mushroom-shape-icon { --icon-size: 32px; }
+
+          - type: custom:mushroom-template-card
+            primary: Paula
+            secondary: >-
+              {{ states('sensor.timmerflotte_temp_hmd_sensor_temperatura_2') | float(0) | round(1) }}°
+              · {{ states('sensor.timmerflotte_temp_hmd_sensor_wilgotnosc_2') | float(0) | round(1) }}%
+            picture: /local/paula-icon.png
+            entity: light.paula_swiatlo_2
+            layout: vertical
+            multiline_secondary: false
+            tap_action:
+              action: navigate
+              navigation_path: paula
+            hold_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 16px;
+                  background: {% if is_state('light.paula_swiatlo_2', 'on') %}rgba(var(--rgb-state-light-on), 0.14){% else %}rgba(24,24,26,.36){% endif %};
+                  backdrop-filter: blur(18px) saturate(1.25);
+                  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+                  border: 1px solid {% if is_state('light.paula_swiatlo_2', 'on') %}rgba(var(--rgb-state-light-on), 0.35){% else %}rgba(255,255,255,.08){% endif %};
+                }
+                mushroom-shape-icon { --icon-size: 34px; }
+
+          - type: custom:mushroom-template-card
+            primary: Poddasze
+            secondary: >-
+              {{ states('sensor.timmerflotte_temp_hmd_sensor_temperatura') | float(0) | round(1) }}°
+              · {{ states('sensor.timmerflotte_temp_hmd_sensor_wilgotnosc') | float(0) | round(1) }}%
+              {%- set kst = states('sensor.k1c_creality_print_status') -%}
+              {%- if kst not in ['idle', 'standby', 'complete', 'unknown', 'unavailable', 'none', ''] -%}
+               · 🖨 {{ states('sensor.k1c_creality_print_progress') | float(0) | round(0) }}%
+              {%- endif -%}
+            icon: mdi:home-roof
+            entity: sensor.timmerflotte_temp_hmd_sensor_temperatura
+            layout: vertical
+            multiline_secondary: true
+            tap_action:
+              action: navigate
+              navigation_path: poddasze
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 16px;
+                  background: rgba(24,24,26,.36);
+                  backdrop-filter: blur(18px) saturate(1.25);
+                  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+                  border: 1px solid rgba(255,255,255,.08);
+                }
+                mushroom-shape-icon { --icon-size: 32px; }
+
+      # Kamery — 2x live
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: picture-entity
+            entity: camera.front
+            name: Front (kamera)
+            camera_view: live
+            show_state: false
+          - type: picture-entity
+            entity: camera.tyl
+            name: Tył (kamera)
+            camera_view: live
+            show_state: false
+
+      # Audio — Spotify + głośniki
+      - type: grid
+        columns: 4
+        square: false
+        cards:
+          - type: media-control
+            entity: media_player.spotify_marcin_solowiow
+            name: Spotify
+          - type: media-control
+            entity: media_player.wolomin
+            name: Wołomin
+          - type: media-control
+            entity: media_player.salon
+            name: Salon
+          - type: media-control
+            entity: media_player.lewy
+            name: Lewy
+
+      # Jakość powietrza
+      - type: entities
+        title: Jakość powietrza
+        show_header_toggle: false
+        state_color: true
+        card_mod:
+          style: |
+            ha-card {
+              max-width: 650px;
+              margin: 0 auto;
+              --paper-font-body1_-_font-size: 12px;
+              --paper-font-body1_-_line-height: 1.2;
+              padding-top: 4px;
+              padding-bottom: 4px;
+            }
+        entities:
+          - entity: sensor.parcel_locker_wol03bapp_polish_air_quality_index
+            name: Indeks jakości (PL)
+            icon: mdi:chemical-weapon
+          - entity: sensor.parcel_locker_wol03bapp_european_air_quality_index
+            name: Indeks jakości (EU)
+            icon: mdi:blur
+          - type: divider
+          - entity: sensor.parcel_locker_wol03bapp_pm_2_5
+            name: PM2.5 (µg/m³)
+            icon: mdi:blur-linear
+          - entity: sensor.parcel_locker_wol03bapp_pm_10
+            name: PM10 (µg/m³)
+            icon: mdi:blur-linear
+          - type: divider
+          - entity: sensor.parcel_locker_wol03bapp_norma_pm_2_5
+            name: Norma PM2.5 (%)
+            icon: mdi:gauge
+          - entity: sensor.parcel_locker_wol03bapp_norma_pm_10
+            name: Norma PM10 (%)
+            icon: mdi:gauge
+
+      # Warunki zewnętrzne
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: glance
+            title: Paczkomat
+            show_state: true
+            columns: 3
+            entities:
+              - entity: sensor.parcel_locker_wol03bapp_temperatura
+                name: Temp
+              - entity: sensor.parcel_locker_wol03bapp_wilgotnosc
+                name: Wilg.
+              - entity: sensor.parcel_locker_wol03bapp_cisnienie
+                name: Ciśn.
+          - type: glance
+            title: Ogród
+            show_state: true
+            columns: 3
+            entities:
+              - entity: sensor.termometr_ogrod_temperatura
+                name: Temp
+              - entity: sensor.termometr_ogrod_wilgotnosc
+                name: Wilg.
+              - entity: sensor.termometr_ogrod_cisnienie
+                name: Ciśn.
+
+  # ================================ SALON ================================
+  - title: Salon
+    path: salon
+    icon: mdi:sofa-outline
+    cards:
+      - type: entities
+        title: Oświetlenie — Salon
+        entities:
+          - light.swiatlo_salon_swiatlo
+          - light.swiatlo_salon_swiatlo_2
+          - light.swiatlo_salon_swiatlo_3
+      - type: tile
+        entity: light.led_salon_okno
+        name: Salon LED
+        icon: mdi:led-strip-variant
+        features:
+          - type: light-brightness
+      - type: grid
+        columns: 1
+        square: false
+        cards:
+          - type: tile
+            entity: light.led_tv_2
+            name: Salon LED TV 2
+            icon: mdi:led-strip-variant
+            features:
+              - type: light-brightness
+      - type: entities
+        title: Czujniki — Salon
+        entities:
+          - sensor.termometr_salon_temperatura
+          - sensor.termometr_salon_wilgotnosc
+          - sensor.termometr_salon_cisnienie
+          - sensor.swiatlo_salon_temperatura_urzadzenia
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: media-control
+            entity: media_player.samsung_q70aa_85_tv_qe85q70aatxxh
+            name: TV Samsung
+          - type: media-control
+            entity: media_player.salon
+            name: Odtwarzacz — Salon
+
+  # ================================ KUCHNIA ================================
+  - title: Kuchnia
+    path: kuchnia
+    icon: mdi:stove
+    cards:
+      - type: entities
+        title: Oświetlenie — Kuchnia
+        entities:
+          - light.swiatlo_kuchnia_swiatlo_2
+          - light.swiatlo_kuchnia_swiatlo_3
+          - light.led_kuchnia_i
+      - type: tile
+        entity: light.led_kuchnia
+        name: Kuchnia LED
+        icon: mdi:led-strip-variant
+        features:
+          - type: light-brightness
+      - type: entities
+        title: Lodówka Samsung — status
+        entities:
+          - binary_sensor.lodowka_fridge_door
+          - binary_sensor.lodowka_freezer_door
+          - sensor.lodowka_fridge_temperature
+          - number.lodowka_fridge_temperature
+          - number.lodowka_freezer_temperature
+          - sensor.lodowka_moc
+          - sensor.lodowka_energia
+      - type: entities
+        title: Czujniki — Kuchnia
+        entities:
+          - sensor.swiatlo_kuchnia_temperatura_urzadzenia
+      - type: history-graph
+        title: Lodówka — moc (W)
+        hours_to_show: 24
+        entities:
+          - sensor.lodowka_moc
+
+  # ================================ SYPIALNIA ================================
+  - title: Sypialnia
+    path: sypialnia
+    icon: mdi:bed-king
+    cards:
+      - type: entities
+        title: Oświetlenie — Sypialnia
+        entities:
+          - light.swiatlo_sypialnia_swiatlo
+          - light.przelacznik_supilania
+          - light.przelacznik_sypialnia
+      - type: entities
+        title: Oświetlenie — Marzenka
+        entities:
+          - switch.marzenka_sypialnia
+      - type: entities
+        title: Oświetlenie — Marcin
+        entities:
+          - switch.marcin_sypialnia
+      - type: entities
+        title: Czujniki — Sypialnia
+        entities:
+          - sensor.termometr_sypialnia_temperatura
+          - sensor.termometr_sypialnia_wilgotnosc
+          - sensor.termometr_sypialnia_cisnienie
+          - sensor.swiatlo_sypialnia_temperatura_urzadzenia
+
+  # ================================ PAULA ================================
+  - title: Paula
+    path: paula
+    icon: mdi:account
+    cards:
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: tile
+            entity: sensor.timmerflotte_temp_hmd_sensor_temperatura_2
+            name: Temperatura
+            icon: mdi:thermometer
+          - type: tile
+            entity: sensor.timmerflotte_temp_hmd_sensor_wilgotnosc_2
+            name: Wilgotność
+            icon: mdi:water-percent
+      - type: entities
+        title: Oświetlenie — Paula
+        entities:
+          - light.paula_swiatlo_2
+
+  # ============================== ŁAZIENKA DÓŁ ==============================
+  - title: Łazienka dół
+    path: lazienka_dol
+    icon: mdi:shower
+    cards:
+      - type: entities
+        title: Oświetlenie — Łazienka dół
+        entities:
+          - light.swiatlo_lazienka_swiatlo
+          - light.swiatlo_lazienka_swiatlo_2
+          - light.swiatlo_lazienka_swiatlo_3
+      - type: entities
+        title: Czujniki — Łazienka dół
+        entities:
+          - sensor.termometr_lazienka_temperatura
+          - sensor.termometr_lazienka_wilgotnosc
+          - sensor.termometr_lazienka_cisnienie
+          - sensor.termometr_lazienka_bateria
+          - sensor.swiatlo_lazienka_temperatura_urzadzenia
+          - entity: sensor.czujnik_garderoba_natezenie_oswietlenia
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: tile
+            entity: sensor.pralka_current_status
+            name: Pralka LG
+            icon: mdi:washing-machine
+            color: blue
+            tap_action:
+              action: more-info
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 16px;
+                  background: linear-gradient(135deg, rgba(33, 150, 243, 0.15) 0%, rgba(33, 150, 243, 0.05) 100%);
+                  border: 1px solid rgba(33, 150, 243, 0.3);
+                  backdrop-filter: blur(10px);
+                  box-shadow: 0 4px 6px rgba(33, 150, 243, 0.1);
+                }
+          - type: tile
+            entity: sensor.szuszarka_current_status
+            name: Suszarka LG
+            icon: mdi:tumble-dryer
+            color: orange
+            tap_action:
+              action: more-info
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 16px;
+                  background: linear-gradient(135deg, rgba(255, 152, 0, 0.15) 0%, rgba(255, 152, 0, 0.05) 100%);
+                  border: 1px solid rgba(255, 152, 0, 0.3);
+                  backdrop-filter: blur(10px);
+                  box-shadow: 0 4px 6px rgba(255, 152, 0, 0.1);
+                }
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: entities
+            title: Pralka LG — szczegóły
+            entities:
+              - entity: sensor.pralka_current_status
+                name: Status
+          - type: entities
+            title: Suszarka LG — szczegóły
+            entities:
+              - entity: sensor.szuszarka_current_status
+                name: Status
+
+  # ================================ WIATROŁAP ================================
+  - title: Wiatrołap
+    path: wiatrolap
+    icon: mdi:door
+    cards:
+      - type: entities
+        title: Oświetlenie — Wiatrołap
+        entities:
+          - light.wiatrolap_gorne_swiatlo
+          - light.wiatrolap_gorne_swiatlo_2
+
+  # ================================= OGRÓD =================================
+  - title: Ogród
+    path: ogrod
+    icon: mdi:tree
+    cards:
+      - type: entities
+        title: Czujniki — Ogród
+        entities:
+          - sensor.termometr_ogrod_temperatura
+          - sensor.termometr_ogrod_wilgotnosc
+          - sensor.termometr_ogrod_cisnienie
+          - sensor.termometr_ogrod_bateria
+      - type: tile
+        entity: switch.smart_switch_b78c
+        name: Brama
+        icon: mdi:gate
+
+  # =============================== GARDEROBA ================================
+  - title: Garderoba
+    path: garderoba
+    icon: mdi:hanger
+    cards:
+      - type: entities
+        title: Oświetlenie garderoba
+        entities:
+          - light.swiatlo_garderoba_swiatlo
+          - light.swiatlo_garderoba_swiatlo_2
+          - light.swiatlo_garderoba_swiatlo_3
+          - light.swiatlo_szafa
+      - type: entities
+        title: Czujniki garderoba
+        entities:
+          - binary_sensor.czujnik_garderoba
+          - binary_sensor.czujnik_garderoba_zajetosc
+          - sensor.temperatura_garderoba_temperatura
+          - sensor.temperatura_garderoba_wilgotnosc
+          - sensor.temperatura_garderoba_cisnienie
+          - sensor.temperatura_garderoba_bateria
+          - sensor.czujnik_garderoba_bateria
+          - sensor.swiatlo_garderoba_temperatura_urzadzenia
+
+  # ============================= ŁAZIENKA GÓRA =============================
+  - title: Łazienka góra
+    path: lazienka_gora
+    icon: mdi:shower-head
+    cards:
+      - type: entities
+        title: Oświetlenie — Łazienka góra
+        entities:
+          - light.lazienka_gora_swiatlo_swiatlo
+          - light.lazienka_gora_swiatlo_swiatlo_2
+          - light.lazienka_gora_swiatlo_swiatlo_3
+      - type: entities
+        title: Czujniki — Łazienka góra
+        entities:
+          - sensor.termometr_lazienka_temperatura
+          - sensor.termometr_lazienka_wilgotnosc
+          - sensor.termometr_lazienka_cisnienie
+          - sensor.termometr_lazienka_bateria
+
+  # ================================ SCHODY ================================
+  - title: Schody
+    path: schody
+    icon: mdi:stairs
+    cards:
+      - type: entities
+        title: Oświetlenie — Schody
+        entities:
+          - entity: switch.schody_dol
+            name: Światło schody dół
+            icon: mdi:stairs
+      - type: entities
+        title: Oświetlenie — przedpokój górne
+        entities:
+          - light.sterowan
+      - type: button
+        entity: switch.schody_dol
+        name: Schody
+        icon: mdi:stairs
+        tap_action:
+          action: toggle
+
+  # ================================ PODDASZE ===============================
+  - title: Poddasze
+    path: poddasze
+    icon: mdi:home-roof
+    cards:
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: tile
+            entity: sensor.timmerflotte_temp_hmd_sensor_temperatura
+            name: Temperatura
+            icon: mdi:thermometer
+          - type: tile
+            entity: sensor.timmerflotte_temp_hmd_sensor_wilgotnosc
+            name: Wilgotność
+            icon: mdi:water-percent
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: picture-entity
+            entity: camera.k1c_creality_printer_camera
+            name: K1C — kamera
+            camera_view: live
+            show_state: false
+          - type: entities
+            title: K1C — status
+            show_header_toggle: false
+            entities:
+              - entity: sensor.k1c_creality_print_status
+                name: Status
+              - entity: sensor.k1c_creality_print_progress
+                name: Postęp (%)
+              - entity: sensor.k1c_creality_current_object
+                name: Obiekt
+              - entity: sensor.k1c_creality_print_job_time
+                name: Czas pracy
+              - entity: sensor.k1c_creality_print_time_left
+                name: Do końca
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: entities
+            title: K1C — temperatury
+            show_header_toggle: false
+            entities:
+              - entity: sensor.k1c_creality_nozzle_temperature
+                name: Głowica (akt.)
+              - entity: number.k1c_creality_nozzle_target
+                name: Głowica (zadana)
+              - entity: sensor.k1c_creality_bed_temperature
+                name: Stół (akt.)
+              - entity: number.k1c_creality_bed_target
+                name: Stół (zadana)
+          - type: entities
+            title: K1C — warstwy i pozycja
+            show_header_toggle: false
+            entities:
+              - entity: sensor.k1c_creality_working_layer
+                name: Warstwa
+              - entity: sensor.k1c_creality_total_layers
+                name: Z
+              - entity: sensor.k1c_creality_position_x
+                name: X
+              - entity: sensor.k1c_creality_position_y
+                name: Y
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: entities
+            title: K1C — sterowanie
+            entities:
+              - entity: button.k1c_creality_pause_print
+              - entity: button.k1c_creality_resume_print
+              - entity: button.k1c_creality_stop_print
+          - type: entities
+            title: K1C — chłodzenie i światło
+            entities:
+              - entity: fan.k1c_creality_model_fan
+              - entity: light.k1c_creality_light
+      - type: picture-entity
+        entity: image.k1c_creality_current_print_preview
+        name: K1C — podgląd modelu
+        show_state: false
+
+  # ================================ OSOBY ================================
+  - title: Osoby
+    path: osoby
+    icon: mdi:account-group
+    cards:
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: custom:person-tracker-card
+            entity: person.marcin
+            layout: glass
+          - type: custom:person-tracker-card
+            entity: person.marzenka
+            layout: glass
+      - type: entities
+        title: Waga
+        entities:
+          - entity: sensor.mi_smart_scale_f5b6_waga
+            name: Waga (RAW)
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: sensor
+            entity: sensor.waga_marcin_sensor
+            name: Waga Marcin
+            graph: line
+          - type: sensor
+            entity: sensor.waga_marzenka_sensor
+            name: Waga Marzenka
+            graph: line
+
+  # ================================ ENERGIA ================================
+  - title: Energia
+    path: energia
+    icon: mdi:flash
+    cards:
+      - type: grid
+        columns: 4
+        square: false
+        cards:
+          - type: tile
+            name: L1
+            entity: sensor.zamel_mew_01_electricity_meter_voltage_phase_1
+            icon: mdi:alpha-l-box
+          - type: tile
+            name: L2
+            entity: sensor.zamel_mew_01_electricity_meter_voltage_phase_2
+            icon: mdi:alpha-m-box
+          - type: tile
+            name: L3
+            entity: sensor.zamel_mew_01_electricity_meter_voltage_phase_3
+            icon: mdi:alpha-n-box
+          - type: tile
+            name: Moc total
+            entity: sensor.pobor_mocy_3_fazy
+            color: red
+            icon: mdi:flash
+      - type: entities
+        title: Licznik ZAMEL MEW-01 — szczegóły
+        entities:
+          - sensor.zamel_mew_01_electricity_meter_power_active_phase_1
+          - sensor.zamel_mew_01_electricity_meter_power_active_phase_2
+          - sensor.zamel_mew_01_electricity_meter_power_active_phase_3
+          - type: divider
+          - sensor.zamel_mew_01_electricity_meter_total_forward_active_energy
+      - type: history-graph
+        title: Moc chwilowa — 6h (W)
+        hours_to_show: 6
+        entities:
+          - sensor.zamel_mew_01_electricity_meter_power_active_phase_1
+          - sensor.zamel_mew_01_electricity_meter_power_active_phase_2
+          - sensor.zamel_mew_01_electricity_meter_power_active_phase_3
+          - sensor.pobor_mocy_3_fazy
+      - type: statistics-graph
+        title: Zużycie energii — ten miesiąc (kWh)
+        days_to_show: 31
+        period: day
+        stat_types:
+          - sum
+        entities:
+          - sensor.zamel_mew_01_electricity_meter_total_cost
+
+  # =============================== KALKULATOR ===============================
+  - title: Kalkulator
+    path: kalkulator
+    icon: mdi:calculator-variant
+    panel: true
+    cards:
+      - type: iframe
+        url: /local/kalk/index.html
