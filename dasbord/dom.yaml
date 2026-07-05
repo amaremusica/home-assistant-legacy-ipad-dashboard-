@@ -780,6 +780,269 @@ views:
         entities:
           - sensor.zamel_mew_01_energia_pobrana
 
+  # ============================== OGRZEWANIE ===============================
+  - title: Ogrzewanie
+    path: ogrzewanie
+    icon: mdi:water-boiler
+    cards:
+      # Status — płomień, CO, CWU, błąd
+      - type: grid
+        columns: 4
+        square: false
+        cards:
+          - type: tile
+            entity: binary_sensor.diyless_thermostat_3_flame_state
+            name: Płomień
+            icon: mdi:fire
+            color: orange
+            tap_action:
+              action: more-info
+          - type: tile
+            entity: binary_sensor.diyless_thermostat_3_ch_state
+            name: CO
+            icon: mdi:radiator
+            color: red
+            tap_action:
+              action: more-info
+          - type: tile
+            entity: binary_sensor.diyless_thermostat_3_dhw_state
+            name: CWU
+            icon: mdi:water-thermometer
+            color: blue
+            tap_action:
+              action: more-info
+          - type: tile
+            entity: binary_sensor.diyless_thermostat_3_fault
+            name: Błąd
+            icon: mdi:alert-circle
+            color: red
+            tap_action:
+              action: more-info
+
+      # Sterowanie — podłoga + ciepła woda
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: thermostat
+            entity: climate.diyless_thermostat_3_central_heating
+            name: Centralne ogrzewanie
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 18px;
+                  background: rgba(24,24,26,.36);
+                  backdrop-filter: blur(18px) saturate(1.25);
+                  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+                  border: 1px solid rgba(255,255,255,.08);
+                }
+          - type: thermostat
+            entity: climate.diyless_thermostat_3_domestic_hot_water
+            name: Ciepła woda (CWU)
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 18px;
+                  background: rgba(24,24,26,.36);
+                  backdrop-filter: blur(18px) saturate(1.25);
+                  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+                  border: 1px solid rgba(255,255,255,.08);
+                }
+
+      # Kluczowe temperatury
+      - type: grid
+        columns: 4
+        square: false
+        cards:
+          - type: tile
+            entity: sensor.diyless_thermostat_3_ch_temperature
+            name: Temp. CO
+            icon: mdi:thermometer-lines
+            color: red
+          - type: tile
+            entity: sensor.diyless_thermostat_3_ch_setpoint
+            name: Zadana CO
+            icon: mdi:target
+            color: orange
+          - type: tile
+            entity: sensor.diyless_thermostat_3_dhw_temperature
+            name: Temp. CWU
+            icon: mdi:water-thermometer
+            color: blue
+          - type: tile
+            entity: sensor.diyless_thermostat_3_outdoor_temperature
+            name: Na zewnątrz
+            icon: mdi:home-thermometer-outline
+            color: green
+
+      - type: grid
+        columns: 4
+        square: false
+        cards:
+          - type: tile
+            entity: sensor.diyless_thermostat_3_ch_return_temperature
+            name: Powrót CO
+            icon: mdi:thermometer-chevron-down
+          - type: tile
+            entity: sensor.diyless_thermostat_3_ch_water_pressure
+            name: Ciśnienie
+            icon: mdi:gauge
+          - type: tile
+            entity: sensor.diyless_thermostat_3_flame_level
+            name: Moc płomienia
+            icon: mdi:fire-circle
+            color: orange
+          - type: tile
+            entity: sensor.diyless_thermostat_3_exhaust_temperature
+            name: Spaliny
+            icon: mdi:smoke
+
+      # Tryb ręczny + ekran termostatu
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: thermostat
+            entity: climate.diyless_thermostat_3_heating_manual_mode
+            name: Tryb ręczny
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: button
+                entity: button.diyless_thermostat_3_turn_screen_on
+                name: Ekran ON
+                icon: mdi:brightness-7
+                show_icon: true
+                show_name: true
+                tap_action:
+                  action: press
+              - type: button
+                entity: button.diyless_thermostat_3_dim_screen
+                name: Przyciemnij
+                icon: mdi:brightness-4
+                show_icon: true
+                show_name: true
+                tap_action:
+                  action: press
+              - type: button
+                entity: button.diyless_thermostat_3_turn_screen_off
+                name: Ekran OFF
+                icon: mdi:brightness-2
+                show_icon: true
+                show_name: true
+                tap_action:
+                  action: press
+
+      # Połączenia i diagnostyka
+      - type: entities
+        title: Połączenia i diagnostyka
+        show_header_toggle: true
+        state_color: true
+        entities:
+          - entity: binary_sensor.diyless_thermostat_3_opentherm_connection_state
+            name: OpenTherm
+            icon: mdi:connection
+          - entity: binary_sensor.diyless_thermostat_3_diagnostic
+            name: Diagnostyka
+          - entity: sensor.diyless_thermostat_3_fault_code
+            name: Kod błędu
+          - entity: sensor.diyless_thermostat_3_ch_boiler_max_temp
+            name: Max temp. kotła
+          - entity: sensor.diyless_thermostat_3_ch_boiler_temp_limit
+            name: Limit temp. kotła
+          - entity: sensor.diyless_thermostat_3_dhw_temperature2
+            name: Temp. CWU 2
+          - entity: sensor.diyless_thermostat_3_opentherm_outdoor_temperature
+            name: Temp. zewn. (OpenTherm)
+          - type: divider
+          - entity: binary_sensor.diyless_thermostat_3_schedule_state
+            name: Harmonogram
+          - entity: binary_sensor.diyless_thermostat_3_display_backlight_state
+            name: Podświetlenie ekranu
+          - entity: binary_sensor.diyless_thermostat_3_display_dim_state
+            name: Przyciemniony ekran
+          - entity: sensor.diyless_thermostat_3_display_current_level
+            name: Jasność ekranu
+          - entity: sensor.diyless_thermostat_3_ambient_light_level
+            name: Światło otoczenia
+
+      # Czujniki temperatury (źródła)
+      - type: entities
+        title: Czujniki temperatury
+        show_header_toggle: true
+        state_color: true
+        entities:
+          - entity: sensor.diyless_thermostat_3_internal_sensor_temperature
+            name: Wewnętrzny
+          - entity: sensor.diyless_thermostat_3_mqtt_sensor_temperature
+            name: MQTT (pokój)
+          - entity: sensor.diyless_thermostat_3_mqtt_out_sensor_temperature
+            name: MQTT (zewn.)
+          - entity: sensor.diyless_thermostat_3_diyless_out_sensor_temperature
+            name: Diyless (zewn.)
+          - entity: sensor.diyless_thermostat_3_openweathermap_out_sensor_temperature
+            name: OpenWeatherMap
+          - entity: sensor.diyless_thermostat_3_weatherapi_out_sensor_temperature
+            name: WeatherAPI
+          - entity: sensor.diyless_thermostat_3_ble_temperature
+            name: BLE temp.
+          - entity: sensor.diyless_thermostat_3_ble_humidity
+            name: BLE wilgotność
+
+      # Status połączeń czujników
+      - type: entities
+        title: Status czujników
+        show_header_toggle: true
+        state_color: true
+        entities:
+          - entity: binary_sensor.diyless_thermostat_3_internal_sensor_connection_state
+            name: Wewnętrzny
+          - entity: binary_sensor.diyless_thermostat_3_internal_sensor_state
+            name: Wewnętrzny — stan
+          - entity: binary_sensor.diyless_thermostat_3_mqtt_sensor_connection_state
+            name: MQTT
+          - entity: binary_sensor.diyless_thermostat_3_mqtt_sensor_state
+            name: MQTT — stan
+          - entity: binary_sensor.diyless_thermostat_3_mqtt_out_sensor_connection_state
+            name: MQTT zewn.
+          - entity: binary_sensor.diyless_thermostat_3_mqtt_out_sensor_state
+            name: MQTT zewn. — stan
+          - entity: binary_sensor.diyless_thermostat_3_diyless_out_sensor_connection_state
+            name: Diyless zewn.
+          - entity: binary_sensor.diyless_thermostat_3_diyless_out_sensor_state
+            name: Diyless zewn. — stan
+          - entity: binary_sensor.diyless_thermostat_3_openweathermap_out_sensor_connection_state
+            name: OpenWeatherMap
+          - entity: binary_sensor.diyless_thermostat_3_openweathermap_out_sensor_state
+            name: OpenWeatherMap — stan
+          - entity: binary_sensor.diyless_thermostat_3_weatherapi_out_sensor_connection_state
+            name: WeatherAPI
+          - entity: binary_sensor.diyless_thermostat_3_weatherapi_out_sensor_state
+            name: WeatherAPI — stan
+
+      # BLE i sieć
+      - type: entities
+        title: BLE i sieć
+        show_header_toggle: true
+        entities:
+          - entity: sensor.diyless_thermostat_3_ble_battery
+            name: Bateria BLE
+          - entity: sensor.diyless_thermostat_3_ble_battery_voltage
+            name: Napięcie BLE
+          - entity: sensor.diyless_thermostat_3_ble_rssi
+            name: RSSI BLE
+          - entity: sensor.diyless_thermostat_3_ble_loss_rate
+            name: Utrata BLE
+          - entity: sensor.diyless_thermostat_3_ble_last_seen
+            name: BLE ostatnio
+          - entity: sensor.diyless_thermostat_3_wifi_rssi
+            name: WiFi RSSI
+          - entity: sensor.diyless_thermostat_3_uptime
+            name: Uptime
+          - entity: sensor.diyless_thermostat_3_pi_factor_i
+            name: PI factor I
+
   # =============================== KALKULATOR ===============================
   - title: Kalkulator
     path: kalkulator
