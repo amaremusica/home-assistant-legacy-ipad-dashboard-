@@ -265,24 +265,24 @@ views:
               padding-bottom: 4px;
             }
         entities:
-          - entity: sensor.parcel_locker_wol03bapp_polish_air_quality_index
+          - entity: sensor.parcel_locker_wol02bapp_polish_air_quality_index
             name: Indeks jakości (PL)
             icon: mdi:chemical-weapon
-          - entity: sensor.parcel_locker_wol03bapp_european_air_quality_index
+          - entity: sensor.parcel_locker_wol02bapp_european_air_quality_index
             name: Indeks jakości (EU)
             icon: mdi:blur
           - type: divider
-          - entity: sensor.parcel_locker_wol03bapp_pm_2_5
+          - entity: sensor.parcel_locker_wol02bapp_pm_2_5
             name: PM2.5 (µg/m³)
             icon: mdi:blur-linear
-          - entity: sensor.parcel_locker_wol03bapp_pm_10
+          - entity: sensor.parcel_locker_wol02bapp_pm_10
             name: PM10 (µg/m³)
             icon: mdi:blur-linear
           - type: divider
-          - entity: sensor.parcel_locker_wol03bapp_norma_pm_2_5
+          - entity: sensor.parcel_locker_wol02bapp_norma_pm_2_5
             name: Norma PM2.5 (%)
             icon: mdi:gauge
-          - entity: sensor.parcel_locker_wol03bapp_norma_pm_10
+          - entity: sensor.parcel_locker_wol02bapp_norma_pm_10
             name: Norma PM10 (%)
             icon: mdi:gauge
 
@@ -296,11 +296,11 @@ views:
             show_state: true
             columns: 3
             entities:
-              - entity: sensor.parcel_locker_wol03bapp_temperatura
+              - entity: sensor.parcel_locker_wol02bapp_temperatura
                 name: Temp
-              - entity: sensor.parcel_locker_wol03bapp_wilgotnosc
+              - entity: sensor.parcel_locker_wol02bapp_wilgotnosc
                 name: Wilg.
-              - entity: sensor.parcel_locker_wol03bapp_cisnienie
+              - entity: sensor.parcel_locker_wol02bapp_cisnienie
                 name: Ciśn.
           - type: glance
             title: Ogród
