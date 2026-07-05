@@ -741,37 +741,36 @@ views:
         cards:
           - type: tile
             name: L1
-            entity: sensor.zamel_mew_01_electricity_meter_voltage_phase_1
+            entity: sensor.zamel_mew_01_napiecie_l1
             icon: mdi:alpha-l-box
           - type: tile
             name: L2
-            entity: sensor.zamel_mew_01_electricity_meter_voltage_phase_2
+            entity: sensor.zamel_mew_01_napiecie_l2
             icon: mdi:alpha-m-box
           - type: tile
             name: L3
-            entity: sensor.zamel_mew_01_electricity_meter_voltage_phase_3
+            entity: sensor.zamel_mew_01_napiecie_l3
             icon: mdi:alpha-n-box
           - type: tile
-            name: Moc total
-            entity: sensor.pobor_mocy_3_fazy
-            color: red
-            icon: mdi:flash
+            name: Energia pobrana
+            entity: sensor.zamel_mew_01_energia_pobrana
+            color: green
+            icon: mdi:counter
       - type: entities
         title: Licznik ZAMEL MEW-01 — szczegóły
         entities:
-          - sensor.zamel_mew_01_electricity_meter_power_active_phase_1
-          - sensor.zamel_mew_01_electricity_meter_power_active_phase_2
-          - sensor.zamel_mew_01_electricity_meter_power_active_phase_3
+          - sensor.zamel_mew_01_moc_l1
+          - sensor.zamel_mew_01_moc_l2
+          - sensor.zamel_mew_01_moc_l3
           - type: divider
-          - sensor.zamel_mew_01_electricity_meter_total_forward_active_energy
+          - sensor.zamel_mew_01_energia_pobrana
       - type: history-graph
         title: Moc chwilowa — 6h (W)
         hours_to_show: 6
         entities:
-          - sensor.zamel_mew_01_electricity_meter_power_active_phase_1
-          - sensor.zamel_mew_01_electricity_meter_power_active_phase_2
-          - sensor.zamel_mew_01_electricity_meter_power_active_phase_3
-          - sensor.pobor_mocy_3_fazy
+          - sensor.zamel_mew_01_moc_l1
+          - sensor.zamel_mew_01_moc_l2
+          - sensor.zamel_mew_01_moc_l3
       - type: statistics-graph
         title: Zużycie energii — ten miesiąc (kWh)
         days_to_show: 31
@@ -779,7 +778,7 @@ views:
         stat_types:
           - sum
         entities:
-          - sensor.zamel_mew_01_electricity_meter_total_cost
+          - sensor.zamel_mew_01_energia_pobrana
 
   # =============================== KALKULATOR ===============================
   - title: Kalkulator
