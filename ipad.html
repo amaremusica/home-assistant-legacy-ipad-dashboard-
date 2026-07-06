@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.13.22 -->
+<!-- build: v11.13.23 -->
 <title>Dom</title>
 <style>
 :root {
@@ -472,7 +472,9 @@ body.light .wst b{color:#0b1220;}
 .rheat-dual>*{-webkit-flex:1;flex:1;text-align:center;min-width:0;}
 .rheat-dual>*+*{border-left:1px solid var(--glass-b);}
 .rheat-l{display:block;font-size:8px;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);font-weight:700;}
-.rheat-v{font-size:16px;font-weight:400;color:var(--bright);line-height:1.1;}
+.rheat-v{font-size:15px;font-weight:400;color:var(--bright);line-height:1.1;}
+.rheat-s{display:block;font-size:9px;color:var(--dim);margin-top:2px;line-height:1.1;}
+.rheat-s b{font-weight:600;color:var(--bright);}
 .rcell-heat.on .rthum{color:#ff7828;}
 .rcell .rthum{font-size:10px;color:var(--dim);margin-top:2px;text-align:center;}
 
@@ -848,7 +850,7 @@ body.legacy-safari nav{background:var(--glass2);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.13.22</span>
+      <span id="ver">v11.13.23</span>
       <button class="hbtn" id="hbtn-upd" onclick="manualPanelUpdate()" title="Pobierz aktualizację z GitHub (git pull)">↺</button>
     </div>
   </header>
@@ -984,8 +986,8 @@ body.legacy-safari nav{background:var(--glass2);}
                 <div class="rcell-h"><span class="rcell-name">Ogrzewanie</span></div>
                 <div class="ricon">🔥</div>
                 <div class="rheat-dual">
-                  <div class="rheat-half"><span class="rheat-l">CO</span><span class="rheat-v"><span id="hd-ch">--</span>°</span></div>
-                  <div class="rheat-half"><span class="rheat-l">CWU</span><span class="rheat-v"><span id="hd-dhw">--</span>°</span></div>
+                  <div class="rheat-half"><span class="rheat-l">CO</span><span class="rheat-v"><span id="hd-ch">--</span>°</span><span class="rheat-s">zad. <b id="hd-ch-set">--</b>°</span></div>
+                  <div class="rheat-half"><span class="rheat-l">CWU</span><span class="rheat-v"><span id="hd-dhw">--</span>°</span><span class="rheat-s">zad. <b id="hd-dhw-set">--</b>°</span></div>
                 </div>
                 <div class="rthum" id="hd-st">--</div>
               </div>
@@ -1347,8 +1349,8 @@ body.legacy-safari nav{background:var(--glass2);}
             </svg>
             <div class="thermo-center">
               <div class="thermo-cur" id="hr-ch-t">--</div>
-              <div class="thermo-unit">aktualna °C</div>
-              <div class="thermo-set">cel <span id="ht-ch">--</span>°</div>
+              <div class="thermo-unit">odczyt °C</div>
+              <div class="thermo-set">zadana <span id="ht-ch">--</span>°</div>
               <div class="thermo-st" id="hs-ch">--</div>
             </div>
           </div>
@@ -1367,8 +1369,8 @@ body.legacy-safari nav{background:var(--glass2);}
             </svg>
             <div class="thermo-center">
               <div class="thermo-cur" id="hr-dhw-t">--</div>
-              <div class="thermo-unit">aktualna °C</div>
-              <div class="thermo-set">cel <span id="ht-dhw">--</span>°</div>
+              <div class="thermo-unit">odczyt °C</div>
+              <div class="thermo-set">zadana <span id="ht-dhw">--</span>°</div>
               <div class="thermo-st" id="hs-dhw">--</div>
             </div>
           </div>
@@ -1466,7 +1468,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.13.22';
+var BUILD='11.13.23';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
@@ -2756,10 +2758,15 @@ function uHeatCard(eid,cardId,stId,tgtId,actId,prefix,mnDef,mxDef,heatBin){
 function updHeatDash(){
   var ch=parseFloat(st('sensor.diyless_thermostat_3_ch_temperature'));
   if(isNaN(ch)) ch=parseFloat(at(CLIMATE_CH,'current_temperature'));
+  var chSet=clSetpoint(CLIMATE_CH);
+  if(isNaN(chSet)) chSet=parseFloat(st('sensor.diyless_thermostat_3_ch_setpoint'));
   var dhw=parseFloat(st('sensor.diyless_thermostat_3_dhw_temperature'));
   if(isNaN(dhw)) dhw=parseFloat(at(CLIMATE_DHW,'current_temperature'));
+  var dhwSet=clSetpoint(CLIMATE_DHW);
   tx('hd-ch',isNaN(ch)?'--':fmt1(ch));
+  tx('hd-ch-set',isNaN(chSet)?'--':fmt1(chSet));
   tx('hd-dhw',isNaN(dhw)?'--':fmt1(dhw));
+  tx('hd-dhw-set',isNaN(dhwSet)?'--':fmt1(dhwSet));
   var chOn=st('binary_sensor.diyless_thermostat_3_ch_state')==='on';
   var dhwOn=st('binary_sensor.diyless_thermostat_3_dhw_state')==='on';
   var stEl=document.getElementById('hd-st');
