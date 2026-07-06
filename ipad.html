@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.13.21 -->
+<!-- build: v11.13.22 -->
 <title>Dom</title>
 <style>
 :root {
@@ -456,14 +456,24 @@ body.light .wst b{color:#0b1220;}
 .rcell-paula .ricon{margin:0 0 2px;}
 .rcell .rtval{font-size:20px;font-weight:400;color:var(--bright);line-height:1;letter-spacing:-0.02em;text-align:center;}
 /* Garderoba + Ogród mniejsze (~30%) by zmieściła się kuchnia */
-.rgrid .rcell:nth-child(4),.rgrid .rcell:nth-child(5),.rgrid .rcell:nth-child(6),.rgrid .rcell:nth-child(7){padding:8px 11px 7px;}
-.rgrid .rcell:nth-child(4) .rcell-h,.rgrid .rcell:nth-child(5) .rcell-h,.rgrid .rcell:nth-child(6) .rcell-h,.rgrid .rcell:nth-child(7) .rcell-h{margin-bottom:2px;}
-.rgrid .rcell:nth-child(4) .ricon,.rgrid .rcell:nth-child(5) .ricon,.rgrid .rcell:nth-child(6) .ricon,.rgrid .rcell:nth-child(7) .ricon{font-size:20px;margin:0 0 2px;}
-.rgrid .rcell:nth-child(4) .ricon-img,.rgrid .rcell:nth-child(5) .ricon-img,.rgrid .rcell:nth-child(6) .ricon-img,.rgrid .rcell:nth-child(7) .ricon-img{width:24px;height:24px;}
+.rgrid .rcell:nth-child(4),.rgrid .rcell:nth-child(5),.rgrid .rcell:nth-child(6),.rgrid .rcell:nth-child(7),.rgrid .rcell:nth-child(8){padding:8px 11px 7px;}
+.rgrid .rcell:nth-child(4) .rcell-h,.rgrid .rcell:nth-child(5) .rcell-h,.rgrid .rcell:nth-child(6) .rcell-h,.rgrid .rcell:nth-child(7) .rcell-h,.rgrid .rcell:nth-child(8) .rcell-h{margin-bottom:2px;}
+.rgrid .rcell:nth-child(4) .ricon,.rgrid .rcell:nth-child(5) .ricon,.rgrid .rcell:nth-child(6) .ricon,.rgrid .rcell:nth-child(7) .ricon,.rgrid .rcell:nth-child(8) .ricon{font-size:20px;margin:0 0 2px;}
+.rgrid .rcell:nth-child(4) .ricon-img,.rgrid .rcell:nth-child(5) .ricon-img,.rgrid .rcell:nth-child(6) .ricon-img,.rgrid .rcell:nth-child(7) .ricon-img,.rgrid .rcell:nth-child(8) .ricon-img{width:24px;height:24px;}
 .rgrid .rcell:nth-child(6) .ricon-img.paula-av{width:34px;height:34px;}
 .rgrid .rcell:nth-child(4) .rbulb,.rgrid .rcell:nth-child(5) .rbulb,.rgrid .rcell:nth-child(6) .rbulb{width:22px;height:22px;font-size:11px;}
 .rgrid .rcell:nth-child(4) .rtval,.rgrid .rcell:nth-child(5) .rtval,.rgrid .rcell:nth-child(6) .rtval,.rgrid .rcell:nth-child(7) .rtval{font-size:18px;}
-.rgrid .rcell:nth-child(4) .rthum,.rgrid .rcell:nth-child(5) .rthum,.rgrid .rcell:nth-child(6) .rthum,.rgrid .rcell:nth-child(7) .rthum{font-size:10px;}
+.rgrid .rcell:nth-child(4) .rthum,.rgrid .rcell:nth-child(5) .rthum,.rgrid .rcell:nth-child(6) .rthum,.rgrid .rcell:nth-child(7) .rthum,.rgrid .rcell:nth-child(8) .rthum{font-size:10px;}
+.rcell-heat{cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.rcell-heat:active{opacity:0.9;}
+.rcell-heat.on{border-color:rgba(255,120,40,0.45);background:rgba(255,120,40,0.1);}
+.rcell-heat.on .rcell-name{color:#ff7828;}
+.rheat-dual{display:-webkit-flex;display:flex;margin-top:1px;}
+.rheat-dual>*{-webkit-flex:1;flex:1;text-align:center;min-width:0;}
+.rheat-dual>*+*{border-left:1px solid var(--glass-b);}
+.rheat-l{display:block;font-size:8px;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);font-weight:700;}
+.rheat-v{font-size:16px;font-weight:400;color:var(--bright);line-height:1.1;}
+.rcell-heat.on .rthum{color:#ff7828;}
 .rcell .rthum{font-size:10px;color:var(--dim);margin-top:2px;text-align:center;}
 
 /* Wiersz kontrolek (Schody / Brama) */
@@ -490,11 +500,6 @@ body.light .wst b{color:#0b1220;}
 .ktemp-m{min-width:0;}
 .ktemp-l{display:block;font-size:8px;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);font-weight:700;}
 .ktemp-v{font-size:14px;font-weight:400;color:var(--bright);letter-spacing:-0.02em;line-height:1.1;}
-.heat-dash{cursor:pointer;-webkit-tap-highlight-color:transparent;-webkit-flex:1 1 auto;flex:1 1 auto;padding:7px 10px;min-height:0;}
-.heat-dash:active{opacity:0.9;}
-.heat-dash.on{border-color:rgba(255,120,40,0.35);}
-.heat-dash-st{font-size:9px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;}
-.heat-dash.on .heat-dash-st{color:#ff7828;}
 
 /* Music Assistant search panel */
 .sp-ma{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;height:100%;overflow:hidden;}
@@ -843,7 +848,7 @@ body.legacy-safari nav{background:var(--glass2);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.13.21</span>
+      <span id="ver">v11.13.22</span>
       <button class="hbtn" id="hbtn-upd" onclick="manualPanelUpdate()" title="Pobierz aktualizację z GitHub (git pull)">↺</button>
     </div>
   </header>
@@ -975,6 +980,15 @@ body.legacy-safari nav{background:var(--glass2);}
                 <div class="rthum"><span id="rh-po">--</span>%</div>
                 <div class="rk1c" id="rk1c-mini" style="display:none;font-size:9px;color:var(--accent);margin-top:1px;text-align:center;line-height:1.2;"></div>
               </div>
+              <div class="rcell glass rcell-heat" id="heat-dash" onclick="goTab('ogrzewanie')" title="Sterowanie ogrzewaniem">
+                <div class="rcell-h"><span class="rcell-name">Ogrzewanie</span></div>
+                <div class="ricon">🔥</div>
+                <div class="rheat-dual">
+                  <div class="rheat-half"><span class="rheat-l">CO</span><span class="rheat-v"><span id="hd-ch">--</span>°</span></div>
+                  <div class="rheat-half"><span class="rheat-l">CWU</span><span class="rheat-v"><span id="hd-dhw">--</span>°</span></div>
+                </div>
+                <div class="rthum" id="hd-st">--</div>
+              </div>
               <div class="scenerow">
                 <button class="scenebtn" id="sc-ev" onclick="runScene(SCENE_EVE)">🌙 Wieczór</button>
                 <button class="scenebtn" id="sc-lv" onclick="runScene(SCENE_LEAVE)">🚪 Wyjdź</button>
@@ -993,13 +1007,6 @@ body.legacy-safari nav{background:var(--glass2);}
               </div>
             </div>
             <div class="mid-split">
-            <div class="card heat-dash" id="heat-dash" onclick="goTab('ogrzewanie')" title="Sterowanie ogrzewaniem">
-              <div class="kc-h"><span class="kc-t">🔥 Ogrzewanie</span><span class="heat-dash-st" id="hd-st">--</span></div>
-              <div class="ktemps">
-                <div class="ktemp"><span class="ktemp-i">🔥</span><div class="ktemp-m"><span class="ktemp-l">CO</span><span class="ktemp-v"><span id="hd-ch">--</span>°</span></div></div>
-                <div class="ktemp"><span class="ktemp-i">💧</span><div class="ktemp-m"><span class="ktemp-l">CWU</span><span class="ktemp-v"><span id="hd-dhw">--</span>°</span></div></div>
-              </div>
-            </div>
             <div class="card runcard" id="runcard">
               <div class="run-h"><span class="run-t">🏃 Bieganie dziś</span><span class="run-date" id="run-date">--</span></div>
               <div class="run-body" id="run-body"><div class="run-empty">Sprawdzam plan…</div></div>
@@ -1459,7 +1466,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.13.21';
+var BUILD='11.13.22';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
@@ -2763,7 +2770,7 @@ function updHeatDash(){
     else if(dhwOn) stEl.textContent='Grzeje CWU';
     else stEl.textContent='Czuwa';
   }
-  if(card) card.className=(chOn||dhwOn)?'card heat-dash on':'card heat-dash';
+  if(card) card.className=(chOn||dhwOn)?'rcell glass rcell-heat on':'rcell glass rcell-heat';
 }
 
 function updHeat(){
