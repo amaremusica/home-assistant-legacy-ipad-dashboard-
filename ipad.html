@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.13.20 -->
+<!-- build: v11.13.21 -->
 <title>Dom</title>
 <style>
 :root {
@@ -490,6 +490,11 @@ body.light .wst b{color:#0b1220;}
 .ktemp-m{min-width:0;}
 .ktemp-l{display:block;font-size:8px;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);font-weight:700;}
 .ktemp-v{font-size:14px;font-weight:400;color:var(--bright);letter-spacing:-0.02em;line-height:1.1;}
+.heat-dash{cursor:pointer;-webkit-tap-highlight-color:transparent;-webkit-flex:1 1 auto;flex:1 1 auto;padding:7px 10px;min-height:0;}
+.heat-dash:active{opacity:0.9;}
+.heat-dash.on{border-color:rgba(255,120,40,0.35);}
+.heat-dash-st{font-size:9px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;}
+.heat-dash.on .heat-dash-st{color:#ff7828;}
 
 /* Music Assistant search panel */
 .sp-ma{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;height:100%;overflow:hidden;}
@@ -838,7 +843,7 @@ body.legacy-safari nav{background:var(--glass2);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.13.20</span>
+      <span id="ver">v11.13.21</span>
       <button class="hbtn" id="hbtn-upd" onclick="manualPanelUpdate()" title="Pobierz aktualizację z GitHub (git pull)">↺</button>
     </div>
   </header>
@@ -988,6 +993,13 @@ body.legacy-safari nav{background:var(--glass2);}
               </div>
             </div>
             <div class="mid-split">
+            <div class="card heat-dash" id="heat-dash" onclick="goTab('ogrzewanie')" title="Sterowanie ogrzewaniem">
+              <div class="kc-h"><span class="kc-t">🔥 Ogrzewanie</span><span class="heat-dash-st" id="hd-st">--</span></div>
+              <div class="ktemps">
+                <div class="ktemp"><span class="ktemp-i">🔥</span><div class="ktemp-m"><span class="ktemp-l">CO</span><span class="ktemp-v"><span id="hd-ch">--</span>°</span></div></div>
+                <div class="ktemp"><span class="ktemp-i">💧</span><div class="ktemp-m"><span class="ktemp-l">CWU</span><span class="ktemp-v"><span id="hd-dhw">--</span>°</span></div></div>
+              </div>
+            </div>
             <div class="card runcard" id="runcard">
               <div class="run-h"><span class="run-t">🏃 Bieganie dziś</span><span class="run-date" id="run-date">--</span></div>
               <div class="run-body" id="run-body"><div class="run-empty">Sprawdzam plan…</div></div>
@@ -1447,7 +1459,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.13.20';
+var BUILD='11.13.21';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
@@ -2734,6 +2746,26 @@ function uHeatCard(eid,cardId,stId,tgtId,actId,prefix,mnDef,mxDef,heatBin){
   thermoDraw(prefix,mn,mx,act,sp,on,heating);
 }
 
+function updHeatDash(){
+  var ch=parseFloat(st('sensor.diyless_thermostat_3_ch_temperature'));
+  if(isNaN(ch)) ch=parseFloat(at(CLIMATE_CH,'current_temperature'));
+  var dhw=parseFloat(st('sensor.diyless_thermostat_3_dhw_temperature'));
+  if(isNaN(dhw)) dhw=parseFloat(at(CLIMATE_DHW,'current_temperature'));
+  tx('hd-ch',isNaN(ch)?'--':fmt1(ch));
+  tx('hd-dhw',isNaN(dhw)?'--':fmt1(dhw));
+  var chOn=st('binary_sensor.diyless_thermostat_3_ch_state')==='on';
+  var dhwOn=st('binary_sensor.diyless_thermostat_3_dhw_state')==='on';
+  var stEl=document.getElementById('hd-st');
+  var card=document.getElementById('heat-dash');
+  if(stEl){
+    if(chOn&&dhwOn) stEl.textContent='CO+CWU';
+    else if(chOn) stEl.textContent='Grzeje CO';
+    else if(dhwOn) stEl.textContent='Grzeje CWU';
+    else stEl.textContent='Czuwa';
+  }
+  if(card) card.className=(chOn||dhwOn)?'card heat-dash on':'card heat-dash';
+}
+
 function updHeat(){
   uHeatPill('binary_sensor.diyless_thermostat_3_flame_state','hp-flame','hpv-flame','TAK','NIE');
   uHeatPill('binary_sensor.diyless_thermostat_3_ch_state','hp-ch','hpv-ch','GRZEJE','OFF');
@@ -2749,6 +2781,7 @@ function updHeat(){
   tx('hg-fault',st('sensor.diyless_thermostat_3_fault_code'));
   var ot=st('binary_sensor.diyless_thermostat_3_opentherm_connection_state');
   tx('hg-ot',ot==='on'?'Połączony':(ot==='off'?'Brak':'--'));
+  updHeatDash();
 }
 
 function updEnergyCard(){
