@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.13.23 -->
+<!-- build: v11.13.24 -->
 <title>Dom</title>
 <style>
 :root {
@@ -471,10 +471,9 @@ body.light .wst b{color:#0b1220;}
 .rheat-dual{display:-webkit-flex;display:flex;margin-top:1px;}
 .rheat-dual>*{-webkit-flex:1;flex:1;text-align:center;min-width:0;}
 .rheat-dual>*+*{border-left:1px solid var(--glass-b);}
-.rheat-l{display:block;font-size:8px;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);font-weight:700;}
-.rheat-v{font-size:15px;font-weight:400;color:var(--bright);line-height:1.1;}
-.rheat-s{display:block;font-size:9px;color:var(--dim);margin-top:2px;line-height:1.1;}
-.rheat-s b{font-weight:600;color:var(--bright);}
+.rheat-l{display:block;font-size:8px;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);font-weight:700;margin-bottom:2px;}
+.rheat-line{display:block;font-size:9px;color:var(--dim);line-height:1.25;}
+.rheat-line b{font-weight:600;color:var(--bright);font-size:11px;}
 .rcell-heat.on .rthum{color:#ff7828;}
 .rcell .rthum{font-size:10px;color:var(--dim);margin-top:2px;text-align:center;}
 
@@ -850,7 +849,7 @@ body.legacy-safari nav{background:var(--glass2);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.13.23</span>
+      <span id="ver">v11.13.24</span>
       <button class="hbtn" id="hbtn-upd" onclick="manualPanelUpdate()" title="Pobierz aktualizację z GitHub (git pull)">↺</button>
     </div>
   </header>
@@ -986,8 +985,8 @@ body.legacy-safari nav{background:var(--glass2);}
                 <div class="rcell-h"><span class="rcell-name">Ogrzewanie</span></div>
                 <div class="ricon">🔥</div>
                 <div class="rheat-dual">
-                  <div class="rheat-half"><span class="rheat-l">CO</span><span class="rheat-v"><span id="hd-ch">--</span>°</span><span class="rheat-s">zad. <b id="hd-ch-set">--</b>°</span></div>
-                  <div class="rheat-half"><span class="rheat-l">CWU</span><span class="rheat-v"><span id="hd-dhw">--</span>°</span><span class="rheat-s">zad. <b id="hd-dhw-set">--</b>°</span></div>
+                  <div class="rheat-half"><span class="rheat-l">CO</span><span class="rheat-line">odcz. <b id="hd-ch">--</b>°</span><span class="rheat-line">zad. <b id="hd-ch-set">--</b>°</span></div>
+                  <div class="rheat-half"><span class="rheat-l">CWU</span><span class="rheat-line">odcz. <b id="hd-dhw">--</b>°</span><span class="rheat-line">zad. <b id="hd-dhw-set">--</b>°</span></div>
                 </div>
                 <div class="rthum" id="hd-st">--</div>
               </div>
@@ -1468,7 +1467,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.13.23';
+var BUILD='11.13.24';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
