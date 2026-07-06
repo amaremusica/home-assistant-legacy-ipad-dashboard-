@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.13.6 -->
+<!-- build: v11.13.20 -->
 <title>Dom</title>
 <style>
 :root {
@@ -692,17 +692,33 @@ body.light .volbw{background:rgba(15,23,42,0.08);}
 .heat-pill.blue.on{background:rgba(56,189,248,0.16);border-color:rgba(56,189,248,0.42);}
 .heat-pill-t{font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;}
 .heat-pill-v{font-size:11px;font-weight:700;color:var(--bright);margin-top:2px;}
-.heat-card{padding:12px;margin-bottom:8px;border-radius:var(--r);cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.heat-card.on{border-color:rgba(255,120,40,0.45);background:rgba(255,120,40,0.1);}
-.heat-card.blue.on{border-color:rgba(56,189,248,0.45);background:rgba(56,189,248,0.1);}
-.heat-h{display:-webkit-flex;display:flex;-webkit-justify-content:space-between;justify-content:space-between;margin-bottom:8px;font-size:13px;font-weight:700;color:var(--bright);}
-.heat-st{font-size:11px;font-weight:600;color:var(--dim);text-transform:uppercase;}
-.heat-ctrl{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;}
-.heat-ctrl>*+*{margin-left:14px;}
-.heat-btn{width:44px;height:44px;border-radius:50%;border:1px solid var(--glass-b);background:var(--glass2);font-size:22px;line-height:1;cursor:pointer;color:var(--bright);-webkit-tap-highlight-color:transparent;}
-.heat-btn:active{-webkit-transform:scale(0.94);transform:scale(0.94);}
-.heat-val{font-size:32px;font-weight:300;color:var(--bright);min-width:72px;text-align:center;}
-.heat-sub{font-size:11px;color:var(--dim);text-align:center;margin-top:6px;}
+.thermo-row{display:-webkit-flex;display:flex;margin:0 -5px 10px;}
+.thermo-row>*{-webkit-flex:1;flex:1;margin:0 5px;min-width:0;}
+.thermo{padding:10px 6px 12px;border-radius:var(--r);text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;border:1px solid var(--glass-b);background:var(--glass);}
+.thermo.on{border-color:rgba(255,120,40,0.48);background:rgba(255,120,40,0.09);}
+.thermo.blue.on{border-color:rgba(56,189,248,0.48);background:rgba(56,189,248,0.09);}
+.thermo.off{opacity:0.72;}
+.thermo-lbl{font-size:11px;font-weight:700;color:var(--bright);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.thermo-dial-wrap{position:relative;width:100%;max-width:172px;margin:0 auto;}
+.thermo-svg{width:100%;height:auto;display:block;}
+.thermo-track{fill:none;stroke:rgba(255,255,255,0.14);stroke-width:11;stroke-linecap:round;}
+body.light .thermo-track{stroke:rgba(0,0,0,0.1);}
+.thermo-fill{fill:none;stroke-width:11;stroke-linecap:round;}
+.thermo-fill.orange{stroke:#ff7828;}
+.thermo-fill.blue{stroke:#38bdf8;}
+.thermo-dot.orange{fill:#ff7828;}
+.thermo-dot.blue{fill:#38bdf8;}
+.thermo-center{position:absolute;top:50%;left:50%;width:78%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);text-align:center;pointer-events:none;}
+.thermo-cur{font-size:34px;font-weight:300;color:var(--bright);line-height:1;letter-spacing:-0.03em;}
+.thermo-unit{font-size:10px;color:var(--dim);margin-top:1px;font-weight:600;}
+.thermo-set{font-size:13px;font-weight:600;color:var(--dim);margin-top:5px;}
+.thermo-st{font-size:9px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;margin-top:3px;}
+.thermo.on .thermo-st{color:#ff7828;}
+.thermo.blue.on .thermo-st{color:#38bdf8;}
+.thermo-btns{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;margin-top:8px;}
+.thermo-btns>*+*{margin-left:22px;}
+.thermo-btn{width:42px;height:42px;border-radius:50%;border:1px solid var(--glass-b);background:var(--glass2);font-size:22px;line-height:1;cursor:pointer;color:var(--bright);-webkit-tap-highlight-color:transparent;}
+.thermo-btn:active{-webkit-transform:scale(0.92);transform:scale(0.92);}
 
 #dim{position:fixed;top:0;left:0;right:0;bottom:0;z-index:500;background:#000;opacity:0;pointer-events:none;-webkit-transition:opacity 1.4s ease;transition:opacity 1.4s ease;}
 #dim.on{opacity:1;pointer-events:auto;}
@@ -822,7 +838,7 @@ body.legacy-safari nav{background:var(--glass2);}
       <div id="cs">⬤ łączenie...</div>
     </div>
     <div class="hd-right">
-      <span id="ver">v11.13.6</span>
+      <span id="ver">v11.13.20</span>
       <button class="hbtn" id="hbtn-upd" onclick="manualPanelUpdate()" title="Pobierz aktualizację z GitHub (git pull)">↺</button>
     </div>
   </header>
@@ -1301,23 +1317,47 @@ body.legacy-safari nav{background:var(--glass2);}
       </div>
 
       <div class="st">Sterowanie</div>
-      <div class="heat-card glass" id="hc-ch" onclick="clToggle(CLIMATE_CH)">
-        <div class="heat-h"><span>🔥 Centralne CO</span><span class="heat-st" id="hs-ch">--</span></div>
-        <div class="heat-ctrl" onclick="event.stopPropagation()">
-          <button class="heat-btn" onclick="clStep(CLIMATE_CH,-0.5)">−</button>
-          <div class="heat-val"><span id="ht-ch">--</span>°</div>
-          <button class="heat-btn" onclick="clStep(CLIMATE_CH,0.5)">+</button>
+      <div class="thermo-row">
+        <div class="thermo glass" id="hc-ch" onclick="clToggle(CLIMATE_CH)">
+          <div class="thermo-lbl">🔥 Centralne CO</div>
+          <div class="thermo-dial-wrap">
+            <svg class="thermo-svg" viewBox="0 0 200 200" aria-hidden="true">
+              <path class="thermo-track" d="M 156.57 156.57 A 80 80 0 1 1 43.43 43.43"></path>
+              <path class="thermo-fill orange" id="tr-ch-fill" d=""></path>
+              <circle class="thermo-dot orange" id="tr-ch-dot" r="6" cx="100" cy="100"></circle>
+            </svg>
+            <div class="thermo-center">
+              <div class="thermo-cur" id="hr-ch-t">--</div>
+              <div class="thermo-unit">aktualna °C</div>
+              <div class="thermo-set">cel <span id="ht-ch">--</span>°</div>
+              <div class="thermo-st" id="hs-ch">--</div>
+            </div>
+          </div>
+          <div class="thermo-btns" onclick="if(event.stopPropagation)event.stopPropagation()">
+            <button class="thermo-btn" onclick="clStep(CLIMATE_CH,-0.5,event)">−</button>
+            <button class="thermo-btn" onclick="clStep(CLIMATE_CH,0.5,event)">+</button>
+          </div>
         </div>
-        <div class="heat-sub">Aktualna: <span id="hr-ch-t">--</span>° · zadana: <span id="hr-ch-s">--</span>°</div>
-      </div>
-      <div class="heat-card glass blue" id="hc-dhw" onclick="clToggle(CLIMATE_DHW)">
-        <div class="heat-h"><span>💧 Ciepła woda</span><span class="heat-st" id="hs-dhw">--</span></div>
-        <div class="heat-ctrl" onclick="event.stopPropagation()">
-          <button class="heat-btn" onclick="clStep(CLIMATE_DHW,-0.5)">−</button>
-          <div class="heat-val"><span id="ht-dhw">--</span>°</div>
-          <button class="heat-btn" onclick="clStep(CLIMATE_DHW,0.5)">+</button>
+        <div class="thermo glass blue" id="hc-dhw" onclick="clToggle(CLIMATE_DHW)">
+          <div class="thermo-lbl">💧 Ciepła woda</div>
+          <div class="thermo-dial-wrap">
+            <svg class="thermo-svg" viewBox="0 0 200 200" aria-hidden="true">
+              <path class="thermo-track" d="M 156.57 156.57 A 80 80 0 1 1 43.43 43.43"></path>
+              <path class="thermo-fill blue" id="tr-dhw-fill" d=""></path>
+              <circle class="thermo-dot blue" id="tr-dhw-dot" r="6" cx="100" cy="100"></circle>
+            </svg>
+            <div class="thermo-center">
+              <div class="thermo-cur" id="hr-dhw-t">--</div>
+              <div class="thermo-unit">aktualna °C</div>
+              <div class="thermo-set">cel <span id="ht-dhw">--</span>°</div>
+              <div class="thermo-st" id="hs-dhw">--</div>
+            </div>
+          </div>
+          <div class="thermo-btns" onclick="if(event.stopPropagation)event.stopPropagation()">
+            <button class="thermo-btn" onclick="clStep(CLIMATE_DHW,-0.5,event)">−</button>
+            <button class="thermo-btn" onclick="clStep(CLIMATE_DHW,0.5,event)">+</button>
+          </div>
         </div>
-        <div class="heat-sub">Aktualna: <span id="hr-dhw-t">--</span>°</div>
       </div>
 
       <div class="st">Parametry</div>
@@ -1407,7 +1447,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.13.19';
+var BUILD='11.13.20';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
@@ -2617,6 +2657,53 @@ function clToggle(eid){
   });
 }
 
+var THERMO_A0=135, THERMO_A1=405, THERMO_CX=100, THERMO_CY=100, THERMO_R=80;
+
+function thermoPt(angle){
+  var rad=(angle-90)*Math.PI/180;
+  return {x:THERMO_CX+THERMO_R*Math.cos(rad),y:THERMO_CY+THERMO_R*Math.sin(rad)};
+}
+
+function thermoArc(aStart,aEnd){
+  var p1=thermoPt(aStart), p2=thermoPt(aEnd), sweep=aEnd-aStart;
+  if(sweep<=0) return '';
+  var large=sweep>180?1:0;
+  return 'M '+p1.x.toFixed(2)+' '+p1.y.toFixed(2)+' A '+THERMO_R+' '+THERMO_R+' 0 '+large+' 1 '+p2.x.toFixed(2)+' '+p2.y.toFixed(2);
+}
+
+function thermoAngle(temp,mn,mx){
+  var pct=(temp-mn)/(mx-mn);
+  if(pct<0) pct=0; if(pct>1) pct=1;
+  return THERMO_A0+pct*(THERMO_A1-THERMO_A0);
+}
+
+function thermoDraw(prefix,mn,mx,current,setpoint,active,heating){
+  var fill=document.getElementById('tr-'+prefix+'-fill');
+  var dot=document.getElementById('tr-'+prefix+'-dot');
+  if(!fill||!dot) return;
+  if(isNaN(setpoint)) setpoint=mn;
+  if(isNaN(current)) current=setpoint;
+  var aSet=thermoAngle(setpoint,mn,mx);
+  var aCur=thermoAngle(current,mn,mx);
+  fill.setAttribute('d',active?thermoArc(THERMO_A0,aSet):'');
+  if(active&&heating){
+    var dp=thermoPt(aCur);
+    dot.setAttribute('cx',dp.x.toFixed(2));
+    dot.setAttribute('cy',dp.y.toFixed(2));
+    dot.setAttribute('opacity','1');
+  }else{
+    dot.setAttribute('opacity','0');
+  }
+}
+
+function thermoStateLabel(s,heating){
+  if(s==='off') return 'Wyłączone';
+  if(heating) return 'Grzeje';
+  if(s==='heat'||s==='auto') return 'Czuwa';
+  if(s&&s!=='--'&&s!=='unavailable'&&s!=='unknown') return s;
+  return '--';
+}
+
 function uHeatPill(eid,pid,vid,onTxt,offTxt){
   var p=document.getElementById(pid),v=document.getElementById(vid);
   if(!p||!v) return;
@@ -2626,22 +2713,25 @@ function uHeatPill(eid,pid,vid,onTxt,offTxt){
   v.textContent=on?onTxt:(s==='off'?offTxt:(s&&s!=='--'?s:'--'));
 }
 
-function uHeatCard(eid,cardId,stId,tgtId,actId,setId){
+function uHeatCard(eid,cardId,stId,tgtId,actId,prefix,mnDef,mxDef,heatBin){
   var s=st(eid);
   var card=document.getElementById(cardId);
+  var on=(s!=='off'&&s!=='unavailable'&&s!=='unknown'&&s!=='--');
   if(card){
-    var on=(s!=='off'&&s!=='unavailable'&&s!=='unknown'&&s!=='--');
-    var base='heat-card glass'+(cardId==='hc-dhw'?' blue':'');
-    card.className=on?base+' on':base;
+    var base='thermo glass'+(cardId==='hc-dhw'?' blue':'');
+    card.className=on?base+' on':base+' off';
   }
-  tx(stId,s);
+  var stEl=document.getElementById(stId);
+  var heating=(st(heatBin)==='on');
+  if(stEl) stEl.textContent=thermoStateLabel(s,heating);
   var sp=clSetpoint(eid);
   tx(tgtId,isNaN(sp)?'--':fmt1(sp));
   var act=parseFloat(at(eid,'current_temperature'));
-  if(isNaN(act)) act=parseFloat(st('sensor.diyless_thermostat_3_ch_temperature'));
-  if(eid===CLIMATE_DHW) act=parseFloat(st('sensor.diyless_thermostat_3_dhw_temperature'));
+  if(isNaN(act)) act=parseFloat(st(eid===CLIMATE_CH?'sensor.diyless_thermostat_3_ch_temperature':'sensor.diyless_thermostat_3_dhw_temperature'));
   tx(actId,isNaN(act)?'--':fmt1(act));
-  if(setId) tx(setId,fmt1(st('sensor.diyless_thermostat_3_ch_setpoint')));
+  var mn=parseFloat(at(eid,'min_temp')); if(isNaN(mn)) mn=mnDef;
+  var mx=parseFloat(at(eid,'max_temp')); if(isNaN(mx)) mx=mxDef;
+  thermoDraw(prefix,mn,mx,act,sp,on,heating);
 }
 
 function updHeat(){
@@ -2649,8 +2739,8 @@ function updHeat(){
   uHeatPill('binary_sensor.diyless_thermostat_3_ch_state','hp-ch','hpv-ch','GRZEJE','OFF');
   uHeatPill('binary_sensor.diyless_thermostat_3_dhw_state','hp-dhw','hpv-dhw','GRZEJE','OFF');
   uHeatPill('binary_sensor.diyless_thermostat_3_fault','hp-fault','hpv-fault','TAK','OK');
-  uHeatCard(CLIMATE_CH,'hc-ch','hs-ch','ht-ch','hr-ch-t','hr-ch-s');
-  uHeatCard(CLIMATE_DHW,'hc-dhw','hs-dhw','ht-dhw','hr-dhw-t',null);
+  uHeatCard(CLIMATE_CH,'hc-ch','hs-ch','ht-ch','hr-ch-t','ch',15,30,'binary_sensor.diyless_thermostat_3_ch_state');
+  uHeatCard(CLIMATE_DHW,'hc-dhw','hs-dhw','ht-dhw','hr-dhw-t','dhw',30,65,'binary_sensor.diyless_thermostat_3_dhw_state');
   tx('hg-out',fmt1(st('sensor.diyless_thermostat_3_outdoor_temperature')));
   tx('hg-ret',fmt1(st('sensor.diyless_thermostat_3_ch_return_temperature')));
   tx('hg-pres',fmt1(st('sensor.diyless_thermostat_3_ch_water_pressure')));
