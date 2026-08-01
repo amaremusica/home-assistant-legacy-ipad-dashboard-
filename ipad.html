@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.13.24 -->
+<!-- build: v11.13.25 -->
 <title>Dom</title>
 <style>
 :root {
@@ -72,10 +72,10 @@ body.light #amb{background:transparent;}
 }
 .glass,.card,.wcard,.rtcard,.qtile,.mcol,.aqcard,.gcard{border-radius:var(--r);box-shadow:var(--shadow);}
 
-/* CONFIG */
-#cfg{position:fixed;top:0;left:0;right:0;bottom:0;z-index:999;background:#262119;background:var(--bg);display:-webkit-flex;display:flex;-webkit-align-items:flex-start;align-items:flex-start;-webkit-justify-content:center;justify-content:center;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px 16px;box-sizing:border-box;}
+/* CONFIG — block + scroll (flex+center na iOS 10 ucina górę i blokuje przewijanie) */
+#cfg{position:fixed;top:0;left:0;right:0;bottom:0;z-index:999;background:#262119;background:var(--bg);display:block;overflow-x:hidden;overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:16px 14px 48px;box-sizing:border-box;-webkit-transform:translateZ(0);transform:translateZ(0);}
 #cfg.h{display:none;}
-.cbox{background:var(--glass2);border:1px solid var(--glass-b);border-radius:var(--r-lg);padding:28px 24px;width:100%;max-width:520px;box-shadow:var(--shadow);margin:0 auto;-webkit-flex-shrink:0;flex-shrink:0;box-sizing:border-box;}
+.cbox{background:var(--glass2);border:1px solid var(--glass-b);border-radius:var(--r-lg);padding:22px 18px;width:100%;max-width:520px;box-shadow:var(--shadow);margin:0 auto 40px;box-sizing:border-box;position:relative;}
 .cbox h2{font-size:28px;font-weight:600;color:var(--bright);margin-bottom:6px;letter-spacing:-0.02em;}
 .cbox h2 span{color:var(--accent);}
 .cbox p{color:var(--dim);font-size:14px;margin-bottom:20px;line-height:1.45;}
@@ -105,8 +105,8 @@ body.light .cfg-tbtn.on{color:#fff;}
 .crange{width:100%;height:32px;-webkit-appearance:none;appearance:none;background:-webkit-linear-gradient(left,#080808,#d2d2d2);background:linear-gradient(to right,#080808,#d2d2d2);border-radius:999px;outline:none;border:1px solid var(--glass-b);}
 .crange::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--accent);border:2px solid #fff;-webkit-box-shadow:0 1px 4px rgba(0,0,0,0.4);box-shadow:0 1px 4px rgba(0,0,0,0.4);cursor:pointer;}
 @media (min-width:520px){
-  #cfg{padding:24px 28px;-webkit-align-items:center;align-items:center;}
-  .cbox{max-width:680px;padding:36px 40px;}
+  #cfg{padding:20px 28px 56px;}
+  .cbox{max-width:680px;padding:28px 32px;}
   .cfg-row2{display:-webkit-flex;display:flex;}
   .cfg-row2 .cf{-webkit-flex:1;flex:1;margin-bottom:16px;}
   .cfg-row2 .cf+.cf{margin-left:16px;}
@@ -1467,7 +1467,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.13.24';
+var BUILD='11.13.25';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
@@ -1635,7 +1635,7 @@ function loadConfig(){
   rebuildPollFilter();
   if(HA&&TOK){document.getElementById('cfg').className='h';document.getElementById('app').className='';startApp();}
   else{
-    document.getElementById('cfg').className='';
+    openCfgScroll();
     document.getElementById('app').className='h';
     prefillDefaults();
     prefillConfigFields();
@@ -1692,12 +1692,20 @@ function saveConfig(){
   startApp();
 }
 
+function openCfgScroll(){
+  var cfg=document.getElementById('cfg');
+  if(!cfg) return;
+  cfg.className='';
+  cfg.scrollTop=0;
+  try{cfg.style.height=window.innerHeight+'px';}catch(e){}
+}
+
 function showConfig(){
   document.getElementById('cu').value=HA;
   document.getElementById('ct').value='';
   prefillConfigFields();
   var sl=document.getElementById('cbg'); if(sl) sl.value=BGLVL;
-  document.getElementById('cfg').className='';
+  openCfgScroll();
 }
 
 // CLOCK
@@ -4869,7 +4877,11 @@ function fixHeight(){
   var app=document.getElementById('app');
   var cfg=document.getElementById('cfg');
   if(app){app.style.height=h+'px';app.style.width=w+'px';}
-  if(cfg){cfg.style.height=h+'px';}
+  if(cfg){
+    cfg.style.height=h+'px';
+    cfg.style.maxHeight=h+'px';
+    cfg.style.overflowY='scroll';
+  }
   alignCols();
 }
 // Pogoda równa siatce pokoi (gauge wypełnia resztę => równy z energią+kuchnią)
@@ -4886,6 +4898,28 @@ setTimeout(alignCols,300);
 setTimeout(alignCols,1200);
 window.addEventListener('resize',fixHeight);
 window.addEventListener('orientationchange',function(){setTimeout(fixHeight,300);});
+
+/* iOS 10: po focusie pola w ustawieniach przewiń je w widok */
+(function(){
+  var cfg=document.getElementById('cfg');
+  if(!cfg) return;
+  cfg.addEventListener('focus',function(ev){
+    var t=ev.target||ev.srcElement;
+    if(!t||!t.tagName) return;
+    var tag=t.tagName.toLowerCase();
+    if(tag!=='input'&&tag!=='textarea'&&tag!=='select') return;
+    setTimeout(function(){
+      try{
+        if(t.scrollIntoView) t.scrollIntoView(true);
+        else{
+          var top=t.offsetTop||0,p=t.offsetParent;
+          while(p&&p!==cfg){top+=p.offsetTop||0;p=p.offsetParent;}
+          cfg.scrollTop=Math.max(0,top-24);
+        }
+      }catch(e){}
+    },280);
+  },true);
+})();
 </script>
 </body>
 </html>
