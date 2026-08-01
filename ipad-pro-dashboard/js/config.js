@@ -103,9 +103,9 @@ export const ROOMS = {
   salon: {
     label: 'Salon',
     sensors: [
-      { id: 'sensor.termometr_salon_temperatura', label: 'Temp', unit: '°', dec: 1 },
-      { id: 'sensor.termometr_salon_wilgotnosc', label: 'Wilgotność', unit: '%', dec: 0 },
-      { id: 'sensor.termometr_salon_cisnienie', label: 'Ciśnienie', unit: ' hPa', dec: 0 }
+      { id: 'sensor.salon_termometr_salon_temperatura', label: 'Temp', unit: '°', dec: 1 },
+      { id: 'sensor.salon_termometr_salon_wilgotnosc', label: 'Wilgotność', unit: '%', dec: 0 },
+      { id: 'sensor.salon_termometr_salon_cisnienie', label: 'Ciśnienie', unit: ' hPa', dec: 0 }
     ],
     lights: [
       { id: 'light.swiatlo_salon_swiatlo', name: 'Salon 1' },
@@ -253,7 +253,7 @@ export const FRIDGE = {
 
 /** Pokoje na ekranie Dom (jak legacy iPad) */
 export const DASH_ROOMS = [
-  { key: 'salon', label: 'Salon', icon: '🛋️', light: 'light.swiatlo_salon_swiatlo', temp: 'sensor.termometr_salon_temperatura', hum: 'sensor.termometr_salon_wilgotnosc' },
+  { key: 'salon', label: 'Salon', icon: '🛋️', light: 'light.swiatlo_salon_swiatlo', temp: 'sensor.salon_termometr_salon_temperatura', hum: 'sensor.salon_termometr_salon_wilgotnosc' },
   { key: 'syp', label: 'Sypialnia', icon: '🛏️', light: 'light.swiatlo_sypialnia_swiatlo', temp: 'sensor.termometr_sypialnia_temperatura', hum: 'sensor.termometr_sypialnia_wilgotnosc' },
   { key: 'laz', label: 'Łazienka', icon: '🛁', light: 'light.swiatlo_lazienka_swiatlo', temp: 'sensor.termometr_lazienka_temperatura', hum: 'sensor.termometr_lazienka_wilgotnosc' },
   { key: 'gar', label: 'Garderoba', icon: '🧥', light: 'light.swiatlo_garderoba_swiatlo', temp: 'sensor.temperatura_garderoba_temperatura', hum: 'sensor.temperatura_garderoba_wilgotnosc' },

@@ -41,8 +41,8 @@ views:
           - type: custom:mushroom-template-card
             primary: Salon
             secondary: >-
-              {{ states('sensor.termometr_salon_temperatura') | float(0) | round(1) }}°
-              · {{ states('sensor.termometr_salon_wilgotnosc') | float(0) | round(1) }}%
+              {{ states('sensor.salon_termometr_salon_temperatura') | float(0) | round(1) }}°
+              · {{ states('sensor.salon_termometr_salon_wilgotnosc') | float(0) | round(1) }}%
             icon: mdi:sofa-outline
             entity: light.swiatlo_salon_swiatlo
             layout: vertical
@@ -344,9 +344,9 @@ views:
       - type: entities
         title: Czujniki — Salon
         entities:
-          - sensor.termometr_salon_temperatura
-          - sensor.termometr_salon_wilgotnosc
-          - sensor.termometr_salon_cisnienie
+          - sensor.salon_termometr_salon_temperatura
+          - sensor.salon_termometr_salon_wilgotnosc
+          - sensor.salon_termometr_salon_cisnienie
           - sensor.swiatlo_salon_temperatura_urzadzenia
       - type: grid
         columns: 2
