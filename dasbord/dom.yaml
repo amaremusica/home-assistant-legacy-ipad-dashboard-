@@ -166,8 +166,8 @@ views:
           - type: custom:mushroom-template-card
             primary: Paula
             secondary: >-
-              {{ states('sensor.timmerflotte_temp_hmd_sensor_temperatura_2') | float(0) | round(1) }}°
-              · {{ states('sensor.timmerflotte_temp_hmd_sensor_wilgotnosc_2') | float(0) | round(1) }}%
+              {{ states('sensor.sypialnia_paula_paula_temperatura_temperatura') | float(0) | round(1) }}°
+              · {{ states('sensor.sypialnia_paula_paula_temperatura_wilgotnosc') | float(0) | round(1) }}%
             picture: /local/paula-icon.png
             entity: light.paula_swiatlo_2
             layout: vertical
@@ -433,11 +433,11 @@ views:
         square: false
         cards:
           - type: tile
-            entity: sensor.timmerflotte_temp_hmd_sensor_temperatura_2
+            entity: sensor.sypialnia_paula_paula_temperatura_temperatura
             name: Temperatura
             icon: mdi:thermometer
           - type: tile
-            entity: sensor.timmerflotte_temp_hmd_sensor_wilgotnosc_2
+            entity: sensor.sypialnia_paula_paula_temperatura_wilgotnosc
             name: Wilgotność
             icon: mdi:water-percent
       - type: entities
