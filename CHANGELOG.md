@@ -2,6 +2,17 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.13.28] — 2026-09-26
+
+### Wydajność i stabilność — iPad 4 (iOS 10)
+- **Nocne przeładowanie** — raz na dobę ok. 3:00 (ekran wygaszony, 10 min bez dotyku) lub po 48 h działania; tylko gdy HA odpowiada. Zapobiega zawieszeniom Safari po kilku dniach pracy 24/7.
+- **Kamery: migawki zamiast MJPEG** — na iOS 10 obraz odświeżany co 3 s (`camera_proxy`); stuknięcie w kamerę na zakładce Kamery włącza podgląd na żywo („● na żywo”), ponowne stuknięcie wyłącza. Wymuszenie strumienia: `localStorage` `ha_cam_stream=1`.
+- **Wygaszenie zamyka strumień MJPEG** — wcześniej połączenie działało dalej pod czarną nakładką.
+- **Mniej zapisów do DOM** — `tx`/klasy świateł/żarówek zmieniane tylko przy zmianie wartości; przy wygaszonym ekranie pełne odświeżenie odkładane do wybudzenia.
+- **Fala Spotify** animowana tylko na widocznej zakładce Dom.
+- **Prognoza** — nieudane pobrania ponawiane coraz rzadziej (8 s → maks. 5 min) zamiast co 8–15 s.
+- **CSS legacy** — małe cienie zamiast dużych rozmytych i poświat; wygaszony `#app` bez filtra `brightness` i niemalowany (`visibility:hidden`).
+
 ## [11.13.6] — 2026-06-24
 
 ### Naprawione

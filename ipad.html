@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.13.27 -->
+<!-- build: v11.13.28 -->
 <title>Dom</title>
 <style>
 :root {
@@ -754,6 +754,15 @@ body.legacy-safari .glass,body.legacy-safari .card,body.legacy-safari .wcard,bod
 }
 body.legacy-safari .glass,body.legacy-safari .card,body.legacy-safari .wcard,body.legacy-safari #cfg .cbox{background:var(--glass2);}
 body.legacy-safari #cfg{background:#262119;background:var(--bg);}
+/* iOS 10 (A6X) — małe cienie zamiast dużych rozmytych i poświat (tańsze przewijanie) */
+body.legacy-safari{--shadow:0 2px 6px rgba(0,0,0,0.22);}
+body.legacy-safari.light{--shadow:0 1px 4px rgba(15,23,42,0.12);}
+body.legacy-safari .rbulb.on,body.legacy-safari .rcell.lit,body.legacy-safari .ktog.on .ktsw,body.legacy-safari .tb.a{-webkit-box-shadow:none;box-shadow:none;}
+body.legacy-safari .lc.on,body.legacy-safari .mcol.spot{box-shadow:var(--shadow);}
+/* Wygaszony ekran: nakładka #dim jest czarna i nieprzezroczysta — nie filtruj i nie maluj #app pod spodem */
+body.legacy-safari #app.scr-dim{-webkit-filter:none;filter:none;visibility:hidden;-webkit-transition:visibility 0s linear 1.5s;transition:visibility 0s linear 1.5s;}
+/* Kamera na żywo (po stuknięciu) */
+.camcard.cam-live .camlbl:after{content:' ● na żywo';color:#f87171;}
 body.legacy-safari nav{background:var(--glass2);}
 #err-bar{display:none;position:fixed;left:14px;right:14px;top:62px;z-index:850;padding:12px 16px;border-radius:var(--r);background:var(--glass2);border:1px solid rgba(248,113,113,0.35);box-shadow:var(--shadow);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);}
 #err-bar.show{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;}
@@ -1405,8 +1414,8 @@ body.legacy-safari nav{background:var(--glass2);}
     <div id="view-kamery" class="view">
       <div class="st">Kamery na żywo</div>
       <div class="camgrid">
-        <div class="camcard"><video id="cam-front-v" autoplay muted playsinline webkit-playsinline></video><img id="cam-front" alt="Front" style="display:none"><div class="camoff" id="camoff-front">brak obrazu</div><div class="camlbl">Front</div></div>
-        <div class="camcard"><video id="cam-tyl-v" autoplay muted playsinline webkit-playsinline></video><img id="cam-tyl" alt="Tył" style="display:none"><div class="camoff" id="camoff-tyl">brak obrazu</div><div class="camlbl">Tył</div></div>
+        <div class="camcard" onclick="camTapLive(0)"><video id="cam-front-v" autoplay muted playsinline webkit-playsinline></video><img id="cam-front" alt="Front" style="display:none"><div class="camoff" id="camoff-front">brak obrazu</div><div class="camlbl">Front</div></div>
+        <div class="camcard" onclick="camTapLive(1)"><video id="cam-tyl-v" autoplay muted playsinline webkit-playsinline></video><img id="cam-tyl" alt="Tył" style="display:none"><div class="camoff" id="camoff-tyl">brak obrazu</div><div class="camlbl">Tył</div></div>
       </div>
       <p id="cam-note" style="font-size:11px;color:var(--dim);margin-top:10px;text-align:center;">EZVIZ — strumień MJPEG + migawka (stabilny na iPad).</p>
     </div>
@@ -1467,7 +1476,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.13.27';
+var BUILD='11.13.28';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
@@ -1866,8 +1875,10 @@ function openZeroLegacy(ev){
   location.href=ZERO_LEGACY_URL+'?sw=off&return='+encodeURIComponent(panelReturnUrl());
 }
 
+var CUR_VIEW='dom';
 function sv(id,btn){
   if(id==='drukarka') id='poddasze';
+  CUR_VIEW=id;
   if(id==='zero'){
     if(btn){var bs=document.querySelectorAll('.tb');for(var k=0;k<bs.length;k++)bs[k].className='tb';btn.className='tb a';}
     var note=document.getElementById('zero-note');
@@ -1943,7 +1954,11 @@ function haPost(domain,svc,data,cb){
 var E={};
 function st(id){var e=E[id];return e?e.state:'--';}
 function at(id,k){var e=E[id];return(e&&e.attributes&&e.attributes[k]!==undefined)?e.attributes[k]:'--';}
-function tx(id,val){var el=document.getElementById(id);if(!el)return;var v=val;if(v===undefined||v===null||v==='unavailable'||v==='unknown')v='--';el.textContent=v;}
+// Zapis do DOM tylko przy zmianie — na iPadzie 4 każdy zbędny zapis to reflow co 15 s
+function setTxt(el,v){ v=String(v); if(el.textContent!==v) el.textContent=v; }
+function setCls(el,c){ if(el.className!==c) el.className=c; }
+function setHtml(el,h){ if(el._h!==h){ el._h=h; el.innerHTML=h; } }
+function tx(id,val){var el=document.getElementById(id);if(!el)return;var v=val;if(v===undefined||v===null||v==='unavailable'||v==='unknown')v='--';setTxt(el,v);}
 function fmt1(v){
   var n=parseFloat(v);
   if(isNaN(n)||v===undefined||v===null||v==='unavailable'||v==='unknown'||v==='--')return '--';
@@ -2248,14 +2263,16 @@ function weatherEid(){
   for(var k2 in E){ if(k2.indexOf('weather.')===0) return k2; }
   return 'weather.forecast_dom';
 }
-var FC_DATA=null,FCLAST=0,FCBUSY=false,FCTRY=0;
+var FC_DATA=null,FCLAST=0,FCBUSY=false,FCTRY=0,FCFAIL=0;
+// Ponawianie prognozy: 8 s, 16 s, 32 s … maks. 5 min (bez zalewania HA przy awarii)
+function fcRetryMs(fails){ var ms=8000; while(fails>1&&ms<300000){ ms*=2; fails--; } return Math.min(ms,300000); }
 function fcExtract(sr){
   if(!sr) return null;
   for(var k in sr){ if(sr[k]&&sr[k].forecast&&sr[k].forecast.length) return sr[k].forecast; }
   return null;
 }
 function fcGotData(fc){
-  if(fc&&fc.length){ FC_DATA=fc; FCLAST=Date.now(); FCBUSY=false; drawForecast(); return true; }
+  if(fc&&fc.length){ FC_DATA=fc; FCLAST=Date.now(); FCBUSY=false; FCFAIL=0; drawForecast(); return true; }
   return false;
 }
 function wsForecast(WID){
@@ -2290,8 +2307,8 @@ function loadForecast(){
   if(FCBUSY)return;
   var now=Date.now();
   if(FC_DATA&&FC_DATA.length&&now-FCLAST<900000)return; // mamy dane → odśwież co 15 min
-  if(!FC_DATA&&now-FCTRY<8000)return;                    // brak danych → ponawiaj co ~8 s
-  FCBUSY=true; FCTRY=now;
+  if(FCFAIL&&now-FCTRY<fcRetryMs(FCFAIL))return;       // nieudane próby → coraz rzadziej
+  FCBUSY=true; FCTRY=now; FCFAIL++;
   var WID=weatherEid();
   var x=new XMLHttpRequest();
   x.open('POST',HA+'/api/services/weather/get_forecasts?return_response',true);
@@ -2313,8 +2330,8 @@ function loadForecast(){
   x.send(JSON.stringify({type:'daily',entity_id:WID}));
 }
 // ----- PROGNOZA GODZINOWA (dla strony Pogoda) -----
-var FC_HOURLY=null,FCHLAST=0,FCHBUSY=false,FCHTRY=0;
-function fchGot(fc){ if(fc&&fc.length){ FC_HOURLY=fc; FCHLAST=Date.now(); FCHBUSY=false; drawWeatherPage(); return true; } return false; }
+var FC_HOURLY=null,FCHLAST=0,FCHBUSY=false,FCHTRY=0,FCHFAIL=0;
+function fchGot(fc){ if(fc&&fc.length){ FC_HOURLY=fc; FCHLAST=Date.now(); FCHBUSY=false; FCHFAIL=0; drawWeatherPage(); return true; } return false; }
 function wsHourly(WID){
   try{
     var url=HA.replace(/^http/,'ws')+'/api/websocket';
@@ -2337,8 +2354,8 @@ function loadHourly(){
   if(FCHBUSY)return;
   var now=Date.now();
   if(FC_HOURLY&&FC_HOURLY.length&&now-FCHLAST<1800000)return;
-  if(!FC_HOURLY&&now-FCHTRY<8000)return;
-  FCHBUSY=true; FCHTRY=now;
+  if(FCHFAIL&&now-FCHTRY<fcRetryMs(FCHFAIL))return;
+  FCHBUSY=true; FCHTRY=now; FCHFAIL++;
   var WID=weatherEid();
   var x=new XMLHttpRequest();
   x.open('POST',HA+'/api/services/weather/get_forecasts?return_response',true);
@@ -2468,15 +2485,15 @@ function upd(){
   var aqi=st('sensor.parcel_locker_wol02bapp_polish_air_quality_index');
   var aqr=aqColor(aqi);
   var waqEl=document.getElementById('waq');
-  if(waqEl) waqEl.innerHTML='<span class="aqb '+aqr.cls+'">'+aqr.label+'</span>';
+  if(waqEl) setHtml(waqEl,'<span class="aqb '+aqr.cls+'">'+aqr.label+'</span>');
   var wsunEl=document.getElementById('wsun');
   if(wsunEl){
     var su2=E[SUN]&&E[SUN].attributes?E[SUN].attributes:{};
     var sr2=hhmm(su2.next_rising), ss2=hhmm(su2.next_setting);
-    wsunEl.innerHTML=(sr2!=='--'||ss2!=='--')?('<span>'+SR_ICO+sr2+'</span><span>'+SS_ICO+ss2+'</span>'):'';
+    setHtml(wsunEl,(sr2!=='--'||ss2!=='--')?('<span>'+SR_ICO+sr2+'</span><span>'+SS_ICO+ss2+'</span>'):'');
   }
   var waq2El=document.getElementById('waq2');
-  if(waq2El) waq2El.innerHTML='<span class="aqb '+aqr.cls+'">Indeks PL: '+aqr.label+'</span>';
+  if(waq2El) setHtml(waq2El,'<span class="aqb '+aqr.cls+'">Indeks PL: '+aqr.label+'</span>');
 
   // ROOM TEMPS
   tx('rt-s', fmt1(st('sensor.salon_termometr_salon_temperatura')));
@@ -2834,7 +2851,7 @@ function updEnergyCard(){
 function uStateCard(eid,cardId,stId,onL,offL){
   var s=st(eid);
   var el=document.getElementById(stId);
-  if(el) el.textContent=(s==='on')?onL:(s==='off')?offL:'--';
+  if(el) setTxt(el,(s==='on')?onL:(s==='off')?offL:'--');
 }
 
 function uLC(eid,cid,sid){
@@ -2842,8 +2859,8 @@ function uLC(eid,cid,sid){
   var c=document.getElementById(cid);
   var se=document.getElementById(sid);
   if(!c||!se)return;
-  if(s2==='on'){c.className='card lc on';se.className='lstate on';se.textContent='on';}
-  else{c.className='card lc';se.className='lstate off';se.textContent='off';}
+  if(s2==='on'){setCls(c,'card lc on');setCls(se,'lstate on');setTxt(se,'on');}
+  else{setCls(c,'card lc');setCls(se,'lstate off');setTxt(se,'off');}
 }
 
 var SR_ICO='<svg viewBox="0 0 18 18" fill="none"><g stroke="#e08a00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 15h14"/><path d="M9 2.5v3.5"/><path d="M6.6 4 9 1.6 11.4 4"/></g><path d="M5.3 12a3.7 3.7 0 0 1 7.4 0z" fill="#f5a623"/></svg>';
@@ -2886,7 +2903,7 @@ function animateWave(){
   var w=document.getElementById('sp-wave'); if(!w) return;
   if(!WAVE_BARS||!WAVE_BARS.length) WAVE_BARS=w.getElementsByTagName('span');
   var bars=WAVE_BARS,i;
-  if(!SPP.playing||dimmed){
+  if(!SPP.playing||dimmed||CUR_VIEW!=='dom'){
     if(!waveStatic){ for(i=0;i<bars.length;i++){ setSY(bars[i],0.22); } waveStatic=true; }
     return;
   }
@@ -2973,14 +2990,14 @@ function updateGauge(){
 function uBulb(eid,id){
   var el=document.getElementById(id);
   if(!el) return;
-  el.style.opacity='';
+  if(el.style.opacity) el.style.opacity='';
   var on=(E[eid]&&E[eid].state==='on');
-  el.className=on?'rbulb on':'rbulb';
+  setCls(el,on?'rbulb on':'rbulb');
   var cell=el.parentNode;
   while(cell&&(' '+cell.className+' ').indexOf(' rcell ')<0){cell=cell.parentNode;}
   if(cell){
     var c=cell.className.replace(/\s*\blit\b/,'');
-    cell.className=on?c+' lit':c;
+    setCls(cell,on?c+' lit':c);
   }
 }
 
@@ -4428,7 +4445,9 @@ function fetch15(){
     }
     setC(true);
     for(var i=0;i<data.length;i++) E[data[i].entity_id]=data[i];
-    upd();
+    // Ekran wygaszony (czarna nakładka) → nie rysuj; pełne upd() po wybudzeniu
+    if(dimmed){ updPending=true; handleMotion(st(MOTION)); }
+    else{ updPending=false; upd(); }
     if(!dimmed) camEnsureViews();
   });
 }
@@ -4453,7 +4472,11 @@ function setC(ok,errMsg){
 // CAMERY — stabilny MJPEG + migawka; bez restartu co 15 s
 var CAMS=[['camera.front','cam-front','cam-front-v','camoff-front'],['camera.tyl','cam-tyl','cam-tyl-v','camoff-tyl']];
 var CAM_DASH=['camera.front','cam-dash','cam-dash-v','camoff-dash'];
-var CAM_STREAM=true;
+// iPad 4 / iOS 10: MJPEG w <img> zjada CPU i RAM (A6X, 1 GB) → migawki co CAM_SNAP_MS,
+// strumień na żywo dopiero po stuknięciu w kamerę (zakładka Kamery). Wymuszenie strumienia: localStorage ha_cam_stream=1
+var CAM_STREAM=!isLegacySafari()||sGet('ha_cam_stream')==='1';
+var CAM_SNAP_MS=3000;
+var camSnapBusy={};
 var camLive={};
 var camTimers={};
 var camHadFrame={};
@@ -4517,6 +4540,7 @@ function camStop(imgId,vidId,offId){
   if(img){ img.onload=null; img.onerror=null; if(img.getAttribute('src')) img.removeAttribute('src'); img.style.display='none'; }
   camHideVideo(vid);
   camShowOff(offId,true,imgId);
+  camLiveMark(imgId,false);
 }
 function camSnapRefresh(eid,imgId,offId,force){
   var img=document.getElementById(imgId);
@@ -4525,7 +4549,9 @@ function camSnapRefresh(eid,imgId,offId,force){
   var full=camSnapUrl(eid);
   if(!full) return;
   var pre=new Image();
+  camSnapBusy[imgId]=Date.now();
   pre.onload=function(){
+    camSnapBusy[imgId]=0;
     if(dimmed) return;
     if(!force&&camLive[imgId]==='mjpeg'&&img.naturalWidth>0) return;
     img.src=full;
@@ -4533,7 +4559,7 @@ function camSnapRefresh(eid,imgId,offId,force){
     camMarkFrame(imgId,offId);
     if(camLive[imgId]!=='mjpeg') camLive[imgId]='snap';
   };
-  pre.onerror=function(){};
+  pre.onerror=function(){ camSnapBusy[imgId]=0; };
   pre.src=full;
 }
 function camStartMjpeg(eid,imgId,vidId,offId){
@@ -4548,12 +4574,12 @@ function camStartMjpeg(eid,imgId,vidId,offId){
   camTimers[imgId]=setTimeout(function(){
     camTimers[imgId]=null;
     if(camLive[imgId]==='mjpeg'&&img.naturalWidth>0) return;
-    camSnapRefresh(eid,imgId,offId,true);
+    camLiveMark(imgId,false); camSnapRefresh(eid,imgId,offId,true);
   },MJPEG_TIMEOUT);
   img.onerror=function(){
     camClearTimer(imgId);
     img.onerror=null;
-    if(camLive[imgId]!=='mjpeg') camSnapRefresh(eid,imgId,offId,true);
+    if(camLive[imgId]!=='mjpeg'){ camLiveMark(imgId,false); camSnapRefresh(eid,imgId,offId,true); }
   };
   img.onload=function(){
     camClearTimer(imgId);
@@ -4561,6 +4587,7 @@ function camStartMjpeg(eid,imgId,vidId,offId){
     camMarkFrame(imgId,offId);
     camLive[imgId]='mjpeg';
     camHealthMiss[imgId]=0;
+    camLiveMark(imgId,true);
   };
   img.src=u;
   img.style.display='block';
@@ -4577,25 +4604,52 @@ function camStart(eid,imgId,vidId,offId){
     },350);
   }
 }
-function camPauseAll(){
-  var i, vid, img, offId;
-  for(i=0;i<CAMS.length;i++){
-    camClearTimer(CAMS[i][1]);
-    vid=document.getElementById(CAMS[i][2]);
-    camHideVideo(vid);
-    img=document.getElementById(CAMS[i][1]);
-    offId=CAMS[i][3];
-    if(img&&img.getAttribute('src')){ img.style.display='block'; camShowOff(offId,false,CAMS[i][1]); }
-    if(camLive[CAMS[i][1]]) camLive[CAMS[i][1]]='paused';
+function camLiveMark(imgId,on){
+  var img=document.getElementById(imgId), card=img&&img.parentNode;
+  if(!card) return;
+  var c=card.className.replace(/\s*\bcam-live\b/,'');
+  setCls(card,on?c+' cam-live':c);
+}
+function camIsStreaming(img){ return !!img&&(img.getAttribute('src')||'').indexOf('/camera_proxy_stream/')>=0; }
+function camPauseSlot(slot,showOffIfEmpty){
+  var imgId=slot[1], offId=slot[3];
+  var img=document.getElementById(imgId);
+  camClearTimer(imgId);
+  camHideVideo(document.getElementById(slot[2]));
+  if(camIsStreaming(img)){
+    // Zamknij połączenie MJPEG (bez tego strumień leci dalej pod wygaszonym ekranem)
+    img.onload=null; img.onerror=null;
+    var u=camSnapUrl(slot[0]);
+    if(u) img.src=u; else img.removeAttribute('src');
   }
-  camClearTimer(CAM_DASH[1]);
-  vid=document.getElementById(CAM_DASH[2]);
-  camHideVideo(vid);
-  img=document.getElementById(CAM_DASH[1]);
-  offId=CAM_DASH[3];
-  if(img&&img.getAttribute('src')){ img.style.display='block'; camShowOff(offId,false,CAM_DASH[1]); }
-  else camShowOff(offId,true,CAM_DASH[1]);
-  if(camLive[CAM_DASH[1]]) camLive[CAM_DASH[1]]='paused';
+  camLiveMark(imgId,false);
+  if(img&&img.getAttribute('src')){ img.style.display='block'; camShowOff(offId,false,imgId); }
+  else if(showOffIfEmpty) camShowOff(offId,true,imgId);
+  if(camLive[imgId]) camLive[imgId]='paused';
+}
+function camPauseAll(){
+  for(var i=0;i<CAMS.length;i++) camPauseSlot(CAMS[i],false);
+  camPauseSlot(CAM_DASH,true);
+}
+// Tryb migawek: odśwież widoczne kamery (bez nakładania się zapytań przy wolnej kamerze)
+function camSnapTick(){
+  if(dimmed||CAM_STREAM||!HA||!TOK) return;
+  var va=camViewActive(), now=Date.now(), i, sl=[];
+  if(va.kamery) for(i=0;i<CAMS.length;i++) sl.push(CAMS[i]);
+  if(va.dom) sl.push(CAM_DASH);
+  for(i=0;i<sl.length;i++){
+    if(camLive[sl[i][1]]==='mjpeg'||camIsStreaming(document.getElementById(sl[i][1]))) continue;
+    if(camSnapBusy[sl[i][1]]&&now-camSnapBusy[sl[i][1]]<15000) continue;
+    camSnapRefresh(sl[i][0],sl[i][1],sl[i][3],true);
+  }
+}
+// Stuknięcie w kamerę na zakładce Kamery: przełącz migawki ↔ na żywo (MJPEG)
+function camTapLive(i){
+  var sl=CAMS[i];
+  if(!sl||CAM_STREAM||dimmed) return;
+  if(camIsStreaming(document.getElementById(sl[1]))){ camPauseSlot(sl,false); camLive[sl[1]]='snap'; return; }
+  camStartMjpeg(sl[0],sl[1],sl[2],sl[3]);
+  camLiveMark(sl[1],true);
 }
 function camStopAll(){
   var i;
@@ -4615,14 +4669,16 @@ function refreshCameras(force){
   var va=camViewActive();
   if(va.kamery){
     for(var i=0;i<CAMS.length;i++){
-      if(force||!camIsLive(CAMS[i][1],CAMS[i][2])) camStart(CAMS[i][0],CAMS[i][1],CAMS[i][2],CAMS[i][3]);
+      if(force&&CAM_STREAM&&camLive[CAMS[i][1]]==='paused') camStartMjpeg(CAMS[i][0],CAMS[i][1],CAMS[i][2],CAMS[i][3]);
+      else if(force||!camIsLive(CAMS[i][1],CAMS[i][2])) camStart(CAMS[i][0],CAMS[i][1],CAMS[i][2],CAMS[i][3]);
     }
   } else {
     camStop(CAMS[0][1],CAMS[0][2],CAMS[0][3]);
     camStop(CAMS[1][1],CAMS[1][2],CAMS[1][3]);
   }
   if(va.dom){
-    if(force||!camIsLive(CAM_DASH[1],CAM_DASH[2])) camStart(CAM_DASH[0],CAM_DASH[1],CAM_DASH[2],CAM_DASH[3]);
+    if(force&&CAM_STREAM&&camLive[CAM_DASH[1]]==='paused') camStartMjpeg(CAM_DASH[0],CAM_DASH[1],CAM_DASH[2],CAM_DASH[3]);
+    else if(force||!camIsLive(CAM_DASH[1],CAM_DASH[2])) camStart(CAM_DASH[0],CAM_DASH[1],CAM_DASH[2],CAM_DASH[3]);
   } else {
     camStop(CAM_DASH[1],CAM_DASH[2],CAM_DASH[3]);
   }
@@ -4659,6 +4715,7 @@ function camHealthCheck(){
 
 // DIM — czujnik ruchu z konfiguracji (MOTION)
 var lastMotionState=null;
+var updPending=false;
 var idleTimer=null;
 var dimmed=false;
 
@@ -4733,6 +4790,7 @@ function setDim(on){
     d.className='';
     if(app) app.className='';
     dimmed=false;
+    if(updPending){ updPending=false; upd(); }
     refreshCameras(true);
   }
 }
@@ -4827,6 +4885,27 @@ function loadTheme(){
   setAccent(ac);
 }
 
+// NOCNE PRZEŁADOWANIE — Safari na iOS 10 traci pamięć przy stronie otwartej 24/7;
+// raz na dobę (ok. 3:00, ekran wygaszony, brak dotyku) albo po 48 h działania.
+// Przeładuj tylko, gdy HA odpowiada — inaczej zostałaby strona błędu Safari.
+var APP_T0=Date.now();
+var lastTouch=Date.now();
+var nightReloadBusy=false;
+function maybeNightlyReload(){
+  if(!dimmed||!HA||nightReloadBusy||updManualBusy) return;
+  var now=Date.now(), up=now-APP_T0, h=new Date().getHours();
+  if(now-lastTouch<600000) return;
+  if(!((h===3&&up>6*3600000)||up>48*3600000)) return;
+  nightReloadBusy=true;
+  var x=new XMLHttpRequest();
+  x.open('GET',HA.replace(/\/$/,'')+'/local/ipad-version.json?nocache='+now,true);
+  x.timeout=10000;
+  x.onload=function(){ if(x.status===200&&dimmed) forceReload(); else nightReloadBusy=false; };
+  x.onerror=function(){ nightReloadBusy=false; };
+  x.ontimeout=x.onerror;
+  x.send(null);
+}
+
 // START
 function startApp(){
   if(appStarted) return;
@@ -4842,11 +4921,13 @@ function startApp(){
     if(dimmed) return;
     if(CAM_STREAM) camHealthCheck();
   },22000);
+  if(!CAM_STREAM) setInterval(camSnapTick,CAM_SNAP_MS);
+  setInterval(maybeNightlyReload,60000);
   setInterval(tickSpotifyProgress,1000);
   setInterval(animateWave,210);
   fixHeight();
   armDimTimer();
-  document.addEventListener('touchstart',function(){wakeScreen(true);},true);
+  document.addEventListener('touchstart',function(){lastTouch=Date.now();wakeScreen(true);},true);
   checkUpdate(true);
   setInterval(function(){ checkUpdate(false); },120000);
 }
@@ -4890,7 +4971,7 @@ function alignCols(){
   var g=document.querySelector('.d3-mid .rgrid');
   if(w&&g){
     var hh=g.offsetHeight;
-    if(hh>0) w.style.height=hh+'px';
+    if(hh>0&&w.style.height!==hh+'px') w.style.height=hh+'px';
   }
 }
 fixHeight();
