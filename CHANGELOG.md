@@ -2,6 +2,12 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.13.30] — 2026-09-26
+
+### Naprawione
+- **Kamera Brama (Dom)** — czarny pas nad obrazem w trybie migawek (pusty `<video>` nie był ukrywany); karta miała 312 px zamiast 162 px i przycinała kartę Spotify.
+- **Paczkomat / Ogród** — wartości zaokrąglone do całości (np. 21° 69% 1013), czytelniejsze.
+
 ## [11.13.29] — 2026-09-26
 
 ### Usunięte

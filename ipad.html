@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.13.29 -->
+<!-- build: v11.13.30 -->
 <title>Dom</title>
 <style>
 :root {
@@ -1461,7 +1461,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.13.29';
+var BUILD='11.13.30';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
@@ -2105,6 +2105,12 @@ function trashType(sum){
   if(lbl.length>22) lbl=lbl.substring(0,21)+'…';
   return {label:lbl||'Wywóz', color:'#94a3b8'};
 }
+// Liczba całkowita (karty Paczkomat / Ogród — czytelniej niż 21.4°68.6%1012.6)
+function fmt0(v){
+  var n=parseFloat(v);
+  if(isNaN(n)||v===undefined||v===null||v==='unavailable'||v==='unknown'||v==='--')return '--';
+  return String(Math.round(n));
+}
 function fmtPres(v){
   var n=parseFloat(v);
   if(isNaN(n)||v===undefined||v===null||v==='unavailable'||v==='unknown'||v==='--')return '--';
@@ -2475,12 +2481,12 @@ function upd(){
   tx('rh-po', fmt1(st(SENS_POD_H)));
 
   // ZEWNĘTRZNE
-  tx('pk-t', fmt1(st('sensor.parcel_locker_wol02bapp_temperatura')));
-  tx('pk-h', fmt1(st('sensor.parcel_locker_wol02bapp_wilgotnosc')));
-  tx('pk-p', fmt1(st('sensor.parcel_locker_wol02bapp_cisnienie')));
-  tx('og-t', fmt1(st('sensor.termometr_ogrod_temperatura')));
-  tx('og-h', fmt1(st('sensor.termometr_ogrod_wilgotnosc')));
-  tx('og-p', fmt1(st('sensor.termometr_ogrod_cisnienie')));
+  tx('pk-t', fmt0(st('sensor.parcel_locker_wol02bapp_temperatura')));
+  tx('pk-h', fmt0(st('sensor.parcel_locker_wol02bapp_wilgotnosc')));
+  tx('pk-p', fmtPres(st('sensor.parcel_locker_wol02bapp_cisnienie')));
+  tx('og-t', fmt0(st('sensor.termometr_ogrod_temperatura')));
+  tx('og-h', fmt0(st('sensor.termometr_ogrod_wilgotnosc')));
+  tx('og-p', fmtPres(st('sensor.termometr_ogrod_cisnienie')));
 
   // MEDIA
   updMedia(SP_EID,'sp-t','sp-a','sp-p','sp-vb','sp-vv');
@@ -4518,6 +4524,9 @@ function camSnapRefresh(eid,imgId,offId,force){
     if(!force&&camLive[imgId]==='mjpeg'&&img.naturalWidth>0) return;
     img.src=full;
     img.style.display='block';
+    // Pusty <video> (czarny, min. 120 px) ukrywał dotąd tylko start MJPEG — w trybie migawek ukryj go tutaj
+    var vid=document.getElementById(imgId+'-v');
+    if(vid&&vid.style.display!=='none') camHideVideo(vid);
     camMarkFrame(imgId,offId);
     if(camLive[imgId]!=='mjpeg') camLive[imgId]='snap';
   };
