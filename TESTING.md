@@ -13,7 +13,8 @@ Checklist po zmianach — na iPadzie 4 lub emulatorze Safari iOS 10.
 - [ ] Salon / Sypialnia / Kuchnia / Łazienki / Ogród — światła, sensory
 - [ ] Energia — 3 fazy
 - [ ] K1C — status drukarki
-- [ ] Kamery — MJPEG bez migania (min. 2 min)
+- [ ] Kamery — migawki co ~3 s bez migania (min. 2 min); stuknięcie → „● na żywo”, ponowne → migawki
+- [ ] Po wygaszeniu ekranu brak aktywnego strumienia MJPEG (log HA / ruch sieciowy)
 - [ ] Muzyka — browse Spotify, odtwarzanie
 - [ ] Pogoda — prognoza dzienna/godzinowa
 
@@ -26,3 +27,4 @@ Checklist po zmianach — na iPadzie 4 lub emulatorze Safari iOS 10.
 ## Wydajność
 - [ ] Panel responsywny — brak zawieszeń przy pollingu co 15 s
 - [ ] Na iOS 10: brak problemów z blur (klasa `legacy-safari`)
+- [ ] Nocne przeładowanie ok. 3:00 — rano panel działa, wersja w rogu bez zmian
