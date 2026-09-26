@@ -2,6 +2,11 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.13.29] — 2026-09-26
+
+### Usunięte
+- **Przyciski scen** „🌙 Wieczór”, „🚪 Wyjdź”, „⭕ Wszystko off” z ekranu Dom oraz ich pola w ☰ (`ha_scene_*`).
+
 ## [11.13.28] — 2026-09-26
 
 ### Wydajność i stabilność — iPad 4 (iOS 10)

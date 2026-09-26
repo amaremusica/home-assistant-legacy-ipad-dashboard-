@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.13.28 -->
+<!-- build: v11.13.29 -->
 <title>Dom</title>
 <style>
 :root {
@@ -316,11 +316,6 @@ body.light .sp-mini-btn{color:#fff;}
 .g3>*{-webkit-flex:1 1 calc(33.33% - 8px);flex:1 1 calc(33.33% - 8px);margin:4px;}
 .g4{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:-4px -4px 4px;}
 .g4>*{-webkit-flex:1 1 calc(25% - 8px);flex:1 1 calc(25% - 8px);margin:4px;}
-.scenerow{display:-webkit-flex;display:flex;-webkit-flex:1 1 100%;flex:1 1 100%;margin:3px 5px 2px;width:calc(100% - 10px);}
-.scenerow>*+*{margin-left:6px;}
-.scenebtn{-webkit-flex:1;flex:1;padding:7px 4px;border-radius:12px;border:1px solid var(--glass-b);background:var(--glass2);color:var(--text);font-size:10px;font-weight:600;cursor:pointer;text-align:center;-webkit-user-select:none;user-select:none;-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--shadow);line-height:1.2;}
-.scenebtn:active{-webkit-transform:scale(0.98);transform:scale(0.98);}
-.scenebtn.off{opacity:0.35;pointer-events:none;}
 .card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);}
 
 /* WEATHER */
@@ -748,7 +743,7 @@ body.light header,body.light nav{background:transparent;}
 body.light nav{background:var(--glass);}
 
 /* iOS 10 — bez backdrop-filter (wydajność) */
-body.legacy-safari .glass,body.legacy-safari .card,body.legacy-safari .wcard,body.legacy-safari .menu-btn,body.legacy-safari .hbtn,body.legacy-safari #upd-bar,body.legacy-safari #err-bar,body.legacy-safari nav,body.legacy-safari .scenebtn,body.legacy-safari .statecard,body.legacy-safari .aqbars,body.legacy-safari #cs,body.legacy-safari #mot,body.legacy-safari .sp-detail-top,body.legacy-safari .sp-mini,body.legacy-safari .camcard .camlbl,body.legacy-safari #cfg .cbox{
+body.legacy-safari .glass,body.legacy-safari .card,body.legacy-safari .wcard,body.legacy-safari .menu-btn,body.legacy-safari .hbtn,body.legacy-safari #upd-bar,body.legacy-safari #err-bar,body.legacy-safari nav,body.legacy-safari .statecard,body.legacy-safari .aqbars,body.legacy-safari #cs,body.legacy-safari #mot,body.legacy-safari .sp-detail-top,body.legacy-safari .sp-mini,body.legacy-safari .camcard .camlbl,body.legacy-safari #cfg .cbox{
   -webkit-backdrop-filter:none !important;
   backdrop-filter:none !important;
 }
@@ -808,11 +803,6 @@ body.legacy-safari nav{background:var(--glass2);}
     <div class="cfg-row2">
       <div class="cf"><label>Łóżko 2 — encja</label><input type="text" id="cb2" placeholder="switch.bed_2" autocorrect="off" autocapitalize="off"></div>
       <div class="cf"><label>Łóżko 2 — nazwa</label><input type="text" id="cb2l" placeholder="Osoba 2" autocorrect="off" autocapitalize="off"></div>
-    </div>
-    <div class="cfg-row3">
-      <div class="cf"><label>Scena — Wieczór</label><input type="text" id="cse" placeholder="scene (opc.)" autocorrect="off" autocapitalize="off"></div>
-      <div class="cf"><label>Scena — Wyjdź</label><input type="text" id="csl" placeholder="scene (opc.)" autocorrect="off" autocapitalize="off"></div>
-      <div class="cf"><label>Scena — Off</label><input type="text" id="cso" placeholder="scene (opc.)" autocorrect="off" autocapitalize="off"></div>
     </div>
     <div class="cf">
       <label>Motyw</label>
@@ -998,11 +988,6 @@ body.legacy-safari nav{background:var(--glass2);}
                   <div class="rheat-half"><span class="rheat-l">CWU</span><span class="rheat-line">odcz. <b id="hd-dhw">--</b>°</span><span class="rheat-line">zad. <b id="hd-dhw-set">--</b>°</span></div>
                 </div>
                 <div class="rthum" id="hd-st">--</div>
-              </div>
-              <div class="scenerow">
-                <button class="scenebtn" id="sc-ev" onclick="runScene(SCENE_EVE)">🌙 Wieczór</button>
-                <button class="scenebtn" id="sc-lv" onclick="runScene(SCENE_LEAVE)">🚪 Wyjdź</button>
-                <button class="scenebtn" id="sc-of" onclick="runScene(SCENE_OFF)">⭕ Wszystko off</button>
               </div>
             </div>
             <div class="card ecard mid-grow">
@@ -1476,7 +1461,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.13.28';
+var BUILD='11.13.29';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
@@ -1499,9 +1484,6 @@ var BED1_EID='switch.bed_1';
 var BED2_EID='switch.bed_2';
 var BED1_LBL='Osoba 1';
 var BED2_LBL='Osoba 2';
-var SCENE_EVE='';
-var SCENE_LEAVE='';
-var SCENE_OFF='';
 var SUN='sun.sun';
 var SENS_PAULA_T='sensor.sypialnia_paula_paula_temperatura_temperatura';
 var SENS_PAULA_H='sensor.sypialnia_paula_paula_temperatura_wilgotnosc';
@@ -1510,14 +1492,14 @@ var SENS_POD_T='sensor.timmerflotte_temp_hmd_sensor_temperatura';
 var SENS_POD_H='sensor.timmerflotte_temp_hmd_sensor_wilgotnosc';
 var CLIMATE_CH='climate.diyless_thermostat_3_central_heating';
 var CLIMATE_DHW='climate.diyless_thermostat_3_domestic_hot_water';
-var CFG_KEYS=['ha_url','ha_token','ha_dim','ha_motion','ha_spotify','ha_spotify_src','ha_ma_url','ha_ma_token','ha_ma_eid','ha_ma_player','ha_trash','ha_run','ha_tv','ha_bed1','ha_bed2','ha_bed1_lbl','ha_bed2_lbl','ha_scene_eve','ha_scene_leave','ha_scene_off','theme','accent','bg_level'];
+var CFG_KEYS=['ha_url','ha_token','ha_dim','ha_motion','ha_spotify','ha_spotify_src','ha_ma_url','ha_ma_token','ha_ma_eid','ha_ma_player','ha_trash','ha_run','ha_tv','ha_bed1','ha_bed2','ha_bed1_lbl','ha_bed2_lbl','theme','accent','bg_level'];
 var POLL_IDS=['binary_sensor.diyless_thermostat_3_ch_state','binary_sensor.diyless_thermostat_3_dhw_state','binary_sensor.diyless_thermostat_3_fault','binary_sensor.diyless_thermostat_3_flame_state','binary_sensor.diyless_thermostat_3_opentherm_connection_state','binary_sensor.lodowka_freezer_door','binary_sensor.lodowka_fridge_door','button.k1c_creality_pause_print','button.k1c_creality_resume_print','button.k1c_creality_stop_print','calendar.bieganie','camera.front','camera.tyl','climate.diyless_thermostat_3_central_heating','climate.diyless_thermostat_3_domestic_hot_water','light.lazienka_gora_swiatlo_swiatlo','light.lazienka_gora_swiatlo_swiatlo_2','light.lazienka_gora_swiatlo_swiatlo_3','light.led_kuchnia','light.led_kuchnia_i','light.led_salon_okno','light.led_tv_2','light.paula_swiatlo_2','light.swiatlo_garderoba_swiatlo','light.swiatlo_garderoba_swiatlo_2','light.swiatlo_garderoba_swiatlo_3','light.swiatlo_kuchnia_swiatlo_2','light.swiatlo_kuchnia_swiatlo_3','light.swiatlo_lazienka_swiatlo','light.swiatlo_lazienka_swiatlo_2','light.swiatlo_lazienka_swiatlo_3','light.swiatlo_salon_swiatlo','light.swiatlo_salon_swiatlo_2','light.swiatlo_salon_swiatlo_3','light.swiatlo_sypialnia_swiatlo','light.wiatrolap_gorne_swiatlo','light.wiatrolap_gorne_swiatlo_2','sensor.diyless_thermostat_3_ch_return_temperature','sensor.diyless_thermostat_3_ch_setpoint','sensor.diyless_thermostat_3_ch_temperature','sensor.diyless_thermostat_3_ch_water_pressure','sensor.diyless_thermostat_3_dhw_temperature','sensor.diyless_thermostat_3_exhaust_temperature','sensor.diyless_thermostat_3_fault_code','sensor.diyless_thermostat_3_flame_level','sensor.diyless_thermostat_3_outdoor_temperature','sensor.k1c_creality_bed_temperature','sensor.k1c_creality_current_object','sensor.k1c_creality_nozzle_temperature','sensor.k1c_creality_position_x','sensor.k1c_creality_position_y','sensor.k1c_creality_print_job_time','sensor.k1c_creality_print_progress','sensor.k1c_creality_print_status','sensor.k1c_creality_print_time_left','sensor.k1c_creality_total_layers','sensor.k1c_creality_working_layer','sensor.lodowka_freezer_temperature','sensor.lodowka_fridge_temperature','sensor.lodowka_moc','sensor.parcel_locker_wol02bapp_cisnienie','sensor.parcel_locker_wol02bapp_norma_pm_10','sensor.parcel_locker_wol02bapp_norma_pm_2_5','sensor.parcel_locker_wol02bapp_pm_10','sensor.parcel_locker_wol02bapp_pm_2_5','sensor.parcel_locker_wol02bapp_polish_air_quality_index','sensor.parcel_locker_wol02bapp_temperatura','sensor.parcel_locker_wol02bapp_wilgotnosc','sensor.pralka_current_status','sensor.swiatlo_kuchnia_temperatura_urzadzenia','sensor.szuszarka_current_status','sensor.temperatura_garderoba_temperatura','sensor.temperatura_garderoba_wilgotnosc','sensor.termometr_lazienka_bateria','sensor.termometr_lazienka_temperatura','sensor.termometr_lazienka_wilgotnosc','sensor.termometr_ogrod_cisnienie','sensor.termometr_ogrod_temperatura','sensor.termometr_ogrod_wilgotnosc','sensor.salon_termometr_salon_cisnienie','sensor.salon_termometr_salon_temperatura','sensor.salon_termometr_salon_wilgotnosc','sensor.termometr_sypialnia_cisnienie','sensor.termometr_sypialnia_temperatura','sensor.termometr_sypialnia_wilgotnosc','sensor.timmerflotte_temp_hmd_sensor_temperatura','sensor.sypialnia_paula_paula_temperatura_temperatura','sensor.timmerflotte_temp_hmd_sensor_wilgotnosc','sensor.sypialnia_paula_paula_temperatura_wilgotnosc','sensor.zamel_mew_01_energia_pobrana','sensor.zamel_mew_01_moc_l1','sensor.zamel_mew_01_moc_l2','sensor.zamel_mew_01_moc_l3','sensor.zamel_mew_01_napiecie_l1','sensor.zamel_mew_01_napiecie_l2','sensor.zamel_mew_01_napiecie_l3','sun.sun','switch.furtka','switch.smart_switch_b78c','weather.forecast_dom'];
 
 function rebuildPollFilter(){
   var map={}, list=POLL_IDS.slice(0), extras=[], i, id, dyn, k, out=[];
   if(ENT_JSON&&ENT_JSON.poll&&ENT_JSON.poll.length) extras=ENT_JSON.poll;
   for(i=0;i<extras.length;i++){ id=extras[i]; if(id) list.push(id); }
-  dyn=[MOTION,SP_EID,TV_EID,TRASH_ENT,RUN_ENT,BED1_EID,BED2_EID,SCENE_EVE,SCENE_LEAVE,SCENE_OFF,SUN,MA_EID];
+  dyn=[MOTION,SP_EID,TV_EID,TRASH_ENT,RUN_ENT,BED1_EID,BED2_EID,SUN,MA_EID];
   for(i=0;i<dyn.length;i++){ id=dyn[i]; if(id) list.push(id); }
   for(i=0;i<list.length;i++){ id=list[i]; if(id) map[id]=1; }
   for(k in map) if(map.hasOwnProperty(k)) out.push(k);
@@ -1594,12 +1576,8 @@ function loadEntConfig(){
   var b2=sGet('ha_bed2'); if(b2) BED2_EID=b2;
   var b1l=sGet('ha_bed1_lbl'); if(b1l) BED1_LBL=b1l;
   var b2l=sGet('ha_bed2_lbl'); if(b2l) BED2_LBL=b2l;
-  var se=sGet('ha_scene_eve'); if(se) SCENE_EVE=se;
-  var sl=sGet('ha_scene_leave'); if(sl) SCENE_LEAVE=sl;
-  var so=sGet('ha_scene_off'); if(so) SCENE_OFF=so;
   var mot=document.getElementById('mot'); if(mot) mot.title=MOTION;
   applyEntLabels();
-  syncSceneBtns();
 }
 
 function applyEntLabels(){
@@ -1607,11 +1585,6 @@ function applyEntLabels(){
   var l2=document.getElementById('lbl-symz'); if(l2) l2.textContent=BED2_LBL;
 }
 
-function syncSceneBtns(){
-  var e=document.getElementById('sc-ev'); if(e) e.className=SCENE_EVE?'scenebtn':'scenebtn off';
-  var l=document.getElementById('sc-lv'); if(l) l.className=SCENE_LEAVE?'scenebtn':'scenebtn off';
-  var o=document.getElementById('sc-of'); if(o) o.className=SCENE_OFF?'scenebtn':'scenebtn off';
-}
 
 function prefillConfigFields(){
   var u=document.getElementById('cu'); if(u) u.value=HA||u.value||'';
@@ -1626,9 +1599,6 @@ function prefillConfigFields(){
   var cb2=document.getElementById('cb2'); if(cb2) cb2.value=BED2_EID||'';
   var cb1l=document.getElementById('cb1l'); if(cb1l) cb1l.value=BED1_LBL||'';
   var cb2l=document.getElementById('cb2l'); if(cb2l) cb2l.value=BED2_LBL||'';
-  var cse=document.getElementById('cse'); if(cse) cse.value=SCENE_EVE||'';
-  var csl=document.getElementById('csl'); if(csl) csl.value=SCENE_LEAVE||'';
-  var cso=document.getElementById('cso'); if(cso) cso.value=SCENE_OFF||'';
   var cma=document.getElementById('cma'); if(cma) cma.value=MA_URL||'';
   var cmat=document.getElementById('cmat'); if(cmat) cmat.value='';
   var cmae=document.getElementById('cmae'); if(cmae) cmae.value=MA_EID||'';
@@ -1665,9 +1635,6 @@ function saveConfig(){
   var b2=document.getElementById('cb2').value.trim();
   var b1l=document.getElementById('cb1l').value.trim();
   var b2l=document.getElementById('cb2l').value.trim();
-  var se=document.getElementById('cse').value.trim();
-  var sl=document.getElementById('csl').value.trim();
-  var so=document.getElementById('cso').value.trim();
   if(!u){alert('Podaj adres HA.');return;}
   var tok=t||TOK; if(!tok){alert('Podaj token.');return;}
   sSet('ha_url',u); sSet('ha_token',tok); sSet('ha_dim',d);
@@ -1682,9 +1649,6 @@ function saveConfig(){
   if(b2){ sSet('ha_bed2',b2); BED2_EID=b2; }
   if(b1l){ sSet('ha_bed1_lbl',b1l); BED1_LBL=b1l; }
   if(b2l){ sSet('ha_bed2_lbl',b2l); BED2_LBL=b2l; }
-  if(se){ sSet('ha_scene_eve',se); SCENE_EVE=se; }
-  if(sl){ sSet('ha_scene_leave',sl); SCENE_LEAVE=sl; }
-  if(so){ sSet('ha_scene_off',so); SCENE_OFF=so; }
   var ma=document.getElementById('cma').value.trim().replace(/\/$/,'');
   if(ma){ sSet('ha_ma_url',ma); MA_URL=ma; }
   var mat=document.getElementById('cmat').value.trim();
@@ -1692,7 +1656,6 @@ function saveConfig(){
   var mae=document.getElementById('cmae').value.trim();
   if(mae){ sSet('ha_ma_eid',mae); MA_EID=mae; rebuildPollFilter(); }
   applyEntLabels();
-  syncSceneBtns();
   rebuildPollFilter();
   HA=u; TOK=tok; DIM=d*1000;
   document.getElementById('cfg').className='h';
@@ -3049,7 +3012,6 @@ function tSwitch(eid,cid,pulse){
 }
 
 function mCmd(eid,svc){haPost('media_player',svc,{entity_id:eid},function(){ confirmEntity(eid); });}
-function runScene(eid){ if(!eid) return; haPost('scene','turn_on',{entity_id:eid}); }
 function mSpPrev(){ mCmd(SP_EID,'media_previous_track'); }
 function mSpNext(){ mCmd(SP_EID,'media_next_track'); }
 function mSpPP(){ mPP(SP_EID,'sp-p'); }
