@@ -541,6 +541,9 @@ views:
         entities:
           - light.wiatrolap_gorne_swiatlo
           - light.wiatrolap_gorne_swiatlo_2
+          - entity: switch.szafa_wiatrolap
+            name: Szafa wiatrołap
+            icon: mdi:wardrobe-outline
 
   # ================================= OGRÓD =================================
   - title: Ogród

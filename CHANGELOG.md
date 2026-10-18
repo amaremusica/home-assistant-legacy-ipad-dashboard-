@@ -2,6 +2,11 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.13.36] — 2026-10-18
+
+### Dodane
+- **Szafa wiatrołap** (`switch.szafa_wiatrolap`, gniazdko IKEA) — kafelek w sekcji Wiatrołap (zakładka Ogród) z włącz/wyłącz i stanem; encja dopisana do `POLL_IDS`. W `dasbord/dom.yaml` dodana do widoku Wiatrołap.
+
 ## [11.13.35] — 2026-10-18
 
 ### Zmienione
