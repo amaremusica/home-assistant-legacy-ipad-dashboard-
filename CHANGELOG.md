@@ -5,7 +5,10 @@ Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 ## [11.13.31] — 2026-10-18
 
 ### Dodane
-- **Kafelek Volvo** (Dom, obok Ogrodu) — zasięg, paliwo i stan zamka z integracji Volvo (`sensor.volvo_xc60_distance_to_empty_tank`, `sensor.volvo_xc60_fuel_amount`, `lock.volvo_xc60_lock`); encje dopisane do `POLL_IDS`.
+- **Karta Volvo XC60 zamiast Spotify** (Dom, prawa kolumna) — zamek (kolor stanu), zasięg dużymi cyframi, paliwo z paskiem baku, lokalizacja (w domu / poza domem), przebieg, dni do serwisu, licznik otwartych drzwi/okien/klapy, płyn do spryskiwaczy. Przyciski: zamknij, mignij światłami i nagrzej (silnik 15 min) — dwa ostatnie z potwierdzeniem; otwierania auta celowo brak. Encje integracji Volvo dopisane do `POLL_IDS`.
+
+### Zmienione
+- **Spotify zniknęło z ekranu Dom** — zostaje zakładka Muzyka. Pasek postępu Spotify nie blokuje już mini-odtwarzacza, gdy na Dom nie ma karty Spotify.
 
 ### Naprawione
 - **Kamery: blokada IP iPada (HTTP 403)** — `camera_proxy` / `camera_proxy_stream` dostawały w `?token=` token logowania zamiast tokenu kamery (atrybut `access_token`). HA liczył każde takie żądanie jako nieudane logowanie i po serii prób banował IP iPada. Teraz używany jest `access_token` kamery; przy niedostępnej kamerze panel nie wysyła żądań, a brak strumienia przechodzi na migawki.
