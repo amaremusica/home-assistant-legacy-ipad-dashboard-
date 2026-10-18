@@ -2,6 +2,12 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.13.33] — 2026-10-18
+
+### Naprawione
+- **Karta śmieci: „błąd 400"** — zapisany w ☰ kalendarz już nie istniał (HA odpowiada 400 „Entity not found"). Domyślny kalendarz to teraz `calendar.proj_marcin_gmail_com` (tam są „Odbiór odpadów"); przy 400/404 karta sama wraca do domyślnego i czyści zły wpis.
+- Karta bierze tylko wydarzenia o odpadach (kalendarz Google ma też inne wpisy), kilka frakcji tego samego dnia pokazuje razem (np. „Popiół + Bio / zielone"). Dodany typ „Popiół".
+
 ## [11.13.32] — 2026-10-18
 
 ### Zmienione
