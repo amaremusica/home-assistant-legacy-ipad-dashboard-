@@ -314,6 +314,21 @@ views:
               - entity: sensor.termometr_ogrod_cisnienie
                 name: Ciśn.
 
+      # Volvo XC60 (integracja Volvo)
+      - type: glance
+        title: Volvo XC60
+        show_state: true
+        columns: 4
+        entities:
+          - entity: lock.volvo_xc60_lock
+            name: Zamek
+          - entity: sensor.volvo_xc60_distance_to_empty_tank
+            name: Zasięg
+          - entity: sensor.volvo_xc60_fuel_amount
+            name: Paliwo
+          - entity: device_tracker.volvo_xc60_location
+            name: Gdzie
+
   # ================================ SALON ================================
   - title: Salon
     path: salon
