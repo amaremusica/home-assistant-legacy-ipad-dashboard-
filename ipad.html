@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.13.31 -->
+<!-- build: v11.13.32 -->
 <title>Dom</title>
 <style>
 :root {
@@ -557,6 +557,10 @@ body.light .wst b{color:#0b1220;}
 .run-time{font-size:12px;font-weight:700;color:var(--accent);width:42px;-webkit-flex-shrink:0;flex-shrink:0;}
 .run-sum{font-size:12px;font-weight:600;color:var(--bright);line-height:1.25;}
 .run-empty{font-size:11px;color:var(--dim);font-weight:600;padding:2px 0;}
+.runcard{cursor:pointer;}
+.runcard:active{-webkit-transform:scale(0.98);transform:scale(0.98);}
+.run-next{font-size:11px;color:var(--text);font-weight:600;margin-top:5px;line-height:1.25;}
+.run-src{font-size:10px;color:var(--accent);font-weight:700;margin-top:5px;}
 .chiprow{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:-4px;}
 .ktog{-webkit-flex:1 1 calc(50% - 8px);flex:1 1 calc(50% - 8px);margin:4px;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;padding:9px 12px;border-radius:14px;border:1px solid var(--glass-b);background:var(--glass2);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;-webkit-user-select:none;user-select:none;}
 .ktog:active{-webkit-transform:scale(0.98);transform:scale(0.98);}
@@ -813,7 +817,7 @@ body.legacy-safari nav{background:var(--glass2);}
     <div class="cf"><label>MA Token (opcjonalnie)</label><input type="password" id="cmat" placeholder="Bearer token z MA ≥2.7" autocomplete="off"></div>
     <div class="cf"><label>MA Player — encja HA</label><input type="text" id="cmae" placeholder="media_player.wzmacniacz" autocorrect="off" autocapitalize="off"></div>
     <div class="cf"><label>Kalendarz śmieci</label><input type="text" id="ctr" placeholder="calendar.trash" autocorrect="off" autocapitalize="off"></div>
-    <div class="cf"><label>Kalendarz biegania</label><input type="text" id="crun" placeholder="calendar.bieganie" autocorrect="off" autocapitalize="off"></div>
+    <div class="cf"><label>Kalendarz biegania</label><input type="text" id="crun" placeholder="calendar.zeromiekiszon_treningi_marcin" autocorrect="off" autocapitalize="off"></div>
     <div class="cf"><label>Telewizor (entity_id)</label><input type="text" id="ctv" placeholder="media_player.living_room_tv" autocorrect="off" autocapitalize="off"></div>
     <div class="cfg-row2">
       <div class="cf"><label>Łóżko 1 — encja</label><input type="text" id="cb1" placeholder="switch.bed_1" autocorrect="off" autocapitalize="off"></div>
@@ -1021,7 +1025,7 @@ body.legacy-safari nav{background:var(--glass2);}
               </div>
             </div>
             <div class="mid-split">
-            <div class="card runcard" id="runcard">
+            <div class="card runcard" id="runcard" onclick="openZero()">
               <div class="run-h"><span class="run-t">🏃 Bieganie dziś</span><span class="run-date" id="run-date">--</span></div>
               <div class="run-body" id="run-body"><div class="run-empty">Sprawdzam plan…</div></div>
             </div>
@@ -1484,7 +1488,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.13.31';
+var BUILD='11.13.32';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
@@ -1502,7 +1506,7 @@ var MU_SOURCE='';
 var MA_CFG_ENTRY='';
 var TV_EID='media_player.living_room_tv';
 var TRASH_ENT='calendar.trash';
-var RUN_ENT='calendar.bieganie';
+var RUN_ENT='calendar.zeromiekiszon_treningi_marcin';
 var BED1_EID='switch.bed_1';
 var BED2_EID='switch.bed_2';
 var BED1_LBL='Osoba 1';
@@ -1516,7 +1520,7 @@ var SENS_POD_H='sensor.timmerflotte_temp_hmd_sensor_wilgotnosc';
 var CLIMATE_CH='climate.diyless_thermostat_3_central_heating';
 var CLIMATE_DHW='climate.diyless_thermostat_3_domestic_hot_water';
 var CFG_KEYS=['ha_url','ha_token','ha_dim','ha_motion','ha_spotify','ha_spotify_src','ha_ma_url','ha_ma_token','ha_ma_eid','ha_ma_player','ha_trash','ha_run','ha_tv','ha_bed1','ha_bed2','ha_bed1_lbl','ha_bed2_lbl','theme','accent','bg_level'];
-var POLL_IDS=['sensor.volvo_xc60_distance_to_empty_tank','sensor.volvo_xc60_fuel_amount','lock.volvo_xc60_lock','device_tracker.volvo_xc60_location','sensor.volvo_xc60_odometer','sensor.volvo_xc60_time_to_service','binary_sensor.volvo_xc60_washer_fluid','binary_sensor.volvo_xc60_door_front_left','binary_sensor.volvo_xc60_door_front_right','binary_sensor.volvo_xc60_door_rear_left','binary_sensor.volvo_xc60_door_rear_right','binary_sensor.volvo_xc60_tailgate','binary_sensor.volvo_xc60_hood','binary_sensor.volvo_xc60_window_front_left','binary_sensor.volvo_xc60_window_front_right','binary_sensor.volvo_xc60_window_rear_left','binary_sensor.volvo_xc60_window_rear_right','binary_sensor.volvo_xc60_sunroof','binary_sensor.volvo_xc60_tank_lid','binary_sensor.diyless_thermostat_3_ch_state','binary_sensor.diyless_thermostat_3_dhw_state','binary_sensor.diyless_thermostat_3_fault','binary_sensor.diyless_thermostat_3_flame_state','binary_sensor.diyless_thermostat_3_opentherm_connection_state','binary_sensor.lodowka_freezer_door','binary_sensor.lodowka_fridge_door','button.k1c_creality_pause_print','button.k1c_creality_resume_print','button.k1c_creality_stop_print','calendar.bieganie','camera.front','camera.tyl','climate.diyless_thermostat_3_central_heating','climate.diyless_thermostat_3_domestic_hot_water','light.lazienka_gora_swiatlo_swiatlo','light.lazienka_gora_swiatlo_swiatlo_2','light.lazienka_gora_swiatlo_swiatlo_3','light.led_kuchnia','light.led_kuchnia_i','light.led_salon_okno','light.led_tv_2','light.paula_swiatlo_2','light.swiatlo_garderoba_swiatlo','light.swiatlo_garderoba_swiatlo_2','light.swiatlo_garderoba_swiatlo_3','light.swiatlo_kuchnia_swiatlo_2','light.swiatlo_kuchnia_swiatlo_3','light.swiatlo_lazienka_swiatlo','light.swiatlo_lazienka_swiatlo_2','light.swiatlo_lazienka_swiatlo_3','light.swiatlo_salon_swiatlo','light.swiatlo_salon_swiatlo_2','light.swiatlo_salon_swiatlo_3','light.swiatlo_sypialnia_swiatlo','light.wiatrolap_gorne_swiatlo','light.wiatrolap_gorne_swiatlo_2','sensor.diyless_thermostat_3_ch_return_temperature','sensor.diyless_thermostat_3_ch_setpoint','sensor.diyless_thermostat_3_ch_temperature','sensor.diyless_thermostat_3_ch_water_pressure','sensor.diyless_thermostat_3_dhw_temperature','sensor.diyless_thermostat_3_exhaust_temperature','sensor.diyless_thermostat_3_fault_code','sensor.diyless_thermostat_3_flame_level','sensor.diyless_thermostat_3_outdoor_temperature','sensor.k1c_creality_bed_temperature','sensor.k1c_creality_current_object','sensor.k1c_creality_nozzle_temperature','sensor.k1c_creality_position_x','sensor.k1c_creality_position_y','sensor.k1c_creality_print_job_time','sensor.k1c_creality_print_progress','sensor.k1c_creality_print_status','sensor.k1c_creality_print_time_left','sensor.k1c_creality_total_layers','sensor.k1c_creality_working_layer','sensor.lodowka_freezer_temperature','sensor.lodowka_fridge_temperature','sensor.lodowka_moc','sensor.parcel_locker_wol02bapp_cisnienie','sensor.parcel_locker_wol02bapp_norma_pm_10','sensor.parcel_locker_wol02bapp_norma_pm_2_5','sensor.parcel_locker_wol02bapp_pm_10','sensor.parcel_locker_wol02bapp_pm_2_5','sensor.parcel_locker_wol02bapp_polish_air_quality_index','sensor.parcel_locker_wol02bapp_temperatura','sensor.parcel_locker_wol02bapp_wilgotnosc','sensor.pralka_current_status','sensor.swiatlo_kuchnia_temperatura_urzadzenia','sensor.szuszarka_current_status','sensor.temperatura_garderoba_temperatura','sensor.temperatura_garderoba_wilgotnosc','sensor.termometr_lazienka_bateria','sensor.termometr_lazienka_temperatura','sensor.termometr_lazienka_wilgotnosc','sensor.termometr_ogrod_cisnienie','sensor.termometr_ogrod_temperatura','sensor.termometr_ogrod_wilgotnosc','sensor.salon_termometr_salon_cisnienie','sensor.salon_termometr_salon_temperatura','sensor.salon_termometr_salon_wilgotnosc','sensor.termometr_sypialnia_cisnienie','sensor.termometr_sypialnia_temperatura','sensor.termometr_sypialnia_wilgotnosc','sensor.timmerflotte_temp_hmd_sensor_temperatura','sensor.sypialnia_paula_paula_temperatura_temperatura','sensor.timmerflotte_temp_hmd_sensor_wilgotnosc','sensor.sypialnia_paula_paula_temperatura_wilgotnosc','sensor.zamel_mew_01_energia_pobrana','sensor.zamel_mew_01_moc_l1','sensor.zamel_mew_01_moc_l2','sensor.zamel_mew_01_moc_l3','sensor.zamel_mew_01_napiecie_l1','sensor.zamel_mew_01_napiecie_l2','sensor.zamel_mew_01_napiecie_l3','sun.sun','switch.furtka','switch.smart_switch_b78c','weather.forecast_dom'];
+var POLL_IDS=['sensor.volvo_xc60_distance_to_empty_tank','sensor.volvo_xc60_fuel_amount','lock.volvo_xc60_lock','device_tracker.volvo_xc60_location','sensor.volvo_xc60_odometer','sensor.volvo_xc60_time_to_service','binary_sensor.volvo_xc60_washer_fluid','binary_sensor.volvo_xc60_door_front_left','binary_sensor.volvo_xc60_door_front_right','binary_sensor.volvo_xc60_door_rear_left','binary_sensor.volvo_xc60_door_rear_right','binary_sensor.volvo_xc60_tailgate','binary_sensor.volvo_xc60_hood','binary_sensor.volvo_xc60_window_front_left','binary_sensor.volvo_xc60_window_front_right','binary_sensor.volvo_xc60_window_rear_left','binary_sensor.volvo_xc60_window_rear_right','binary_sensor.volvo_xc60_sunroof','binary_sensor.volvo_xc60_tank_lid','binary_sensor.diyless_thermostat_3_ch_state','binary_sensor.diyless_thermostat_3_dhw_state','binary_sensor.diyless_thermostat_3_fault','binary_sensor.diyless_thermostat_3_flame_state','binary_sensor.diyless_thermostat_3_opentherm_connection_state','binary_sensor.lodowka_freezer_door','binary_sensor.lodowka_fridge_door','button.k1c_creality_pause_print','button.k1c_creality_resume_print','button.k1c_creality_stop_print','calendar.zeromiekiszon_treningi_marcin','camera.front','camera.tyl','climate.diyless_thermostat_3_central_heating','climate.diyless_thermostat_3_domestic_hot_water','light.lazienka_gora_swiatlo_swiatlo','light.lazienka_gora_swiatlo_swiatlo_2','light.lazienka_gora_swiatlo_swiatlo_3','light.led_kuchnia','light.led_kuchnia_i','light.led_salon_okno','light.led_tv_2','light.paula_swiatlo_2','light.swiatlo_garderoba_swiatlo','light.swiatlo_garderoba_swiatlo_2','light.swiatlo_garderoba_swiatlo_3','light.swiatlo_kuchnia_swiatlo_2','light.swiatlo_kuchnia_swiatlo_3','light.swiatlo_lazienka_swiatlo','light.swiatlo_lazienka_swiatlo_2','light.swiatlo_lazienka_swiatlo_3','light.swiatlo_salon_swiatlo','light.swiatlo_salon_swiatlo_2','light.swiatlo_salon_swiatlo_3','light.swiatlo_sypialnia_swiatlo','light.wiatrolap_gorne_swiatlo','light.wiatrolap_gorne_swiatlo_2','sensor.diyless_thermostat_3_ch_return_temperature','sensor.diyless_thermostat_3_ch_setpoint','sensor.diyless_thermostat_3_ch_temperature','sensor.diyless_thermostat_3_ch_water_pressure','sensor.diyless_thermostat_3_dhw_temperature','sensor.diyless_thermostat_3_exhaust_temperature','sensor.diyless_thermostat_3_fault_code','sensor.diyless_thermostat_3_flame_level','sensor.diyless_thermostat_3_outdoor_temperature','sensor.k1c_creality_bed_temperature','sensor.k1c_creality_current_object','sensor.k1c_creality_nozzle_temperature','sensor.k1c_creality_position_x','sensor.k1c_creality_position_y','sensor.k1c_creality_print_job_time','sensor.k1c_creality_print_progress','sensor.k1c_creality_print_status','sensor.k1c_creality_print_time_left','sensor.k1c_creality_total_layers','sensor.k1c_creality_working_layer','sensor.lodowka_freezer_temperature','sensor.lodowka_fridge_temperature','sensor.lodowka_moc','sensor.parcel_locker_wol02bapp_cisnienie','sensor.parcel_locker_wol02bapp_norma_pm_10','sensor.parcel_locker_wol02bapp_norma_pm_2_5','sensor.parcel_locker_wol02bapp_pm_10','sensor.parcel_locker_wol02bapp_pm_2_5','sensor.parcel_locker_wol02bapp_polish_air_quality_index','sensor.parcel_locker_wol02bapp_temperatura','sensor.parcel_locker_wol02bapp_wilgotnosc','sensor.pralka_current_status','sensor.swiatlo_kuchnia_temperatura_urzadzenia','sensor.szuszarka_current_status','sensor.temperatura_garderoba_temperatura','sensor.temperatura_garderoba_wilgotnosc','sensor.termometr_lazienka_bateria','sensor.termometr_lazienka_temperatura','sensor.termometr_lazienka_wilgotnosc','sensor.termometr_ogrod_cisnienie','sensor.termometr_ogrod_temperatura','sensor.termometr_ogrod_wilgotnosc','sensor.salon_termometr_salon_cisnienie','sensor.salon_termometr_salon_temperatura','sensor.salon_termometr_salon_wilgotnosc','sensor.termometr_sypialnia_cisnienie','sensor.termometr_sypialnia_temperatura','sensor.termometr_sypialnia_wilgotnosc','sensor.timmerflotte_temp_hmd_sensor_temperatura','sensor.sypialnia_paula_paula_temperatura_temperatura','sensor.timmerflotte_temp_hmd_sensor_wilgotnosc','sensor.sypialnia_paula_paula_temperatura_wilgotnosc','sensor.zamel_mew_01_energia_pobrana','sensor.zamel_mew_01_moc_l1','sensor.zamel_mew_01_moc_l2','sensor.zamel_mew_01_moc_l3','sensor.zamel_mew_01_napiecie_l1','sensor.zamel_mew_01_napiecie_l2','sensor.zamel_mew_01_napiecie_l3','sun.sun','switch.furtka','switch.smart_switch_b78c','weather.forecast_dom'];
 
 function rebuildPollFilter(){
   var map={}, list=POLL_IDS.slice(0), extras=[], i, id, dyn, k, out=[];
@@ -1594,7 +1598,7 @@ function loadEntConfig(){
   var map=sGet('ha_ma_player'); if(map) MA_PLAYER=map;
   var tv=sGet('ha_tv'); if(tv) TV_EID=tv;
   var tr=sGet('ha_trash'); if(tr) TRASH_ENT=tr;
-  var rn=sGet('ha_run'); if(rn) RUN_ENT=rn;
+  var rn=sGet('ha_run'); if(rn&&rn!=='calendar.bieganie') RUN_ENT=rn;
   var b1=sGet('ha_bed1'); if(b1) BED1_EID=b1;
   var b2=sGet('ha_bed2'); if(b2) BED2_EID=b2;
   var b1l=sGet('ha_bed1_lbl'); if(b1l) BED1_LBL=b1l;
@@ -1986,16 +1990,19 @@ function updAqBars(v){
   }
   loadAqHistory();
 }
-var CAL_ENT='calendar.bieganie';
+var CAL_ENT='calendar.zeromiekiszon_treningi_marcin';
 var RUNLAST=0;
 var TRASHLAST=0;
 function pad2(n){return (n<10?'0':'')+n;}
 function runCalEntity(){
-  var r=sGet('ha_run'); if(r) return r;
+  var r=sGet('ha_run'); if(r&&r!=='calendar.bieganie') return r;
   return RUN_ENT||CAL_ENT;
 }
 function discoverRunCalendar(){
   var id,e,a,nm;
+  for(id in E){
+    if(id.indexOf('calendar.zeromiekiszon')===0&&E[id]&&E[id].state!=='unavailable') return id;
+  }
   for(id in E){
     if(id.indexOf('calendar.')!==0) continue;
     e=E[id]; if(!e||e.state==='unavailable') continue;
@@ -2022,7 +2029,7 @@ function loadRunToday(retry){
   if(typeof HA==='undefined'||!HA||!TOK)return;
   var now=Date.now(); if(!retry&&now-RUNLAST<900000&&RUNLAST)return;
   var ent=runCalEntity();
-  if(ent==='calendar.bieganie'&&!sGet('ha_run')){
+  if(ent==='calendar.bieganie'){
     var auto=discoverRunCalendar();
     if(auto) ent=auto;
   }
@@ -2033,7 +2040,8 @@ function loadRunToday(retry){
   }
   var d=new Date();
   var s=new Date(d.getFullYear(),d.getMonth(),d.getDate(),0,0,0);
-  var e=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1,0,0,0);
+  var e=new Date(d.getFullYear(),d.getMonth(),d.getDate()+8,0,0,0);
+  var eToday=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1,0,0,0).getTime();
   var dn=document.getElementById('run-date'); if(dn){var dni=['Niedz.','Pon.','Wt.','Śr.','Czw.','Pt.','Sob.'];dn.textContent=dni[d.getDay()]+' '+pad2(d.getDate())+'.'+pad2(d.getMonth()+1);}
   var body=document.getElementById('run-body'); if(body&&!RUNLAST) body.innerHTML='<div class="run-empty">Sprawdzam plan…</div>';
   haGet('calendars/'+encodeURIComponent(ent)+'?start='+encodeURIComponent(s.toISOString())+'&end='+encodeURIComponent(e.toISOString()),function(err,data){
@@ -2047,15 +2055,35 @@ function loadRunToday(retry){
       return;
     }
     RUNLAST=Date.now();
-    if(!data||!data.length){ body.innerHTML='<div class="run-empty">Dziś brak treningu 💤</div>'; return; }
-    var h='',i,ev,sum,tm;
-    for(i=0;i<data.length&&i<3;i++){
-      ev=data[i]; sum=ev.summary||ev.message||'Trening';
+    var today=[],next=null,i,ev,t;
+    for(i=0;data&&i<data.length;i++){
+      ev=data[i]; t=runEvTime(ev);
+      if(t===null) continue;
+      if(t<eToday) today.push(ev);
+      else if(next===null||t<runEvTime(next)) next=ev;
+    }
+    var h='',sum,tm;
+    if(!today.length) h='<div class="run-empty">Dziś wolne 💤</div>';
+    for(i=0;i<today.length&&i<3;i++){
+      ev=today[i]; sum=escHtml(ev.summary||ev.message||'Trening');
       tm=runTimeLabel(ev);
       h+='<div class="run-ev">'+(tm?'<span class="run-time">'+tm+'</span>':'')+'<span class="run-sum">'+sum+'</span></div>';
     }
+    if(next){
+      var nd=new Date(runEvTime(next)),dni=['niedz.','pon.','wt.','śr.','czw.','pt.','sob.'];
+      var dd=Math.round((new Date(nd.getFullYear(),nd.getMonth(),nd.getDate()).getTime()-s.getTime())/86400000);
+      h+='<div class="run-next">'+(dd===1?'Jutro':dni[nd.getDay()]+' '+pad2(nd.getDate())+'.'+pad2(nd.getMonth()+1))+' · '+escHtml(next.summary||next.message||'Trening')+'</div>';
+    }
+    h+='<div class="run-src">ZeroMiekiszon · HRV, dieta, tydzień →</div>';
     body.innerHTML=h;
   });
+}
+function escHtml(v){return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function runEvTime(ev){
+  var st=evStart(ev); if(!st) return null;
+  st=String(st); if(st.length===10) st+='T00:00:00';
+  var t=new Date(st.replace(' ','T')).getTime();
+  return isNaN(t)?null:t;
 }
 function evStart(ev){
   var s=ev.start;

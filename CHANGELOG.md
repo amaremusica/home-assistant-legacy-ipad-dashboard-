@@ -2,6 +2,11 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.13.32] — 2026-10-18
+
+### Zmienione
+- **„Bieganie dziś" z ZeroMiekiszon** — karta czyta plan z kalendarza `calendar.zeromiekiszon_treningi_marcin` zamiast pustego `calendar.bieganie` (stary wpis `calendar.bieganie` zapisany w ☰ jest ignorowany). Gdy dziś wolne, karta pokazuje najbliższy trening z 7 dni. Tapnięcie karty otwiera ZeroMiekiszon (HRV, dieta, tydzień) z powrotem do panelu.
+
 ## [11.13.31] — 2026-10-18
 
 ### Dodane
