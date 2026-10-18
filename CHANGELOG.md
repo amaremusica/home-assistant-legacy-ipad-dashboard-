@@ -2,6 +2,11 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.13.37] — 2026-10-18
+
+### Naprawione
+- **Brama znów działa** — przekaźnik CozyLife wrócił do HA (integracja CozyLife Local, ta sama encja `switch.smart_switch_b78c`). Karta pokazuje „Naciśnij" / „Impuls…" zamiast „Zamknięta" / „Otwarta": przekaźnik jest impulsowy i HA nie zna położenia bramy.
+
 ## [11.13.36] — 2026-10-18
 
 ### Dodane
