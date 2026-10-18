@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.13.34 -->
+<!-- build: v11.13.35 -->
 <title>Dom</title>
 <style>
 :root {
@@ -460,6 +460,10 @@ body.light .wst b{color:#0b1220;}
 .rgrid .rcell:nth-child(4) .rtval,.rgrid .rcell:nth-child(5) .rtval,.rgrid .rcell:nth-child(6) .rtval,.rgrid .rcell:nth-child(7) .rtval{font-size:18px;}
 .rgrid .rcell:nth-child(4) .rthum,.rgrid .rcell:nth-child(5) .rthum,.rgrid .rcell:nth-child(6) .rthum,.rgrid .rcell:nth-child(7) .rthum,.rgrid .rcell:nth-child(8) .rthum{font-size:10px;}
 .rcell .rthum{font-size:10px;color:var(--dim);margin-top:2px;text-align:center;}
+.rgrid .rcell-fridge{-webkit-flex:0 1 calc(66.66% - 10px);flex:0 1 calc(66.66% - 10px);}
+.rfr{display:-webkit-flex;display:flex;}
+.rfr-i{-webkit-flex:1;flex:1;min-width:0;}
+.rfr-i+.rfr-i{border-left:1px solid var(--glass-b);}
 
 /* Wiersz kontrolek (Schody / Brama) */
 .ctlrow{display:-webkit-flex;display:flex;-webkit-flex:0 0 auto;flex:0 0 auto;min-height:72px;}
@@ -473,18 +477,6 @@ body.light .wst b{color:#0b1220;}
 .d3-right .scstate{font-size:13px;}
 
 /* Karta kuchni — przełączniki + lodówka (kompakt, bez przewijania) */
-.kcard{-webkit-flex:1 1 auto;flex:1 1 auto;padding:7px 10px;min-height:0;}
-.kc-h{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;margin-bottom:7px;}
-.kc-t{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:700;}
-.kc-fridge{font-size:13px;color:var(--text);font-weight:600;}
-.kc-fridge b{color:var(--bright);font-weight:700;font-size:16px;}
-.ktemps{display:-webkit-flex;display:flex;}
-.ktemps>*+*{margin-left:8px;}
-.ktemp{-webkit-flex:1;flex:1;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;padding:6px 9px;border-radius:11px;border:1px solid var(--glass-b);background:var(--glass2);}
-.ktemp-i{font-size:15px;margin-right:7px;}
-.ktemp-m{min-width:0;}
-.ktemp-l{display:block;font-size:8px;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);font-weight:700;}
-.ktemp-v{font-size:14px;font-weight:400;color:var(--bright);letter-spacing:-0.02em;line-height:1.1;}
 
 /* Music Assistant search panel */
 .sp-ma{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;height:100%;overflow:hidden;}
@@ -955,6 +947,13 @@ body.legacy-safari nav{background:var(--glass2);}
                 <div class="rthum"><span id="rh-po">--</span>%</div>
                 <div class="rk1c" id="rk1c-mini" style="display:none;font-size:9px;color:var(--accent);margin-top:1px;text-align:center;line-height:1.2;"></div>
               </div>
+              <div class="rcell glass rcell-fridge" title="Lodówka">
+                <div class="rcell-h"><span class="rcell-name">Lodówka</span></div>
+                <div class="rfr">
+                  <div class="rfr-i"><div class="ricon">🧊</div><div class="rtval"><span id="ft2">--</span>°</div><div class="rthum">lodówka</div></div>
+                  <div class="rfr-i"><div class="ricon">❄️</div><div class="rtval"><span id="fzt">--</span>°</div><div class="rthum">zamrażarka</div></div>
+                </div>
+              </div>
             </div>
             <div class="card ecard mid-grow">
               <div class="ecard-h">
@@ -971,15 +970,6 @@ body.legacy-safari nav{background:var(--glass2);}
             <div class="card runcard" id="runcard" onclick="openZero()">
               <div class="run-h"><span class="run-t">🏃 Bieganie dziś</span><span class="run-date" id="run-date">--</span></div>
               <div class="run-body" id="run-body"><div class="run-empty">Sprawdzam plan…</div></div>
-            </div>
-            <div class="card kcard">
-              <div class="kc-h">
-                <span class="kc-t">❄️ Lodówka</span>
-              </div>
-              <div class="ktemps">
-                <div class="ktemp"><span class="ktemp-i">🧊</span><div class="ktemp-m"><span class="ktemp-l">Lodówka</span><span class="ktemp-v"><span id="ft2">--</span>°</span></div></div>
-                <div class="ktemp"><span class="ktemp-i">❄️</span><div class="ktemp-m"><span class="ktemp-l">Zamrażarka</span><span class="ktemp-v"><span id="fzt">--</span>°</span></div></div>
-              </div>
             </div>
             </div>
           </div>
@@ -1356,7 +1346,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.13.34';
+var BUILD='11.13.35';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;

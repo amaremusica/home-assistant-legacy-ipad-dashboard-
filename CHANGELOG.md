@@ -2,6 +2,12 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.13.35] — 2026-10-18
+
+### Zmienione
+- **Lodówka obok Poddasza** — karta lodówki przeniesiona do siatki pokoi jako szeroki kafelek (2 kolumny) w wolnym miejscu po usunięciu Ogrzewania: lodówka i zamrażarka obok siebie.
+- **„Bieganie dziś" (ZeroMiekiszon) na całą szerokość** pod poborem mocy.
+
 ## [11.13.34] — 2026-10-18
 
 ### Usunięte
