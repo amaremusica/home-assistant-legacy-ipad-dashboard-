@@ -2,6 +2,11 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.13.34] — 2026-10-18
+
+### Usunięte
+- **Ogrzewanie (piec DIYLESS)** — w domu nie ma już tego ogrzewania: usunięty kafelek „Ogrzewanie" (CO/CWU) z ekranu Dom, zakładka „Ogrzewanie" z menu, cały widok z pokrętłami, kod JS i style oraz encje `diyless_thermostat_3_*` z odpytywania HA. Zapamiętany widok „ogrzewanie" otwiera teraz Dom.
+
 ## [11.13.33] — 2026-10-18
 
 ### Naprawione

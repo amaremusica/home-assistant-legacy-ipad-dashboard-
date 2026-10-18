@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<!-- build: v11.13.33 -->
+<!-- build: v11.13.34 -->
 <title>Dom</title>
 <style>
 :root {
@@ -166,8 +166,8 @@ body.light .tb.a{box-shadow:0 2px 12px rgba(15,23,42,0.08);}
 .dash-b{-webkit-flex:0 0 auto;flex:0 0 auto;}
 .dash-row{display:-webkit-flex;display:flex;width:100%;}
 .dash-row>*+*{margin-left:14px;}
-#view-salon,#view-sypialnia,#view-paula,#view-poddasze,#view-kuchnia,#view-lazienki,#view-ogrod,#view-energia,#view-ogrzewanie,#view-kamery,#view-zero,#view-pogoda,#view-spotify{display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;position:absolute;top:0;left:0;right:0;bottom:0;padding:10px 12px;}
-#view-salon.active,#view-sypialnia.active,#view-paula.active,#view-poddasze.active,#view-kuchnia.active,#view-lazienki.active,#view-ogrod.active,#view-energia.active,#view-ogrzewanie.active,#view-kamery.active,#view-pogoda.active,#view-spotify.active{display:block;}
+#view-salon,#view-sypialnia,#view-paula,#view-poddasze,#view-kuchnia,#view-lazienki,#view-ogrod,#view-energia,#view-kamery,#view-zero,#view-pogoda,#view-spotify{display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;position:absolute;top:0;left:0;right:0;bottom:0;padding:10px 12px;}
+#view-salon.active,#view-sypialnia.active,#view-paula.active,#view-poddasze.active,#view-kuchnia.active,#view-lazienki.active,#view-ogrod.active,#view-energia.active.active,#view-kamery.active,#view-pogoda.active,#view-spotify.active{display:block;}
 /* Spotify — układ jak aplikacja, kolory z motywu panelu (--accent, --glass…) */
 #view-spotify{padding:0;background:transparent;overflow:hidden;}
 #view-spotify.active{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;}
@@ -459,17 +459,6 @@ body.light .wst b{color:#0b1220;}
 .rgrid .rcell:nth-child(4) .rbulb,.rgrid .rcell:nth-child(5) .rbulb,.rgrid .rcell:nth-child(6) .rbulb{width:22px;height:22px;font-size:11px;}
 .rgrid .rcell:nth-child(4) .rtval,.rgrid .rcell:nth-child(5) .rtval,.rgrid .rcell:nth-child(6) .rtval,.rgrid .rcell:nth-child(7) .rtval{font-size:18px;}
 .rgrid .rcell:nth-child(4) .rthum,.rgrid .rcell:nth-child(5) .rthum,.rgrid .rcell:nth-child(6) .rthum,.rgrid .rcell:nth-child(7) .rthum,.rgrid .rcell:nth-child(8) .rthum{font-size:10px;}
-.rcell-heat{cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.rcell-heat:active{opacity:0.9;}
-.rcell-heat.on{border-color:rgba(255,120,40,0.45);background:rgba(255,120,40,0.1);}
-.rcell-heat.on .rcell-name{color:#ff7828;}
-.rheat-dual{display:-webkit-flex;display:flex;margin-top:1px;}
-.rheat-dual>*{-webkit-flex:1;flex:1;text-align:center;min-width:0;}
-.rheat-dual>*+*{border-left:1px solid var(--glass-b);}
-.rheat-l{display:block;font-size:8px;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);font-weight:700;margin-bottom:2px;}
-.rheat-line{display:block;font-size:9px;color:var(--dim);line-height:1.25;}
-.rheat-line b{font-weight:600;color:var(--bright);font-size:11px;}
-.rcell-heat.on .rthum{color:#ff7828;}
 .rcell .rthum{font-size:10px;color:var(--dim);margin-top:2px;text-align:center;}
 
 /* Wiersz kontrolek (Schody / Brama) */
@@ -712,42 +701,6 @@ body.light .volbw{background:rgba(15,23,42,0.08);}
 .aq-m{background:rgba(180,83,9,0.15);color:#b45309;}
 .aq-b{background:rgba(185,28,28,0.14);color:#b91c1c;}
 
-/* Ogrzewanie — piec DIYLESS */
-.heat-status{display:-webkit-flex;display:flex;margin:-2px -2px 8px;}
-.heat-status>*{-webkit-flex:1;flex:1;margin:2px;min-width:0;}
-.heat-pill{padding:8px 4px;border-radius:12px;text-align:center;background:var(--glass2);border:1px solid var(--glass-b);}
-.heat-pill.on{background:rgba(255,120,40,0.16);border-color:rgba(255,120,40,0.42);}
-.heat-pill.warn.on{background:rgba(248,113,113,0.16);border-color:rgba(248,113,113,0.42);}
-.heat-pill.blue.on{background:rgba(56,189,248,0.16);border-color:rgba(56,189,248,0.42);}
-.heat-pill-t{font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;}
-.heat-pill-v{font-size:11px;font-weight:700;color:var(--bright);margin-top:2px;}
-.thermo-row{display:-webkit-flex;display:flex;margin:0 -5px 10px;}
-.thermo-row>*{-webkit-flex:1;flex:1;margin:0 5px;min-width:0;}
-.thermo{padding:10px 6px 12px;border-radius:var(--r);text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;border:1px solid var(--glass-b);background:var(--glass);}
-.thermo.on{border-color:rgba(255,120,40,0.48);background:rgba(255,120,40,0.09);}
-.thermo.blue.on{border-color:rgba(56,189,248,0.48);background:rgba(56,189,248,0.09);}
-.thermo.off{opacity:0.72;}
-.thermo-lbl{font-size:11px;font-weight:700;color:var(--bright);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.thermo-dial-wrap{position:relative;width:100%;max-width:172px;margin:0 auto;}
-.thermo-svg{width:100%;height:auto;display:block;}
-.thermo-track{fill:none;stroke:rgba(255,255,255,0.14);stroke-width:11;stroke-linecap:round;}
-body.light .thermo-track{stroke:rgba(0,0,0,0.1);}
-.thermo-fill{fill:none;stroke-width:11;stroke-linecap:round;}
-.thermo-fill.orange{stroke:#ff7828;}
-.thermo-fill.blue{stroke:#38bdf8;}
-.thermo-dot.orange{fill:#ff7828;}
-.thermo-dot.blue{fill:#38bdf8;}
-.thermo-center{position:absolute;top:50%;left:50%;width:78%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);text-align:center;pointer-events:none;}
-.thermo-cur{font-size:34px;font-weight:300;color:var(--bright);line-height:1;letter-spacing:-0.03em;}
-.thermo-unit{font-size:10px;color:var(--dim);margin-top:1px;font-weight:600;}
-.thermo-set{font-size:13px;font-weight:600;color:var(--dim);margin-top:5px;}
-.thermo-st{font-size:9px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;margin-top:3px;}
-.thermo.on .thermo-st{color:#ff7828;}
-.thermo.blue.on .thermo-st{color:#38bdf8;}
-.thermo-btns{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;margin-top:8px;}
-.thermo-btns>*+*{margin-left:22px;}
-.thermo-btn{width:42px;height:42px;border-radius:50%;border:1px solid var(--glass-b);background:var(--glass2);font-size:22px;line-height:1;cursor:pointer;color:var(--bright);-webkit-tap-highlight-color:transparent;}
-.thermo-btn:active{-webkit-transform:scale(0.92);transform:scale(0.92);}
 
 #dim{position:fixed;top:0;left:0;right:0;bottom:0;z-index:500;background:#000;opacity:0;pointer-events:none;-webkit-transition:opacity 1.4s ease;transition:opacity 1.4s ease;}
 #dim.on{opacity:1;pointer-events:auto;}
@@ -905,7 +858,6 @@ body.legacy-safari nav{background:var(--glass2);}
     <button class="tb" onclick="sv('lazienki',this)"><span class="tbi">🛁</span>Łazienki</button>
     <button class="tb" onclick="sv('ogrod',this)"><span class="tbi">🌳</span>Ogród</button>
     <button class="tb" onclick="sv('energia',this)"><span class="tbi">⚡</span>Energia</button>
-    <button class="tb" onclick="sv('ogrzewanie',this)"><span class="tbi">🔥</span>Ogrzewanie</button>
     <button class="tb" onclick="sv('kamery',this)"><span class="tbi">📷</span>Kamery</button>
     <button class="tb" onclick="sv('spotify',this)"><span class="tbi">♪</span>Muzyka</button>
     <button class="tb" onclick="openZero(this)"><span class="tbi">🌐</span>Zero</button>
@@ -1002,15 +954,6 @@ body.legacy-safari nav{background:var(--glass2);}
                 <div class="rtval"><span id="rt-po">--</span>°</div>
                 <div class="rthum"><span id="rh-po">--</span>%</div>
                 <div class="rk1c" id="rk1c-mini" style="display:none;font-size:9px;color:var(--accent);margin-top:1px;text-align:center;line-height:1.2;"></div>
-              </div>
-              <div class="rcell glass rcell-heat" id="heat-dash" onclick="goTab('ogrzewanie')" title="Sterowanie ogrzewaniem">
-                <div class="rcell-h"><span class="rcell-name">Ogrzewanie</span></div>
-                <div class="ricon">🔥</div>
-                <div class="rheat-dual">
-                  <div class="rheat-half"><span class="rheat-l">CO</span><span class="rheat-line">odcz. <b id="hd-ch">--</b>°</span><span class="rheat-line">zad. <b id="hd-ch-set">--</b>°</span></div>
-                  <div class="rheat-half"><span class="rheat-l">CWU</span><span class="rheat-line">odcz. <b id="hd-dhw">--</b>°</span><span class="rheat-line">zad. <b id="hd-dhw-set">--</b>°</span></div>
-                </div>
-                <div class="rthum" id="hd-st">--</div>
               </div>
             </div>
             <div class="card ecard mid-grow">
@@ -1347,81 +1290,6 @@ body.legacy-safari nav{background:var(--glass2);}
       <div class="card"><div class="slabel">Energia całkowita</div><div class="sval" style="font-size:28px;"><span id="e-kwh">--</span><span class="sunit"> kWh</span></div></div>
     </div>
 
-    <!-- OGRZEWANIE — piec gazowy DIYLESS -->
-    <div id="view-ogrzewanie" class="view">
-      <div class="st">Status kotła</div>
-      <div class="heat-status">
-        <div class="heat-pill" id="hp-flame"><div class="heat-pill-t">Płomień</div><div class="heat-pill-v" id="hpv-flame">--</div></div>
-        <div class="heat-pill" id="hp-ch"><div class="heat-pill-t">CO</div><div class="heat-pill-v" id="hpv-ch">--</div></div>
-        <div class="heat-pill blue" id="hp-dhw"><div class="heat-pill-t">CWU</div><div class="heat-pill-v" id="hpv-dhw">--</div></div>
-        <div class="heat-pill warn" id="hp-fault"><div class="heat-pill-t">Błąd</div><div class="heat-pill-v" id="hpv-fault">--</div></div>
-      </div>
-
-      <div class="st">Sterowanie</div>
-      <div class="thermo-row">
-        <div class="thermo glass" id="hc-ch" onclick="clToggle(CLIMATE_CH)">
-          <div class="thermo-lbl">🔥 Centralne CO</div>
-          <div class="thermo-dial-wrap">
-            <svg class="thermo-svg" viewBox="0 0 200 200" aria-hidden="true">
-              <path class="thermo-track" d="M 156.57 156.57 A 80 80 0 1 1 43.43 43.43"></path>
-              <path class="thermo-fill orange" id="tr-ch-fill" d=""></path>
-              <circle class="thermo-dot orange" id="tr-ch-dot" r="6" cx="100" cy="100"></circle>
-            </svg>
-            <div class="thermo-center">
-              <div class="thermo-cur" id="hr-ch-t">--</div>
-              <div class="thermo-unit">odczyt °C</div>
-              <div class="thermo-set">zadana <span id="ht-ch">--</span>°</div>
-              <div class="thermo-st" id="hs-ch">--</div>
-            </div>
-          </div>
-          <div class="thermo-btns" onclick="if(event.stopPropagation)event.stopPropagation()">
-            <button class="thermo-btn" onclick="clStep(CLIMATE_CH,-0.5,event)">−</button>
-            <button class="thermo-btn" onclick="clStep(CLIMATE_CH,0.5,event)">+</button>
-          </div>
-        </div>
-        <div class="thermo glass blue" id="hc-dhw" onclick="clToggle(CLIMATE_DHW)">
-          <div class="thermo-lbl">💧 Ciepła woda</div>
-          <div class="thermo-dial-wrap">
-            <svg class="thermo-svg" viewBox="0 0 200 200" aria-hidden="true">
-              <path class="thermo-track" d="M 156.57 156.57 A 80 80 0 1 1 43.43 43.43"></path>
-              <path class="thermo-fill blue" id="tr-dhw-fill" d=""></path>
-              <circle class="thermo-dot blue" id="tr-dhw-dot" r="6" cx="100" cy="100"></circle>
-            </svg>
-            <div class="thermo-center">
-              <div class="thermo-cur" id="hr-dhw-t">--</div>
-              <div class="thermo-unit">odczyt °C</div>
-              <div class="thermo-set">zadana <span id="ht-dhw">--</span>°</div>
-              <div class="thermo-st" id="hs-dhw">--</div>
-            </div>
-          </div>
-          <div class="thermo-btns" onclick="if(event.stopPropagation)event.stopPropagation()">
-            <button class="thermo-btn" onclick="clStep(CLIMATE_DHW,-0.5,event)">−</button>
-            <button class="thermo-btn" onclick="clStep(CLIMATE_DHW,0.5,event)">+</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="st">Parametry</div>
-      <div class="g3">
-        <div class="card"><div class="slabel">Na zewnątrz</div><div class="sval"><span id="hg-out">--</span><span class="sunit">°</span></div></div>
-        <div class="card"><div class="slabel">Powrót CO</div><div class="sval"><span id="hg-ret">--</span><span class="sunit">°</span></div></div>
-        <div class="card"><div class="slabel">Ciśnienie</div><div class="sval" style="font-size:18px;"><span id="hg-pres">--</span><span class="sunit"> bar</span></div></div>
-      </div>
-      <div class="card">
-        <div class="sr"><div class="srl">Moc płomienia</div><div class="srv"><span id="hg-flame">--</span>%</div></div>
-        <div class="sr"><div class="srl">Spaliny</div><div class="srv"><span id="hg-exh">--</span>°</div></div>
-        <div class="sr"><div class="srl">Kod błędu</div><div class="srv" id="hg-fault">--</div></div>
-        <div class="sr"><div class="srl">OpenTherm</div><div class="srv" id="hg-ot">--</div></div>
-      </div>
-
-      <div class="st">Ekran termostatu</div>
-      <div class="g3">
-        <button class="sbtn" style="margin-bottom:0;" onclick="haPost('button','press',{entity_id:'button.diyless_thermostat_3_turn_screen_on'})">💡 Ekran ON</button>
-        <button class="sbtn" style="margin-bottom:0;" onclick="haPost('button','press',{entity_id:'button.diyless_thermostat_3_dim_screen'})">🔅 Przyciemnij</button>
-        <button class="sbtn" style="margin-bottom:0;" onclick="haPost('button','press',{entity_id:'button.diyless_thermostat_3_turn_screen_off'})">🌙 Ekran OFF</button>
-      </div>
-    </div>
-
     <!-- KAMERY -->
     <div id="view-kamery" class="view">
       <div class="st">Kamery na żywo</div>
@@ -1488,7 +1356,7 @@ function sGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e
 function sSet(k,v){try{localStorage.setItem(k,v);}catch(e){}_st[k]=v;}
 
 // CONFIG
-var BUILD='11.13.33';
+var BUILD='11.13.34';
 var HA='',TOK='',DIM=45000;
 var updRemote='';
 var fetchBusy=false;
@@ -1518,10 +1386,8 @@ var SENS_PAULA_H='sensor.sypialnia_paula_paula_temperatura_wilgotnosc';
 var LIGHT_PAULA='light.paula_swiatlo_2';
 var SENS_POD_T='sensor.timmerflotte_temp_hmd_sensor_temperatura';
 var SENS_POD_H='sensor.timmerflotte_temp_hmd_sensor_wilgotnosc';
-var CLIMATE_CH='climate.diyless_thermostat_3_central_heating';
-var CLIMATE_DHW='climate.diyless_thermostat_3_domestic_hot_water';
 var CFG_KEYS=['ha_url','ha_token','ha_dim','ha_motion','ha_spotify','ha_spotify_src','ha_ma_url','ha_ma_token','ha_ma_eid','ha_ma_player','ha_trash','ha_run','ha_tv','ha_bed1','ha_bed2','ha_bed1_lbl','ha_bed2_lbl','theme','accent','bg_level'];
-var POLL_IDS=['sensor.volvo_xc60_distance_to_empty_tank','sensor.volvo_xc60_fuel_amount','lock.volvo_xc60_lock','device_tracker.volvo_xc60_location','sensor.volvo_xc60_odometer','sensor.volvo_xc60_time_to_service','binary_sensor.volvo_xc60_washer_fluid','binary_sensor.volvo_xc60_door_front_left','binary_sensor.volvo_xc60_door_front_right','binary_sensor.volvo_xc60_door_rear_left','binary_sensor.volvo_xc60_door_rear_right','binary_sensor.volvo_xc60_tailgate','binary_sensor.volvo_xc60_hood','binary_sensor.volvo_xc60_window_front_left','binary_sensor.volvo_xc60_window_front_right','binary_sensor.volvo_xc60_window_rear_left','binary_sensor.volvo_xc60_window_rear_right','binary_sensor.volvo_xc60_sunroof','binary_sensor.volvo_xc60_tank_lid','binary_sensor.diyless_thermostat_3_ch_state','binary_sensor.diyless_thermostat_3_dhw_state','binary_sensor.diyless_thermostat_3_fault','binary_sensor.diyless_thermostat_3_flame_state','binary_sensor.diyless_thermostat_3_opentherm_connection_state','binary_sensor.lodowka_freezer_door','binary_sensor.lodowka_fridge_door','button.k1c_creality_pause_print','button.k1c_creality_resume_print','button.k1c_creality_stop_print','calendar.zeromiekiszon_treningi_marcin','camera.front','camera.tyl','climate.diyless_thermostat_3_central_heating','climate.diyless_thermostat_3_domestic_hot_water','light.lazienka_gora_swiatlo_swiatlo','light.lazienka_gora_swiatlo_swiatlo_2','light.lazienka_gora_swiatlo_swiatlo_3','light.led_kuchnia','light.led_kuchnia_i','light.led_salon_okno','light.led_tv_2','light.paula_swiatlo_2','light.swiatlo_garderoba_swiatlo','light.swiatlo_garderoba_swiatlo_2','light.swiatlo_garderoba_swiatlo_3','light.swiatlo_kuchnia_swiatlo_2','light.swiatlo_kuchnia_swiatlo_3','light.swiatlo_lazienka_swiatlo','light.swiatlo_lazienka_swiatlo_2','light.swiatlo_lazienka_swiatlo_3','light.swiatlo_salon_swiatlo','light.swiatlo_salon_swiatlo_2','light.swiatlo_salon_swiatlo_3','light.swiatlo_sypialnia_swiatlo','light.wiatrolap_gorne_swiatlo','light.wiatrolap_gorne_swiatlo_2','sensor.diyless_thermostat_3_ch_return_temperature','sensor.diyless_thermostat_3_ch_setpoint','sensor.diyless_thermostat_3_ch_temperature','sensor.diyless_thermostat_3_ch_water_pressure','sensor.diyless_thermostat_3_dhw_temperature','sensor.diyless_thermostat_3_exhaust_temperature','sensor.diyless_thermostat_3_fault_code','sensor.diyless_thermostat_3_flame_level','sensor.diyless_thermostat_3_outdoor_temperature','sensor.k1c_creality_bed_temperature','sensor.k1c_creality_current_object','sensor.k1c_creality_nozzle_temperature','sensor.k1c_creality_position_x','sensor.k1c_creality_position_y','sensor.k1c_creality_print_job_time','sensor.k1c_creality_print_progress','sensor.k1c_creality_print_status','sensor.k1c_creality_print_time_left','sensor.k1c_creality_total_layers','sensor.k1c_creality_working_layer','sensor.lodowka_freezer_temperature','sensor.lodowka_fridge_temperature','sensor.lodowka_moc','sensor.parcel_locker_wol02bapp_cisnienie','sensor.parcel_locker_wol02bapp_norma_pm_10','sensor.parcel_locker_wol02bapp_norma_pm_2_5','sensor.parcel_locker_wol02bapp_pm_10','sensor.parcel_locker_wol02bapp_pm_2_5','sensor.parcel_locker_wol02bapp_polish_air_quality_index','sensor.parcel_locker_wol02bapp_temperatura','sensor.parcel_locker_wol02bapp_wilgotnosc','sensor.pralka_current_status','sensor.swiatlo_kuchnia_temperatura_urzadzenia','sensor.szuszarka_current_status','sensor.temperatura_garderoba_temperatura','sensor.temperatura_garderoba_wilgotnosc','sensor.termometr_lazienka_bateria','sensor.termometr_lazienka_temperatura','sensor.termometr_lazienka_wilgotnosc','sensor.termometr_ogrod_cisnienie','sensor.termometr_ogrod_temperatura','sensor.termometr_ogrod_wilgotnosc','sensor.salon_termometr_salon_cisnienie','sensor.salon_termometr_salon_temperatura','sensor.salon_termometr_salon_wilgotnosc','sensor.termometr_sypialnia_cisnienie','sensor.termometr_sypialnia_temperatura','sensor.termometr_sypialnia_wilgotnosc','sensor.timmerflotte_temp_hmd_sensor_temperatura','sensor.sypialnia_paula_paula_temperatura_temperatura','sensor.timmerflotte_temp_hmd_sensor_wilgotnosc','sensor.sypialnia_paula_paula_temperatura_wilgotnosc','sensor.zamel_mew_01_energia_pobrana','sensor.zamel_mew_01_moc_l1','sensor.zamel_mew_01_moc_l2','sensor.zamel_mew_01_moc_l3','sensor.zamel_mew_01_napiecie_l1','sensor.zamel_mew_01_napiecie_l2','sensor.zamel_mew_01_napiecie_l3','sun.sun','switch.furtka','switch.smart_switch_b78c','weather.forecast_dom'];
+var POLL_IDS=['sensor.volvo_xc60_distance_to_empty_tank','sensor.volvo_xc60_fuel_amount','lock.volvo_xc60_lock','device_tracker.volvo_xc60_location','sensor.volvo_xc60_odometer','sensor.volvo_xc60_time_to_service','binary_sensor.volvo_xc60_washer_fluid','binary_sensor.volvo_xc60_door_front_left','binary_sensor.volvo_xc60_door_front_right','binary_sensor.volvo_xc60_door_rear_left','binary_sensor.volvo_xc60_door_rear_right','binary_sensor.volvo_xc60_tailgate','binary_sensor.volvo_xc60_hood','binary_sensor.volvo_xc60_window_front_left','binary_sensor.volvo_xc60_window_front_right','binary_sensor.volvo_xc60_window_rear_left','binary_sensor.volvo_xc60_window_rear_right','binary_sensor.volvo_xc60_sunroof','binary_sensor.volvo_xc60_tank_lid','binary_sensor.lodowka_freezer_door','binary_sensor.lodowka_fridge_door','button.k1c_creality_pause_print','button.k1c_creality_resume_print','button.k1c_creality_stop_print','calendar.zeromiekiszon_treningi_marcin','camera.front','camera.tyl','light.lazienka_gora_swiatlo_swiatlo','light.lazienka_gora_swiatlo_swiatlo_2','light.lazienka_gora_swiatlo_swiatlo_3','light.led_kuchnia','light.led_kuchnia_i','light.led_salon_okno','light.led_tv_2','light.paula_swiatlo_2','light.swiatlo_garderoba_swiatlo','light.swiatlo_garderoba_swiatlo_2','light.swiatlo_garderoba_swiatlo_3','light.swiatlo_kuchnia_swiatlo_2','light.swiatlo_kuchnia_swiatlo_3','light.swiatlo_lazienka_swiatlo','light.swiatlo_lazienka_swiatlo_2','light.swiatlo_lazienka_swiatlo_3','light.swiatlo_salon_swiatlo','light.swiatlo_salon_swiatlo_2','light.swiatlo_salon_swiatlo_3','light.swiatlo_sypialnia_swiatlo','light.wiatrolap_gorne_swiatlo','light.wiatrolap_gorne_swiatlo_2','sensor.k1c_creality_bed_temperature','sensor.k1c_creality_current_object','sensor.k1c_creality_nozzle_temperature','sensor.k1c_creality_position_x','sensor.k1c_creality_position_y','sensor.k1c_creality_print_job_time','sensor.k1c_creality_print_progress','sensor.k1c_creality_print_status','sensor.k1c_creality_print_time_left','sensor.k1c_creality_total_layers','sensor.k1c_creality_working_layer','sensor.lodowka_freezer_temperature','sensor.lodowka_fridge_temperature','sensor.lodowka_moc','sensor.parcel_locker_wol02bapp_cisnienie','sensor.parcel_locker_wol02bapp_norma_pm_10','sensor.parcel_locker_wol02bapp_norma_pm_2_5','sensor.parcel_locker_wol02bapp_pm_10','sensor.parcel_locker_wol02bapp_pm_2_5','sensor.parcel_locker_wol02bapp_polish_air_quality_index','sensor.parcel_locker_wol02bapp_temperatura','sensor.parcel_locker_wol02bapp_wilgotnosc','sensor.pralka_current_status','sensor.swiatlo_kuchnia_temperatura_urzadzenia','sensor.szuszarka_current_status','sensor.temperatura_garderoba_temperatura','sensor.temperatura_garderoba_wilgotnosc','sensor.termometr_lazienka_bateria','sensor.termometr_lazienka_temperatura','sensor.termometr_lazienka_wilgotnosc','sensor.termometr_ogrod_cisnienie','sensor.termometr_ogrod_temperatura','sensor.termometr_ogrod_wilgotnosc','sensor.salon_termometr_salon_cisnienie','sensor.salon_termometr_salon_temperatura','sensor.salon_termometr_salon_wilgotnosc','sensor.termometr_sypialnia_cisnienie','sensor.termometr_sypialnia_temperatura','sensor.termometr_sypialnia_wilgotnosc','sensor.timmerflotte_temp_hmd_sensor_temperatura','sensor.sypialnia_paula_paula_temperatura_temperatura','sensor.timmerflotte_temp_hmd_sensor_wilgotnosc','sensor.sypialnia_paula_paula_temperatura_wilgotnosc','sensor.zamel_mew_01_energia_pobrana','sensor.zamel_mew_01_moc_l1','sensor.zamel_mew_01_moc_l2','sensor.zamel_mew_01_moc_l3','sensor.zamel_mew_01_napiecie_l1','sensor.zamel_mew_01_napiecie_l2','sensor.zamel_mew_01_napiecie_l3','sun.sun','switch.furtka','switch.smart_switch_b78c','weather.forecast_dom'];
 
 function rebuildPollFilter(){
   var map={}, list=POLL_IDS.slice(0), extras=[], i, id, dyn, k, out=[];
@@ -1869,6 +1735,7 @@ function openZeroLegacy(ev){
 var CUR_VIEW='dom';
 function sv(id,btn){
   if(id==='drukarka') id='poddasze';
+  if(id==='ogrzewanie') id='dom';
   CUR_VIEW=id;
   if(id==='zero'){
     if(btn){var bs=document.querySelectorAll('.tb');for(var k=0;k<bs.length;k++)bs[k].className='tb';btn.className='tb a';}
@@ -2670,7 +2537,6 @@ function upd(){
   uStateCard('switch.smart_switch_b78c','sc-brama','ss-brama','Otwarta','Zamknięta');
   uStateCard('switch.furtka','sc-furtka','ss-furtka','Otwarta','Zamknięta');
   updEnergyCard();
-  updHeat();
   tx('ft2', fmt1(st('sensor.lodowka_fridge_temperature')));
   tx('fzt', fmt1(st('sensor.lodowka_freezer_temperature')));
 
@@ -2697,162 +2563,6 @@ function sumPowerPhases(){
   if(!isNaN(p2)){tot+=p2;n++;}
   if(!isNaN(p3)){tot+=p3;n++;}
   return n?tot:NaN;
-}
-
-function clSetpoint(eid){
-  var t=at(eid,'temperature');
-  if(t==='--'||t===undefined||t===null) t=at(eid,'target_temp_high');
-  var n=parseFloat(t);
-  return isNaN(n)?NaN:n;
-}
-
-function clStep(eid,delta,ev){
-  if(ev&&ev.stopPropagation) ev.stopPropagation();
-  var cur=clSetpoint(eid);
-  var mn=parseFloat(at(eid,'min_temp')); if(isNaN(mn)) mn=10;
-  var mx=parseFloat(at(eid,'max_temp')); if(isNaN(mx)) mx=90;
-  if(isNaN(cur)) cur=parseFloat(at(eid,'current_temperature'));
-  if(isNaN(cur)) cur=20;
-  var nv=Math.round((cur+delta)*2)/2;
-  if(nv<mn) nv=mn; if(nv>mx) nv=mx;
-  if(!E[eid]) E[eid]={state:'heat',attributes:{}};
-  if(!E[eid].attributes) E[eid].attributes={};
-  E[eid].attributes.temperature=nv;
-  updHeat();
-  haPost('climate','set_temperature',{entity_id:eid,temperature:nv},function(){
-    confirmEntity(eid,updHeat);
-  });
-}
-
-function clToggle(eid){
-  var s=st(eid);
-  var on=(s!=='off'&&s!=='unavailable'&&s!=='unknown');
-  if(!E[eid]) E[eid]={attributes:{}};
-  E[eid].state=on?'off':'heat';
-  updHeat();
-  haPost('climate',on?'turn_off':'turn_on',{entity_id:eid},function(){
-    confirmEntity(eid,updHeat);
-  });
-}
-
-var THERMO_A0=135, THERMO_A1=405, THERMO_CX=100, THERMO_CY=100, THERMO_R=80;
-
-function thermoPt(angle){
-  var rad=(angle-90)*Math.PI/180;
-  return {x:THERMO_CX+THERMO_R*Math.cos(rad),y:THERMO_CY+THERMO_R*Math.sin(rad)};
-}
-
-function thermoArc(aStart,aEnd){
-  var p1=thermoPt(aStart), p2=thermoPt(aEnd), sweep=aEnd-aStart;
-  if(sweep<=0) return '';
-  var large=sweep>180?1:0;
-  return 'M '+p1.x.toFixed(2)+' '+p1.y.toFixed(2)+' A '+THERMO_R+' '+THERMO_R+' 0 '+large+' 1 '+p2.x.toFixed(2)+' '+p2.y.toFixed(2);
-}
-
-function thermoAngle(temp,mn,mx){
-  var pct=(temp-mn)/(mx-mn);
-  if(pct<0) pct=0; if(pct>1) pct=1;
-  return THERMO_A0+pct*(THERMO_A1-THERMO_A0);
-}
-
-function thermoDraw(prefix,mn,mx,current,setpoint,active,heating){
-  var fill=document.getElementById('tr-'+prefix+'-fill');
-  var dot=document.getElementById('tr-'+prefix+'-dot');
-  if(!fill||!dot) return;
-  if(isNaN(setpoint)) setpoint=mn;
-  if(isNaN(current)) current=setpoint;
-  var aSet=thermoAngle(setpoint,mn,mx);
-  var aCur=thermoAngle(current,mn,mx);
-  fill.setAttribute('d',active?thermoArc(THERMO_A0,aSet):'');
-  if(active&&heating){
-    var dp=thermoPt(aCur);
-    dot.setAttribute('cx',dp.x.toFixed(2));
-    dot.setAttribute('cy',dp.y.toFixed(2));
-    dot.setAttribute('opacity','1');
-  }else{
-    dot.setAttribute('opacity','0');
-  }
-}
-
-function thermoStateLabel(s,heating){
-  if(s==='off') return 'Wyłączone';
-  if(heating) return 'Grzeje';
-  if(s==='heat'||s==='auto') return 'Czuwa';
-  if(s&&s!=='--'&&s!=='unavailable'&&s!=='unknown') return s;
-  return '--';
-}
-
-function uHeatPill(eid,pid,vid,onTxt,offTxt){
-  var p=document.getElementById(pid),v=document.getElementById(vid);
-  if(!p||!v) return;
-  var s=st(eid), on=(s==='on');
-  p.className=p.className.replace(/\s*on\b/,'');
-  if(on) p.className+=' on';
-  v.textContent=on?onTxt:(s==='off'?offTxt:(s&&s!=='--'?s:'--'));
-}
-
-function uHeatCard(eid,cardId,stId,tgtId,actId,prefix,mnDef,mxDef,heatBin){
-  var s=st(eid);
-  var card=document.getElementById(cardId);
-  var on=(s!=='off'&&s!=='unavailable'&&s!=='unknown'&&s!=='--');
-  if(card){
-    var base='thermo glass'+(cardId==='hc-dhw'?' blue':'');
-    card.className=on?base+' on':base+' off';
-  }
-  var stEl=document.getElementById(stId);
-  var heating=(st(heatBin)==='on');
-  if(stEl) stEl.textContent=thermoStateLabel(s,heating);
-  var sp=clSetpoint(eid);
-  tx(tgtId,isNaN(sp)?'--':fmt1(sp));
-  var act=parseFloat(at(eid,'current_temperature'));
-  if(isNaN(act)) act=parseFloat(st(eid===CLIMATE_CH?'sensor.diyless_thermostat_3_ch_temperature':'sensor.diyless_thermostat_3_dhw_temperature'));
-  tx(actId,isNaN(act)?'--':fmt1(act));
-  var mn=parseFloat(at(eid,'min_temp')); if(isNaN(mn)) mn=mnDef;
-  var mx=parseFloat(at(eid,'max_temp')); if(isNaN(mx)) mx=mxDef;
-  thermoDraw(prefix,mn,mx,act,sp,on,heating);
-}
-
-function updHeatDash(){
-  var ch=parseFloat(st('sensor.diyless_thermostat_3_ch_temperature'));
-  if(isNaN(ch)) ch=parseFloat(at(CLIMATE_CH,'current_temperature'));
-  var chSet=clSetpoint(CLIMATE_CH);
-  if(isNaN(chSet)) chSet=parseFloat(st('sensor.diyless_thermostat_3_ch_setpoint'));
-  var dhw=parseFloat(st('sensor.diyless_thermostat_3_dhw_temperature'));
-  if(isNaN(dhw)) dhw=parseFloat(at(CLIMATE_DHW,'current_temperature'));
-  var dhwSet=clSetpoint(CLIMATE_DHW);
-  tx('hd-ch',isNaN(ch)?'--':fmt1(ch));
-  tx('hd-ch-set',isNaN(chSet)?'--':fmt1(chSet));
-  tx('hd-dhw',isNaN(dhw)?'--':fmt1(dhw));
-  tx('hd-dhw-set',isNaN(dhwSet)?'--':fmt1(dhwSet));
-  var chOn=st('binary_sensor.diyless_thermostat_3_ch_state')==='on';
-  var dhwOn=st('binary_sensor.diyless_thermostat_3_dhw_state')==='on';
-  var stEl=document.getElementById('hd-st');
-  var card=document.getElementById('heat-dash');
-  if(stEl){
-    if(chOn&&dhwOn) stEl.textContent='CO+CWU';
-    else if(chOn) stEl.textContent='Grzeje CO';
-    else if(dhwOn) stEl.textContent='Grzeje CWU';
-    else stEl.textContent='Czuwa';
-  }
-  if(card) card.className=(chOn||dhwOn)?'rcell glass rcell-heat on':'rcell glass rcell-heat';
-}
-
-function updHeat(){
-  uHeatPill('binary_sensor.diyless_thermostat_3_flame_state','hp-flame','hpv-flame','TAK','NIE');
-  uHeatPill('binary_sensor.diyless_thermostat_3_ch_state','hp-ch','hpv-ch','GRZEJE','OFF');
-  uHeatPill('binary_sensor.diyless_thermostat_3_dhw_state','hp-dhw','hpv-dhw','GRZEJE','OFF');
-  uHeatPill('binary_sensor.diyless_thermostat_3_fault','hp-fault','hpv-fault','TAK','OK');
-  uHeatCard(CLIMATE_CH,'hc-ch','hs-ch','ht-ch','hr-ch-t','ch',15,30,'binary_sensor.diyless_thermostat_3_ch_state');
-  uHeatCard(CLIMATE_DHW,'hc-dhw','hs-dhw','ht-dhw','hr-dhw-t','dhw',30,65,'binary_sensor.diyless_thermostat_3_dhw_state');
-  tx('hg-out',fmt1(st('sensor.diyless_thermostat_3_outdoor_temperature')));
-  tx('hg-ret',fmt1(st('sensor.diyless_thermostat_3_ch_return_temperature')));
-  tx('hg-pres',fmt1(st('sensor.diyless_thermostat_3_ch_water_pressure')));
-  tx('hg-flame',fmt1(st('sensor.diyless_thermostat_3_flame_level')));
-  tx('hg-exh',fmt1(st('sensor.diyless_thermostat_3_exhaust_temperature')));
-  tx('hg-fault',st('sensor.diyless_thermostat_3_fault_code'));
-  var ot=st('binary_sensor.diyless_thermostat_3_opentherm_connection_state');
-  tx('hg-ot',ot==='on'?'Połączony':(ot==='off'?'Brak':'--'));
-  updHeatDash();
 }
 
 function updEnergyCard(){
