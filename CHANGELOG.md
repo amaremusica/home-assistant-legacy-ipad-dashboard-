@@ -2,6 +2,14 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.13.31] — 2026-10-18
+
+### Dodane
+- **Kafelek Volvo** (Dom, obok Ogrodu) — zasięg, paliwo i stan zamka z integracji Volvo (`sensor.volvo_xc60_distance_to_empty_tank`, `sensor.volvo_xc60_fuel_amount`, `lock.volvo_xc60_lock`); encje dopisane do `POLL_IDS`.
+
+### Naprawione
+- **Kamery: blokada IP iPada (HTTP 403)** — `camera_proxy` / `camera_proxy_stream` dostawały w `?token=` token logowania zamiast tokenu kamery (atrybut `access_token`). HA liczył każde takie żądanie jako nieudane logowanie i po serii prób banował IP iPada. Teraz używany jest `access_token` kamery; przy niedostępnej kamerze panel nie wysyła żądań, a brak strumienia przechodzi na migawki.
+
 ## [11.13.30] — 2026-09-26
 
 ### Naprawione
