@@ -2,6 +2,11 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.13.38] — 2026-11-08
+
+### Zmienione
+- **Jakość powietrza — zapas z Sensor.Community 52067.** InPost usunął strony paczkomatów i integracja InPost Air nie podaje danych. Gdy Paczkomat WOL02BAPP nie ma danych, PM2.5/PM10, % normy (25/50 µg/m³), wykres i Indeks PL (liczony z progów GIOŚ, gorszy z PM2.5/PM10) biorą się z czujnika Sensor.Community 52067. Kafel „Paczkomat" pokazuje wtedy „Powietrze": PM2.5, PM10, indeks. Po powrocie danych InPost wszystko samo wraca na Paczkomat. Dodany poziom „Dostateczny".
+
 ## [11.13.37] — 2026-10-18
 
 ### Naprawione
