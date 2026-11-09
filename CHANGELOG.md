@@ -2,6 +2,11 @@
 
 Wszystkie istotne zmiany w panelu iPad (iOS 10) są dokumentowane w tym pliku.
 
+## [11.13.39] — 2026-11-09
+
+### Dodane
+- **Oświetlenie Poddasza z włącznika Aqara S1E** (integracja Xiaomi Home) — w widoku Poddasze sekcja „💡 Oświetlenie (S1E)" z trzema przyciskami: Reflektor, Środkowy, Prawy (`switch.s1e_poddasze_*`), włącz/wyłącz ze stanem; encje dopisane do `POLL_IDS`.
+
 ## [11.13.38] — 2026-11-08
 
 ### Zmienione
